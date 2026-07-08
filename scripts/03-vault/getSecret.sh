@@ -1,43 +1,46 @@
-#!/bin/bash
+#!/usr/bin/env zsh
 # scripts/03-vault/getSecret.sh
-# Retrieves a secret from Vault using the Vault client token.
+# Retrieves a secret from Vault using the Vault client token via framework functions.
 
-set -euo pipefail
+# Resolve PROJECT_ROOT if not set
+if [[ -z "${PROJECT_ROOT:-}" ]]; then
+  export PROJECT_ROOT="${0:A:h:h:h}"
+fi
+
+# Source framework config and functions
+source "${PROJECT_ROOT}/config/config.sh"
+init_config
 
 VAULT_ADDR="${1:-}"
 TOKEN="${2:-}"
 SECRET_PATH="${3:-secret/data/myconfig}"
 
-if [ -z "$VAULT_ADDR" ] || [ -z "$TOKEN" ]; then
-  echo "Error: VAULT_ADDR and TOKEN parameters are required." >&2
-  echo "Usage: $0 <VAULT_ADDR> <TOKEN> [SECRET_PATH]" >&2
-  exit 1
-fi
+validate_required "${VAULT_ADDR}" "VAULT_ADDR parameter is required" || error_exit "Missing VAULT_ADDR"
+validate_required "${TOKEN}" "TOKEN parameter is required" || error_exit "Missing TOKEN"
 
-# Ensure secret path doesn't have duplicate leading slash
-SECRET_PATH=$(echo "$SECRET_PATH" | sed 's|^/||')
+# Remove leading slash if present in SECRET_PATH
+secret_path="${SECRET_PATH#/}"
 
 # Construct endpoint URL
-# If SECRET_PATH already has v1/ prefix, don't duplicate it.
-if [[ "$SECRET_PATH" =~ ^v1/ ]]; then
-  ENDPOINT="${VAULT_ADDR}/${SECRET_PATH}"
+if [[ "${secret_path}" == v1/* ]]; then
+  endpoint="${VAULT_ADDR}/${secret_path}"
 else
-  ENDPOINT="${VAULT_ADDR}/v1/${SECRET_PATH}"
+  endpoint="${VAULT_ADDR}/v1/${secret_path}"
 fi
 
-# Fetch the secret
-RESPONSE=$(curl -s -f -H "X-Vault-Token: $TOKEN" "$ENDPOINT" || true)
+headers="X-Vault-Token: ${TOKEN}"
 
-if [ -z "$RESPONSE" ]; then
-  echo "Error: Failed to fetch secret from $ENDPOINT" >&2
-  exit 1
+# Make the GET call
+res=$(http_get "${endpoint}" "${headers}")
+http_status=$(check_status_code "${res}")
+body=$(http_get_body "${res}")
+
+# Check HTTP status code
+if [[ "${http_status}" -ne 200 ]]; then
+  error_exit "Failed to fetch secret from ${endpoint} (HTTP Status: ${http_status}). Response: ${body}"
 fi
 
-# Validate response JSON
-if ! echo "$RESPONSE" | jq -e '.' &>/dev/null; then
-  echo "Error: Response is not valid JSON." >&2
-  echo "Raw response: $RESPONSE" >&2
-  exit 1
-fi
+# Validate response is valid JSON
+validate_json "${body}" || error_exit "Response is not valid JSON"
 
-echo "$RESPONSE"
+echo "${body}"
