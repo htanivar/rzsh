@@ -8,13 +8,11 @@
 ## Detailed Usage Examples
 
 ### Integration Setup
-To use the Error Handling module, ensure the global configurations are initialized, then source the script file:
+To use the Error Handling module, you only need to source the configuration script, which automatically imports it:
 
 ```zsh
 source ./config/config.sh
 init_config
-
-source ./functions/02-errors.sh
 ```
 
 ---

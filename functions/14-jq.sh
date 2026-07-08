@@ -1,10 +1,10 @@
-# functions/12-json.sh
+# functions/14-jq.sh
 
 # Protect against double sourcing
-if [[ -n "${_JSON_SH_SOURCED:-}" ]]; then
+if [[ -n "${_JQ_SH_SOURCED:-}" ]]; then
   return 0
 fi
-readonly _JSON_SH_SOURCED=1
+readonly _JQ_SH_SOURCED=1
 
 # Ensure config is sourced if available
 if [[ -f "${PROJECT_ROOT:-.}/config/config.sh" ]]; then

@@ -63,3 +63,14 @@ init_config() {
 
   return 0
 }
+
+# Automatically source all function modules in numerical order
+() {
+  local func_dir="${PROJECT_ROOT}/functions"
+  if [[ -d "${func_dir}" ]]; then
+    local f
+    for f in "${func_dir}"/*.sh(nN); do
+      source "${f}"
+    done
+  fi
+}

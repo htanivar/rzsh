@@ -1,10 +1,10 @@
-# functions/14-evidence.sh
+# functions/99-evidences.sh
 
 # Protect against double sourcing
-if [[ -n "${_EVIDENCE_SH_SOURCED:-}" ]]; then
+if [[ -n "${_EVIDENCES_SH_SOURCED:-}" ]]; then
   return 0
 fi
-readonly _EVIDENCE_SH_SOURCED=1
+readonly _EVIDENCES_SH_SOURCED=1
 
 # Ensure config is sourced if available
 if [[ -f "${PROJECT_ROOT:-.}/config/config.sh" ]]; then

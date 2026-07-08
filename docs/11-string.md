@@ -8,13 +8,11 @@
 ## Detailed Usage Examples
 
 ### Integration Setup
-To use the String Formatting module, ensure the global configurations are initialized, then source the script file:
+To use the String Formatting module, you only need to source the configuration script, which automatically imports it:
 
 ```zsh
 source ./config/config.sh
 init_config
-
-source ./functions/11-string.sh
 ```
 
 ---

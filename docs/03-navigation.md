@@ -8,13 +8,11 @@
 ## Detailed Usage Examples
 
 ### Integration Setup
-To use the File Navigation & Git Checks module, ensure the global configurations are initialized, then source the script file:
+To use the File Navigation & Git Checks module, you only need to source the configuration script, which automatically imports it:
 
 ```zsh
 source ./config/config.sh
 init_config
-
-source ./functions/03-navigation.sh
 ```
 
 ---

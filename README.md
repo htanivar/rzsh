@@ -1,27 +1,30 @@
 # Zsh Modular Scripting Framework
 
-A highly modular, reusable, and robust shell scripting framework built natively on Zsh 5.8+. This repository provides 15 unified modules with strict coding standards: JSDoc documentation, isolated scoping (no global leakage), robust path and error checks, and 100% unit-tested correctness.
+A highly modular, reusable, and robust shell scripting framework built natively on Zsh 5.8+.
+
+> [!IMPORTANT]
+> To load all framework functions, you only need to source `config/config.sh` and run `init_config`. The configuration script automatically sources all functional modules inside `functions/*.sh` in numerical order!
 
 ## Table of Contents
 - [Getting Started](#getting-started)
 - [Framework Directory Structure](#framework-directory-structure)
 - [Module Reference Directory](#module-reference-directory)
+- [Console Reference Help Manual](#console-reference-help-manual)
+- [Code Examples for Non-Technical Users](#code-examples-for-non-technical-users)
 - [Unit Testing](#unit-testing)
 - [Frequently Asked Questions (FAQ)](#frequently-asked-questions-faq)
 - [Future Improvements](#future-improvements)
 
 ## Getting Started
 
-To use this framework in any Zsh shell environment, source the configuration manager first, then source the required functional modules:
+To use this framework in any Zsh shell environment, source the configuration manager. Sourcing this file automatically loads all modular functions:
 
 ```zsh
-# Sourcing the config and core logging modules
+# Sourcing the config script loads ALL functional modules automatically!
 source ./config/config.sh
 init_config
 
-source ./functions/01-logs.sh
-source ./functions/02-errors.sh
-
+# You can now call any framework function directly!
 log_info "Workspace initialized successfully."
 ```
 
@@ -29,22 +32,28 @@ log_info "Workspace initialized successfully."
 ```
 .
 ├── README.md               # Main documentation
-├── README.sh               # Executable console help manual
+├── help.sh                 # Executable console reference help manual
 ├── test.sh                 # Unit test runner
 ├── config/
-│   └── config.sh           # Global environment variables
+│   └── config.sh           # Global environment parameters (sources functions/*.sh)
 ├── functions/              # Modular functional scripts
 │   ├── 01-logs.sh
 │   ├── 02-errors.sh
-│   └── ... (modules 01-14)
+│   ├── ...
+│   ├── 14-jq.sh            # JSON parsing & JQ query operations
+│   └── 99-evidences.sh     # System evidence collector
+├── examples/               # Descriptive scripts for non-technical users
+│   ├── 00_config_example.sh
+│   ├── 01_logs_example.sh
+│   └── ...
 ├── tests/                  # Assertion-based unit tests
 │   ├── test_helpers.sh
 │   ├── 01-logs.test.sh
-│   └── ... (tests 01-14)
+│   └── ...
 └── docs/                   # Comprehensive usage guides
     ├── 00-config.md
     ├── 01-logs.md
-    └── ... (modules 01-14)
+    └── ...
 ```
 
 ## Module Reference Directory
@@ -65,9 +74,25 @@ Here is the index of available modules. Click on any module link to view a compr
 | 09 | File Utilities | [`functions/09-file.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/09-file.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/09-file.md) |
 | 10 | Directory Management | [`functions/10-directory.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/10-directory.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/10-directory.md) |
 | 11 | String Formatting | [`functions/11-string.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/11-string.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/11-string.md) |
-| 12 | JSON Parsing | [`functions/12-json.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/12-json.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/12-json.md) |
 | 13 | JSON Web Tokens | [`functions/13-jwt.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/13-jwt.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/13-jwt.md) |
-| 14 | Evidence Collector | [`functions/14-evidence.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/14-evidence.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/14-evidence.md) |
+| 14 | JQ JSON Parser | [`functions/14-jq.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/14-jq.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/14-jq.md) |
+| 99 | Evidence Collector | [`functions/99-evidences.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/99-evidences.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/99-evidences.md) |
+
+## Console Reference Help Manual
+
+You can display a beautiful, colored reference manual directly in the terminal by running:
+
+```bash
+PATH="/home/ubuntu/.local/bin:$PATH" ./help.sh
+```
+
+## Code Examples for Non-Technical Users
+
+We have created fully documented, executable example scripts for all modules inside the [`examples/`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/examples) folder.
+Non-technical users can run and inspect these scripts to see exactly how each function works:
+- [`examples/00_config_example.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/examples/00_config_example.sh)
+- [`examples/01_logs_example.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/examples/01_logs_example.sh)
+- ... (and so on for all 15 modules).
 
 ## Unit Testing
 

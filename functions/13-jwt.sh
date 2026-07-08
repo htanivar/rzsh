@@ -10,8 +10,8 @@ readonly _JWT_SH_SOURCED=1
 if [[ -f "${PROJECT_ROOT:-.}/config/config.sh" ]]; then
   source "${PROJECT_ROOT:-.}/config/config.sh"
 fi
-if [[ -f "${PROJECT_ROOT:-.}/functions/12-json.sh" ]]; then
-  source "${PROJECT_ROOT:-.}/functions/12-json.sh"
+if [[ -f "${PROJECT_ROOT:-.}/functions/14-jq.sh" ]]; then
+  source "${PROJECT_ROOT:-.}/functions/14-jq.sh"
 fi
 
 # Load datetime module

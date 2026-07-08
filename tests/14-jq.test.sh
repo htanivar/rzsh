@@ -1,10 +1,10 @@
-# tests/12-json.test.sh
+# tests/14-jq.test.sh
 
 # Source helpers, config, and target script
 local my_dir="${${(%):-%x}:A:h}"
 source "${my_dir}/test_helpers.sh"
 source "${my_dir}/../config/config.sh"
-source "${my_dir}/../functions/12-json.sh"
+source "${my_dir}/../functions/14-jq.sh"
 
 init_config
 
