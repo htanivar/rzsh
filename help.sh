@@ -125,8 +125,8 @@ show_readme() {
     "Returns 0 if there are no uncommitted changes in the Git working copy." \
     "git_is_clean || error_exit \"Working copy is dirty\""
 
-  # Module 06: Curl
-  echo -e "${BOLD}${COLOR_MODULE}06. HTTP Client Client Wrapper (functions/06-curl.sh)${RESET}"
+  # Module 06: HTTP Client
+  echo -e "${BOLD}${COLOR_MODULE}06. HTTP Client Wrapper (functions/06-http.sh)${RESET}"
   print_func "http_get / http_post" \
     "Executes curl request, appending HTTP status code to the output body." \
     "local res=\$(http_get \"https://api.example.com/users\")"

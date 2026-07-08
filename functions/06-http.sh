@@ -1,10 +1,10 @@
-# functions/06-curl.sh
+# functions/06-http.sh
 
 # Protect against double sourcing
-if [[ -n "${_CURL_SH_SOURCED:-}" ]]; then
+if [[ -n "${_HTTP_SH_SOURCED:-}" ]]; then
   return 0
 fi
-readonly _CURL_SH_SOURCED=1
+readonly _HTTP_SH_SOURCED=1
 
 # Ensure config & validation are sourced if available
 if [[ -f "${PROJECT_ROOT:-.}/config/config.sh" ]]; then
@@ -106,6 +106,37 @@ http_put() {
 }
 
 # /**
+#  * @function http_patch
+#  * @description Performs an HTTP PATCH request using curl. Appends HTTP status code to the last line of the output.
+#  * @param {string} url - The URL to request.
+#  * @param {string} data - The PATCH request body data.
+#  * @param {string} [headers] - Newline-separated headers to include.
+#  * @return {string} Response body followed by a newline and the HTTP status code.
+#  * @example
+#  *   local res
+#  *   res=$(http_patch "https://httpbin.org/patch" '{"name": "newname"}')
+#  */
+http_patch() {
+  local url="$1"
+  local data="$2"
+  local headers="$3"
+  
+  if ! validate_command_exists "curl"; then
+    return 1
+  fi
+
+  local -a curl_opts=(-s -L -w "\n%{http_code}" -X PATCH)
+  if [[ -n "${headers}" ]]; then
+    local hdr
+    for hdr in ${(f)headers}; do
+      curl_opts+=(-H "${hdr}")
+    done
+  fi
+
+  curl "${curl_opts[@]}" -d "${data}" "${url}"
+}
+
+# /**
 #  * @function http_delete
 #  * @description Performs an HTTP DELETE request using curl. Appends HTTP status code to the last line of the output.
 #  * @param {string} url - The URL to request.
@@ -149,6 +180,20 @@ check_status_code() {
 }
 
 # /**
+#  * @function http_get_body
+#  * @description Extracts the HTTP response body from a raw HTTP response (excluding the trailing status code).
+#  * @param {string} response - The raw response string containing response body followed by status code.
+#  * @return {string} The response body.
+#  * @example
+#  *   local body
+#  *   body=$(http_get_body "${res}")
+#  * */
+http_get_body() {
+  local response="$1"
+  echo "${response}" | sed '$d'
+}
+
+# /**
 #  * @function is_json_response
 #  * @description Checks if the response body (excluding status code) is valid JSON.
 #  * @param {string} response - The raw response output.
@@ -157,11 +202,11 @@ check_status_code() {
 #  *   if is_json_response "${res}"; then
 #  *     echo "Received JSON response"
 #  *   fi
-#  */
+#  * */
 is_json_response() {
   local response="$1"
   local body
-  body=$(echo "${response}" | sed '$d')
+  body=$(http_get_body "${response}")
   validate_json "${body}"
 }
 
