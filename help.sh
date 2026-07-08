@@ -179,14 +179,14 @@ show_readme() {
     "Splits a string by delimiter or joins arguments using a custom character." \
     "local csv=\$(str_join \",\" \"val1\" \"val2\")"
 
-  # Module 14: JQ JSON Parser
-  echo -e "${BOLD}${COLOR_MODULE}14. JSON Parsing & JQ (functions/14-jq.sh)${RESET}"
-  print_func "json_get_value" \
-    "Queries a value at a specified path in a JSON string (using jq)." \
-    "local user=\$(json_get_value \"\${json}\" \".user.name\")"
-  print_func "json_set_value" \
-    "Sets or modifies a value at a specified JSON path." \
-    "local new_json=\$(json_set_value \"\${json}\" \".active\" \"true\")"
+  # Module 12: SSH & SCP Client
+  echo -e "${BOLD}${COLOR_MODULE}12. SSH & SCP Client (functions/12-ssh.sh)${RESET}"
+  print_func "ssh_is_reachable" \
+    "Checks if the SSH service on a remote host is reachable." \
+    "ssh_is_reachable \"10.0.0.5\" 22 2"
+  print_func "ssh_exec / ssh_scp_up / ssh_scp_down" \
+    "Executes remote commands or transfers files via SSH/SCP (identity/password)." \
+    "ssh_exec \"user\" \"host\" \"uname -a\""
 
   # Module 13: JWT
   echo -e "${BOLD}${COLOR_MODULE}13. JSON Web Tokens (functions/13-jwt.sh)${RESET}"
@@ -196,6 +196,15 @@ show_readme() {
   print_func "jwt_verify / jwt_valid" \
     "Verifies signature matches key, and checks if expiration ('exp') is valid." \
     "jwt_valid \"\${token}\" \"my-secret\" && echo \"Valid!\""
+
+  # Module 14: JQ JSON Parser
+  echo -e "${BOLD}${COLOR_MODULE}14. JSON Parsing & JQ (functions/14-jq.sh)${RESET}"
+  print_func "json_get_value" \
+    "Queries a value at a specified path in a JSON string (using jq)." \
+    "local user=\$(json_get_value \"\${json}\" \".user.name\")"
+  print_func "json_set_value" \
+    "Sets or modifies a value at a specified JSON path." \
+    "local new_json=\$(json_set_value \"\${json}\" \".active\" \"true\")"
 
   # Module 99: Evidences
   echo -e "${BOLD}${COLOR_MODULE}99. Evidence Collector (functions/99-evidences.sh)${RESET}"
