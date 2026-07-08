@@ -1,60 +1,48 @@
-#!/bin/bash
+#!/usr/bin/env zsh
 # scripts/03-vault/jwtLogin.sh
-# Performs Vault JWT authentication and validates the response structure.
+# Performs Vault JWT authentication and validates the response structure using framework functions.
 
-set -euo pipefail
+# Resolve PROJECT_ROOT if not set
+if [[ -z "${PROJECT_ROOT:-}" ]]; then
+  export PROJECT_ROOT="${0:A:h:h:h}"
+fi
+
+# Source framework config and functions
+source "${PROJECT_ROOT}/config/config.sh"
+init_config
 
 AUTH_URL="${1:-}"
 ROLE_NAME="${2:-}"
 JWT="${3:-}"
 
-if [ -z "$AUTH_URL" ] || [ -z "$ROLE_NAME" ] || [ -z "$JWT" ]; then
-  echo "Error: AUTH_URL, ROLE_NAME, and JWT parameters are required." >&2
-  echo "Usage: $0 <AUTH_URL> <ROLE_NAME> <JWT>" >&2
-  exit 1
+validate_required "${AUTH_URL}" "AUTH_URL parameter is required" || error_exit "Missing AUTH_URL"
+validate_required "${ROLE_NAME}" "ROLE_NAME parameter is required" || error_exit "Missing ROLE_NAME"
+validate_required "${JWT}" "JWT parameter is required" || error_exit "Missing JWT"
+
+# Construct the payload dynamically using json_set_value
+payload='{}'
+payload=$(json_set_value "${payload}" ".jwt" "${JWT}")
+payload=$(json_set_value "${payload}" ".role" "${ROLE_NAME}")
+
+headers="Content-Type: application/json"
+
+# Perform POST request
+res=$(http_post "${AUTH_URL}" "${payload}" "${headers}")
+http_status=$(check_status_code "${res}")
+body=$(http_get_body "${res}")
+
+# Check HTTP status code
+if [[ "${http_status}" -ne 200 ]]; then
+  error_exit "Vault login request failed with status: ${http_status}. Response: ${body}"
 fi
 
-# Ensure jq is installed
-if ! command -v jq &>/dev/null; then
-  echo "Error: jq is required but not installed." >&2
-  exit 1
-fi
+# Validate response is valid JSON
+validate_json "${body}" || error_exit "Response is not valid JSON"
 
-# Construct the payload
-PAYLOAD=$(jq -n \
-  --arg jwt "$JWT" \
-  --arg role "$ROLE_NAME" \
-  '{jwt: $jwt, role: $role}')
+# Validate Vault client token exists in auth or auth.data
+client_token=$(json_get_value "${body}" ".auth.client_token // .auth.data.client_token // empty")
 
-# Make the POST request to Vault
-# Standard Vault login is POST /v1/auth/jwt/login
-# Note: we use curl -s -f. If it fails, we capture the status.
-RESPONSE=$(curl -s -f -X POST -H "Content-Type: application/json" -d "$PAYLOAD" "$AUTH_URL" || true)
+validate_required "${client_token}" "Missing client token in login response" || error_exit "Invalid response structure"
 
-if [ -z "$RESPONSE" ]; then
-  echo "Error: Vault login request failed or returned empty response." >&2
-  exit 1
-fi
-
-# Validate JSON structure
-if ! echo "$RESPONSE" | jq -e '.' &>/dev/null; then
-  echo "Error: Response is not valid JSON." >&2
-  echo "Raw response: $RESPONSE" >&2
-  exit 1
-fi
-
-# Validate Vault authentication response structure.
-# Vault login typically returns an object with a top-level "auth" field containing "client_token".
-# The user specifies: validate "auth.data.client_token" or "auth.client_token".
-# Let's extract and check both paths.
-CLIENT_TOKEN=$(echo "$RESPONSE" | jq -r 'if .auth.data.client_token then .auth.data.client_token elif .auth.client_token then .auth.client_token else empty end')
-
-if [ -z "$CLIENT_TOKEN" ] || [ "$CLIENT_TOKEN" = "null" ]; then
-  echo "Error: Login response validation failed. Missing client_token in auth/auth.data." >&2
-  echo "Response structure was: $(echo "$RESPONSE" | jq -c '.')" >&2
-  exit 1
-fi
-
-# If we reached here, the structure is valid!
-echo "Validation Success: Valid Vault Login response structure detected." >&2
-echo "$RESPONSE"
+log_info "Validation Success: Valid Vault Login response structure detected."
+echo "${body}"

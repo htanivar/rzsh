@@ -1,39 +1,38 @@
-#!/bin/bash
+#!/usr/bin/env zsh
 # scripts/01-myconfig/getConfig.sh
-# Retrieves the configuration JSON from the specified URL
+# Retrieves the configuration JSON from the specified URL using framework functions.
 
-set -euo pipefail
+# Resolve PROJECT_ROOT if not set
+if [[ -z "${PROJECT_ROOT:-}" ]]; then
+  export PROJECT_ROOT="${0:A:h:h:h}"
+fi
+
+# Source framework config and functions
+source "${PROJECT_ROOT}/config/config.sh"
+init_config
 
 URL="${1:-}"
+validate_required "${URL}" "URL parameter is required" || error_exit "Usage: $0 <config_url>"
 
-if [ -z "$URL" ]; then
-  echo "Error: URL parameter is required." >&2
-  echo "Usage: $0 <config_url>" >&2
-  exit 1
+# Perform the HTTP GET call using framework utility
+res=$(http_get "${URL}")
+http_status=$(check_status_code "${res}")
+body=$(http_get_body "${res}")
+
+# Check HTTP status code
+if [[ "${http_status}" -ne 200 ]]; then
+  error_exit "Failed to fetch config from ${URL} (HTTP Status: ${http_status}). Response: ${body}"
 fi
 
-# Check if jq is installed
-if ! command -v jq &>/dev/null; then
-  echo "Error: jq is required but not installed." >&2
-  exit 1
-fi
+# Validate response is valid JSON
+validate_json "${body}" || error_exit "Response is not valid JSON"
 
-# Make the HTTP GET call to retrieve the configuration
-# If the call fails, exit with error
-RESPONSE=$(curl -s -f -L -w "\n%{http_code}" "$URL")
-HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
-BODY=$(echo "$RESPONSE" | sed '$d')
+# Validate response keys AUTH_URL and ROLE_NAME exist
+auth_url=$(json_get_value "${body}" ".AUTH_URL")
+role_name=$(json_get_value "${body}" ".ROLE_NAME")
 
-if [ "$HTTP_CODE" -ne 200 ]; then
-  echo "Error: Failed to fetch config from $URL (HTTP Status: $HTTP_CODE)" >&2
-  exit 1
-fi
-
-# Validate response is valid JSON and has required keys (AUTH_URL and ROLE_NAME)
-if ! echo "$BODY" | jq -e '.AUTH_URL and .ROLE_NAME' &>/dev/null; then
-  echo "Error: Response is not a valid config JSON or missing AUTH_URL/ROLE_NAME. Response: $BODY" >&2
-  exit 1
-fi
+validate_required "${auth_url}" "Missing AUTH_URL in config JSON" || error_exit "Config is missing AUTH_URL"
+validate_required "${role_name}" "Missing ROLE_NAME in config JSON" || error_exit "Config is missing ROLE_NAME"
 
 # Output the valid JSON to stdout
-echo "$BODY"
+echo "${body}"

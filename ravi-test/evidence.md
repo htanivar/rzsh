@@ -1,9 +1,10 @@
 # Test Execution Evidence
 
-Generated on: 2026-07-08T17:57:34Z
+Generated on: 2026-07-08T18:03:39Z
 Configuration Source: `ravi-test/myconfig.txt`
 
 ---
+
 ## Configuration 1: `http://localhost:1717/where/is/my/secret1`
 
 * **Status:** SUCCESS
@@ -33,8 +34,25 @@ eyJhbGciOi...[REDACTED]...om_ssh_key
 - **Extracted Vault Client Token:** `hvs.mock...[REDACTED]...ret1`
 - **Response Payload:**
 ```json
-Validation Success: Valid Vault Login response structure detected.
-{"auth": {"client_token": "hvs.mock_client_token_for_role-secret1", "accessor": "accessor_role-secret1", "policies": ["default", "role-secret1"], "metadata": {"role": "role-secret1", "jwt_snippet": "eyJhbGciOiJSUzI1NiIs"}, "lease_duration": 3600, "renewable": true, "data": {"client_token": "hvs.mock_client_token_for_role-secret1"}}}
+{
+  "auth": {
+    "client_token": "hvs.mock_client_token_for_role-secret1",
+    "accessor": "accessor_role-secret1",
+    "policies": [
+      "default",
+      "role-secret1"
+    ],
+    "metadata": {
+      "role": "role-secret1",
+      "jwt_snippet": "eyJhbGciOiJSUzI1NiIs"
+    },
+    "lease_duration": 3600,
+    "renewable": true,
+    "data": {
+      "client_token": "hvs.mock_client_token_for_role-secret1"
+    }
+  }
+}
 ```
 
 ### Step 6: Vault CRUD Operations
@@ -91,6 +109,7 @@ Validation Success: Valid Vault Login response structure detected.
 ```
 
 ---
+
 ## Configuration 2: `http://localhost:1717/where/is/my/secret2`
 
 * **Status:** SUCCESS
@@ -120,8 +139,25 @@ eyJhbGciOi...[REDACTED]...om_ssh_key
 - **Extracted Vault Client Token:** `hvs.mock...[REDACTED]...ret2`
 - **Response Payload:**
 ```json
-Validation Success: Valid Vault Login response structure detected.
-{"auth": {"client_token": "hvs.mock_client_token_for_role-secret2", "accessor": "accessor_role-secret2", "policies": ["default", "role-secret2"], "metadata": {"role": "role-secret2", "jwt_snippet": "eyJhbGciOiJSUzI1NiIs"}, "lease_duration": 3600, "renewable": true, "data": {"client_token": "hvs.mock_client_token_for_role-secret2"}}}
+{
+  "auth": {
+    "client_token": "hvs.mock_client_token_for_role-secret2",
+    "accessor": "accessor_role-secret2",
+    "policies": [
+      "default",
+      "role-secret2"
+    ],
+    "metadata": {
+      "role": "role-secret2",
+      "jwt_snippet": "eyJhbGciOiJSUzI1NiIs"
+    },
+    "lease_duration": 3600,
+    "renewable": true,
+    "data": {
+      "client_token": "hvs.mock_client_token_for_role-secret2"
+    }
+  }
+}
 ```
 
 ### Step 6: Vault CRUD Operations
@@ -178,6 +214,7 @@ Validation Success: Valid Vault Login response structure detected.
 ```
 
 ---
+
 ## Configuration 3: `http://localhost:1717/where/is/my/secret3`
 
 * **Status:** SUCCESS
@@ -207,8 +244,25 @@ eyJhbGciOi...[REDACTED]...om_ssh_key
 - **Extracted Vault Client Token:** `hvs.mock...[REDACTED]...ret3`
 - **Response Payload:**
 ```json
-Validation Success: Valid Vault Login response structure detected.
-{"auth": {"client_token": "hvs.mock_client_token_for_role-secret3", "accessor": "accessor_role-secret3", "policies": ["default", "role-secret3"], "metadata": {"role": "role-secret3", "jwt_snippet": "eyJhbGciOiJSUzI1NiIs"}, "lease_duration": 3600, "renewable": true, "data": {"client_token": "hvs.mock_client_token_for_role-secret3"}}}
+{
+  "auth": {
+    "client_token": "hvs.mock_client_token_for_role-secret3",
+    "accessor": "accessor_role-secret3",
+    "policies": [
+      "default",
+      "role-secret3"
+    ],
+    "metadata": {
+      "role": "role-secret3",
+      "jwt_snippet": "eyJhbGciOiJSUzI1NiIs"
+    },
+    "lease_duration": 3600,
+    "renewable": true,
+    "data": {
+      "client_token": "hvs.mock_client_token_for_role-secret3"
+    }
+  }
+}
 ```
 
 ### Step 6: Vault CRUD Operations
@@ -265,6 +319,7 @@ Validation Success: Valid Vault Login response structure detected.
 ```
 
 ---
+
 ## Configuration 4: `http://localhost:1717/where/is/my/secret4`
 
 * **Status:** SUCCESS
@@ -294,8 +349,25 @@ eyJhbGciOi...[REDACTED]...om_ssh_key
 - **Extracted Vault Client Token:** `hvs.mock...[REDACTED]...ret4`
 - **Response Payload:**
 ```json
-Validation Success: Valid Vault Login response structure detected.
-{"auth": {"client_token": "hvs.mock_client_token_for_role-secret4", "accessor": "accessor_role-secret4", "policies": ["default", "role-secret4"], "metadata": {"role": "role-secret4", "jwt_snippet": "eyJhbGciOiJSUzI1NiIs"}, "lease_duration": 3600, "renewable": true, "data": {"client_token": "hvs.mock_client_token_for_role-secret4"}}}
+{
+  "auth": {
+    "client_token": "hvs.mock_client_token_for_role-secret4",
+    "accessor": "accessor_role-secret4",
+    "policies": [
+      "default",
+      "role-secret4"
+    ],
+    "metadata": {
+      "role": "role-secret4",
+      "jwt_snippet": "eyJhbGciOiJSUzI1NiIs"
+    },
+    "lease_duration": 3600,
+    "renewable": true,
+    "data": {
+      "client_token": "hvs.mock_client_token_for_role-secret4"
+    }
+  }
+}
 ```
 
 ### Step 6: Vault CRUD Operations
@@ -352,6 +424,7 @@ Validation Success: Valid Vault Login response structure detected.
 ```
 
 ---
+
 ## Configuration 5: `http://localhost:1717/where/is/my/secret5`
 
 * **Status:** SUCCESS
@@ -381,8 +454,25 @@ eyJhbGciOi...[REDACTED]...om_ssh_key
 - **Extracted Vault Client Token:** `hvs.mock...[REDACTED]...ret5`
 - **Response Payload:**
 ```json
-Validation Success: Valid Vault Login response structure detected.
-{"auth": {"client_token": "hvs.mock_client_token_for_role-secret5", "accessor": "accessor_role-secret5", "policies": ["default", "role-secret5"], "metadata": {"role": "role-secret5", "jwt_snippet": "eyJhbGciOiJSUzI1NiIs"}, "lease_duration": 3600, "renewable": true, "data": {"client_token": "hvs.mock_client_token_for_role-secret5"}}}
+{
+  "auth": {
+    "client_token": "hvs.mock_client_token_for_role-secret5",
+    "accessor": "accessor_role-secret5",
+    "policies": [
+      "default",
+      "role-secret5"
+    ],
+    "metadata": {
+      "role": "role-secret5",
+      "jwt_snippet": "eyJhbGciOiJSUzI1NiIs"
+    },
+    "lease_duration": 3600,
+    "renewable": true,
+    "data": {
+      "client_token": "hvs.mock_client_token_for_role-secret5"
+    }
+  }
+}
 ```
 
 ### Step 6: Vault CRUD Operations
@@ -439,3 +529,4 @@ Validation Success: Valid Vault Login response structure detected.
 ```
 
 ---
+
