@@ -274,6 +274,35 @@ file_restore() {
 }
 
 # /**
+#  * @function file_backup_and_restore
+#  * @description High-level wrapper to backup or restore files.
+#  * @param {string} action - 'backup' or 'restore'.
+#  * @param {string} file - Target file path.
+#  * @param {string} [backup_path] - Specific backup path (required for restore).
+#  * @return {string|number} Backup file path on backup success, or 0 on restore success.
+#  * @example
+#  *   file_backup_and_restore "backup" "settings.conf"
+#  */
+file_backup_and_restore() {
+  local action="$1"
+  local file="$2"
+  local backup_path="${3:-}"
+  
+  if [[ "${action}" == "backup" ]]; then
+    file_backup "${file}"
+  elif [[ "${action}" == "restore" ]]; then
+    # If backup_path is empty, use the file parameter as the backup source
+    if [[ -z "${backup_path}" ]]; then
+      file_restore "${file}"
+    else
+      file_restore "${backup_path}"
+    fi
+  else
+    return 1
+  fi
+}
+
+# /**
 #  * @function file_hash
 #  * @description Calculates the cryptographic hash of a file.
 #  * @param {string} file - File path.

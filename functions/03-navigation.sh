@@ -57,6 +57,16 @@ absolute_path() {
   echo "${rel_path:A}"
 }
 
+# Wrapper functions for compatibility with documentation/examples
+get_current_directory() {
+  echo "${PWD}"
+}
+
+get_absolute_path() {
+  local rel_path="$1"
+  echo "${rel_path:A}"
+}
+
 # /**
 #  * @function to_project_root
 #  * @description Changes the current working directory to the project root directory.

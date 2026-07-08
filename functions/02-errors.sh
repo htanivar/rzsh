@@ -45,6 +45,38 @@ error_exit() {
   fi
 
   # Cleanup temporary files
+  cleanup_temp_files
+
+  exit "${code}"
+}
+
+# /**
+#  * @function register_temp_file
+#  * @description Registers a file or directory path for automatic cleanup.
+#  * @param {string} file_path - Path of the file/directory to register.
+#  * @return {number} 0 on success.
+#  * @example
+#  *   register_temp_file "/tmp/scratch.txt"
+#  */
+register_temp_file() {
+  local file_path="$1"
+  if [[ -n "${file_path}" ]]; then
+    # Add to global array if not already present (using (Ie) search in Zsh)
+    if [[ ${TEMP_FILES[(Ie)${file_path}]} -eq 0 ]]; then
+      TEMP_FILES+=("${file_path}")
+    fi
+  fi
+  return 0
+}
+
+# /**
+#  * @function cleanup_temp_files
+#  * @description Cleans up (deletes) all registered temporary files from disk.
+#  * @return {number} 0 on success.
+#  * @example
+#  *   cleanup_temp_files
+#  */
+cleanup_temp_files() {
   if (( ${#TEMP_FILES} > 0 )); then
     if typeset -f log_info >/dev/null; then
       log_info "Cleaning up temporary files..."
@@ -59,6 +91,6 @@ error_exit() {
       fi
     done
   fi
-
-  exit "${code}"
+  TEMP_FILES=()
+  return 0
 }

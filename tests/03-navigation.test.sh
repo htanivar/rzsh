@@ -53,9 +53,23 @@ test_ensure_directory_exists() {
   rm -rf "${test_dir}"
 }
 
+test_get_current_directory() {
+  local cur
+  cur=$(get_current_directory)
+  assert_equals "${PWD}" "${cur}" "get_current_directory should equal PWD"
+}
+
+test_get_absolute_path() {
+  local abs
+  abs=$(get_absolute_path ".")
+  assert_equals "${PWD}" "${abs}" "get_absolute_path of . should be PWD"
+}
+
 run_test test_current_directory
+run_test test_get_current_directory
 run_test test_dir_up
 run_test test_absolute_path
+run_test test_get_absolute_path
 run_test test_get_project_root
 run_test test_is_inside_git_repo
 run_test test_normalize_path

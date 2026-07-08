@@ -67,10 +67,10 @@ test_file_get_size() {
 test_file_backup_and_restore() {
   file_write "${test_file}" "original"
   local backup
-  backup=$(file_backup "${test_file}")
+  backup=$(file_backup_and_restore "backup" "${test_file}")
   
   file_write "${test_file}" "corrupted"
-  file_restore "${backup}"
+  file_backup_and_restore "restore" "${test_file}" "${backup}"
   
   local content
   content=$(file_read "${test_file}")
