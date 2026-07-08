@@ -15,8 +15,8 @@ log_error "This is an error notification (red)"
 log_debug "This is a programmer debug message (only visible if LOG_LEVEL=DEBUG)"
 
 # 2. Log steps for running a process
-log_step 1 "Connecting to database"
-log_step 2 "Downloading data"
+log_steps "Connecting to database"
+log_steps "Downloading data"
 
 # 3. Log sections for organizing terminal printout
 log_section "System Setup Complete"
