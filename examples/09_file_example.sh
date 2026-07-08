@@ -4,6 +4,7 @@
 
 source "$(dirname "$0")/../config/config.sh"
 init_config
+init_logging
 
 local my_file="${PROJECT_ROOT}/logs/notes.txt"
 
