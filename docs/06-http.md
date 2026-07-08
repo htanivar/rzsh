@@ -1,6 +1,6 @@
 # HTTP Client Wrapper Module Reference
 
-- **Source File:** [`functions/06-curl.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/06-curl.sh)
+- **Source File:** [`functions/06-http.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/06-http.sh)
 - **Description:** Robust network calls, status check helpers, and automated retries.
 
 ---
@@ -60,6 +60,17 @@ local login=$(extract_json_field "${response}" ".login")
 #### Example Code:
 ```zsh
 local code=$(check_status_code "${response}")
+```
+
+---
+### `http_get_body`
+
+* **Signature:** `http_get_body <http_response>`
+* **Description:** Extracts and prints the response body from a wrapper response (excluding the status code).
+
+#### Example Code:
+```zsh
+local body=$(http_get_body "${response}")
 ```
 
 ---
