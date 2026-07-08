@@ -8,13 +8,11 @@
 ## Detailed Usage Examples
 
 ### Integration Setup
-To use the JSON Web Tokens module, ensure the global configurations are initialized, then source the script file:
+To use the JSON Web Tokens module, you only need to source the configuration script, which automatically imports it:
 
 ```zsh
 source ./config/config.sh
 init_config
-
-source ./functions/13-jwt.sh
 ```
 
 ---
@@ -24,7 +22,7 @@ source ./functions/13-jwt.sh
 ### `jwt_generate`
 
 * **Signature:** `jwt_generate <json_payload> [secret]`
-* **Description:** Generates a signed HS256 JWT using the payload and secret key (uses base64url tr encoding escape fix).
+* **Description:** Generates a signed HS256 JWT using the payload and secret key.
 
 #### Example Code:
 ```zsh

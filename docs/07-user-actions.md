@@ -8,13 +8,11 @@
 ## Detailed Usage Examples
 
 ### Integration Setup
-To use the Interactive Prompts module, ensure the global configurations are initialized, then source the script file:
+To use the Interactive Prompts module, you only need to source the configuration script, which automatically imports it:
 
 ```zsh
 source ./config/config.sh
 init_config
-
-source ./functions/07-user-actions.sh
 ```
 
 ---
@@ -50,7 +48,7 @@ local pass=$(read_password "Enter API Key: ")
 
 #### Example Code:
 ```zsh
-confirm "Deploy to production?" "n" && deploy_stack
+confirm "Do you want to run updates?" "n" && deploy_stack
 ```
 
 ---

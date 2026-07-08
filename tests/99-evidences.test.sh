@@ -1,10 +1,10 @@
-# tests/14-evidence.test.sh
+# tests/99-evidences.test.sh
 
 # Source helpers, config, and target script
 local my_dir="${${(%):-%x}:A:h}"
 source "${my_dir}/test_helpers.sh"
 source "${my_dir}/../config/config.sh"
-source "${my_dir}/../functions/14-evidence.sh"
+source "${my_dir}/../functions/99-evidences.sh"
 
 init_config
 

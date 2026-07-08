@@ -8,13 +8,11 @@
 ## Detailed Usage Examples
 
 ### Integration Setup
-To use the Logging Utility module, ensure the global configurations are initialized, then source the script file:
+To use the Logging Utility module, you only need to source the configuration script, which automatically imports it:
 
 ```zsh
 source ./config/config.sh
 init_config
-
-source ./functions/01-logs.sh
 ```
 
 ---
@@ -24,7 +22,7 @@ source ./functions/01-logs.sh
 ### `init_logging`
 
 * **Signature:** `init_logging`
-* **Description:** Ensures the log directory exists and prepares log files. If log rotation is required, resets logs that exceed limits.
+* **Description:** Ensures the log directory exists and prepares log files.
 
 #### Example Code:
 ```zsh
@@ -35,7 +33,7 @@ init_logging
 ### `log_info / log_warn / log_error / log_debug`
 
 * **Signature:** `log_info <message> / log_warn <message> / log_error <message> / log_debug <message>`
-* **Description:** Outputs a color-coded log message to stdout and appends it to the log file (e.g. logs/app.log) prefixed with a timestamp.
+* **Description:** Outputs a color-coded log message to stdout and appends it to the log file prefixed with a timestamp.
 
 #### Example Code:
 ```zsh

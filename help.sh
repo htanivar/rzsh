@@ -179,8 +179,8 @@ show_readme() {
     "Splits a string by delimiter or joins arguments using a custom character." \
     "local csv=\$(str_join \",\" \"val1\" \"val2\")"
 
-  # Module 12: JSON
-  echo -e "${BOLD}${COLOR_MODULE}12. JSON Parsing (functions/12-json.sh)${RESET}"
+  # Module 14: JQ JSON Parser
+  echo -e "${BOLD}${COLOR_MODULE}14. JSON Parsing & JQ (functions/14-jq.sh)${RESET}"
   print_func "json_get_value" \
     "Queries a value at a specified path in a JSON string (using jq)." \
     "local user=\$(json_get_value \"\${json}\" \".user.name\")"
@@ -197,8 +197,8 @@ show_readme() {
     "Verifies signature matches key, and checks if expiration ('exp') is valid." \
     "jwt_valid \"\${token}\" \"my-secret\" && echo \"Valid!\""
 
-  # Module 14: Evidence
-  echo -e "${BOLD}${COLOR_MODULE}14. Evidence Collector (functions/14-evidence.sh)${RESET}"
+  # Module 99: Evidences
+  echo -e "${BOLD}${COLOR_MODULE}99. Evidence Collector (functions/99-evidences.sh)${RESET}"
   print_func "init_evidence" \
     "Prepares a timestamped directory to store diagnostic/incident logs." \
     "init_evidence"
@@ -236,6 +236,6 @@ show_readme() {
 }
 
 # Execute help display if run directly
-if [[ "${(%):-%N}" == "${0}" || "${0}" == *"README.sh"* ]]; then
+if [[ "${(%):-%N}" == "${0}" || "${0}" == *"help.sh"* ]]; then
   show_readme
 fi

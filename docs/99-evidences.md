@@ -1,6 +1,6 @@
 # Evidence Collector Module Reference
 
-- **Source File:** [`functions/14-evidence.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/14-evidence.sh)
+- **Source File:** [`functions/99-evidences.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/99-evidences.sh)
 - **Description:** Comprehensive system metadata audit incident logs collector.
 
 ---
@@ -8,13 +8,11 @@
 ## Detailed Usage Examples
 
 ### Integration Setup
-To use the Evidence Collector module, ensure the global configurations are initialized, then source the script file:
+To use the Evidence Collector module, you only need to source the configuration script, which automatically imports it:
 
 ```zsh
 source ./config/config.sh
 init_config
-
-source ./functions/14-evidence.sh
 ```
 
 ---
@@ -35,7 +33,7 @@ init_evidence
 ### `collect_environment_evidence / collect_script_evidence / collect_network_evidence`
 
 * **Signature:** `collect_environment_evidence / collect_script_evidence / collect_network_evidence`
-* **Description:** Gathers environmental variables, system processes, DNS resolv setups, active adapters, and script parameters.
+* **Description:** Gathers environmental variables, system processes, DNS resolv setups, active adapters, and git history/diff information.
 
 #### Example Code:
 ```zsh
