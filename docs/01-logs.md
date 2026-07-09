@@ -43,14 +43,14 @@ log_error "Connection timeout reached"
 ```
 
 ---
-### `log_step`
+### `log_steps`
 
-* **Signature:** `log_step <step_number> <message>`
-* **Description:** Prints a formatted progress step message to the console.
+* **Signature:** `log_steps <step_name>`
+* **Description:** Logs progress tracking steps with an automatically incrementing counter.
 
 #### Example Code:
 ```zsh
-log_step 1 "Initializing workspace"
+log_steps "Initializing workspace"
 ```
 
 ---
