@@ -2,9 +2,16 @@
 # scripts/04-git/compare_branches.sh
 # Compare two git branches, output a structured summary, and show contents in separate sections.
 
-# Resolve PROJECT_ROOT if not set
+# Resolve PROJECT_ROOT dynamically by searching upwards for config/config.sh
 if [[ -z "${PROJECT_ROOT:-}" ]]; then
-  export PROJECT_ROOT="${0:A:h:h:h}"
+  local current_dir="${0:A:h}"
+  while [[ "${current_dir}" != "/" ]]; do
+    if [[ -f "${current_dir}/config/config.sh" ]]; then
+      export PROJECT_ROOT="${current_dir}"
+      break
+    fi
+    current_dir="${current_dir:h}"
+  done
 fi
 
 # Source framework config and functions

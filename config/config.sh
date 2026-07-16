@@ -25,6 +25,16 @@ JWT_SECRET="${JWT_SECRET:-}"
 EVIDENCE_DIR="${EVIDENCE_DIR:-}"
 RAVI_DIR="${RAVI_DIR:-}"
 
+# Repository Configs
+typeset -g -a REPO_NAMES
+REPO_NAMES=(service1 service2 service3)
+
+typeset -g -A REPO_LOCATIONS
+REPO_LOCATIONS=(
+  [service1]="/home/xxxx/hello/world/code"
+  [service2]="/new/location"
+)
+
 # /**
 #  * @function init_config
 #  * @description Initializes the global configuration variables for the framework, setting defaults if they are not already defined in the environment.
