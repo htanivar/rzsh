@@ -1,0 +1,75 @@
+# tests/15-compare-branches.test.sh
+
+# Source helpers, config, and target script
+local my_dir="${${(%):-%x}:A:h}"
+source "${my_dir}/test_helpers.sh"
+source "${my_dir}/../config/config.sh"
+
+init_config
+
+# Setup temporary test Git repo
+local original_pwd="${PWD}"
+local test_git_dir="${PROJECT_ROOT}/logs/test_compare_branches_repo"
+rm -rf "${test_git_dir}"
+mkdir -p "${test_git_dir}"
+
+cd "${test_git_dir}"
+git init -b main
+git config user.email "test@example.com"
+git config user.name "Test User"
+
+# Initial files on main
+echo "hello" > file_to_modify.txt
+echo "delete me" > file_to_delete.txt
+echo "rename me" > file_to_rename.txt
+git add file_to_modify.txt file_to_delete.txt file_to_rename.txt
+git commit -m "initial commit on main"
+
+# Create feature branch
+git checkout -b feature
+
+# Make changes on feature branch
+echo "hello modified" > file_to_modify.txt
+rm file_to_delete.txt
+git rm file_to_delete.txt
+git mv file_to_rename.txt file_renamed.txt
+echo "new file contents" > file_added.txt
+git add file_to_modify.txt file_added.txt
+git commit -m "feature commit"
+
+test_compare_branches_execution() {
+  local report_file="${test_git_dir}/report.md"
+  
+  # Run the comparison script from the test repo directory comparing main with feature
+  zsh "${PROJECT_ROOT}/scripts/04-git/compare_branches.sh" main feature -o "${report_file}" -s
+  local exit_code=$?
+  
+  assert_equals 0 "${exit_code}" "compare_branches.sh should exit with code 0"
+  assert_true "[[ -f \"${report_file}\" ]]" "Generated report file should exist"
+  
+  # Check report contents
+  local report_content
+  report_content=$(cat "${report_file}")
+  
+  assert_true "[[ \"${report_content}\" == *\"### Added Files\"* ]]" "Report should have Added Files section"
+  assert_true "[[ \"${report_content}\" == *\"- file_added.txt\"* ]]" "Report should list file_added.txt"
+  
+  assert_true "[[ \"${report_content}\" == *\"### Modified Files\"* ]]" "Report should have Modified Files section"
+  assert_true "[[ \"${report_content}\" == *\"- file_to_modify.txt\"* ]]" "Report should list file_to_modify.txt"
+  
+  assert_true "[[ \"${report_content}\" == *\"### Deleted Files\"* ]]" "Report should have Deleted Files section"
+  assert_true "[[ \"${report_content}\" == *\"- file_to_delete.txt\"* ]]" "Report should list file_to_delete.txt"
+  
+  assert_true "[[ \"${report_content}\" == *\"### Renamed Files\"* ]]" "Report should have Renamed Files section"
+  assert_true "[[ \"${report_content}\" == *\"- file_to_rename.txt -> file_renamed.txt\"* ]]" "Report should list rename transition"
+  
+  assert_true "[[ \"${report_content}\" == *\"## Detailed Content Changes\"* ]]" "Report should have Detailed Content Changes section"
+}
+
+run_test test_compare_branches_execution
+
+# Cleanup
+cd "${original_pwd}"
+rm -rf "${test_git_dir}"
+
+exit $(( TESTS_FAILED > 0 ? 1 : 0 ))
