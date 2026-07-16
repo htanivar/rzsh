@@ -11,19 +11,31 @@ fi
 source "${PROJECT_ROOT}/config/config.sh"
 init_config
 
+# Dynamically detect variables set/exported in config.sh
+local -a framework_vars
+local parse_line parse_var
+while IFS= read -r parse_line || [[ -n "${parse_line}" ]]; do
+  if [[ "${parse_line}" =~ "^[[:space:]]*export[[:space:]]+([A-Z][A-Z0-9_]*)[[:space:]]*$" ]]; then
+    framework_vars+=("${match[1]}")
+  elif [[ "${parse_line}" =~ "^[[:space:]]*([A-Z][A-Z0-9_]*)=.*$" ]]; then
+    parse_var="${match[1]}"
+    if [[ "${parse_var}" != "PATH" ]]; then
+      framework_vars+=("${parse_var}")
+    fi
+  fi
+done < "${PROJECT_ROOT}/config/config.sh"
+framework_vars=( ${(u)framework_vars} )
+
+
 URL="${1:-}"
 
 # If no URL parameter is provided, simply list the config variables and create the evidence
 if [[ -z "${URL}" ]]; then
   local body='{}'
-  body=$(json_set_value "${body}" ".PROJECT_ROOT" "${PROJECT_ROOT}")
-  body=$(json_set_value "${body}" ".LOG_LEVEL" "${LOG_LEVEL}")
-  body=$(json_set_value "${body}" ".LOG_DIR" "${LOG_DIR}")
-  body=$(json_set_value "${body}" ".SCRIPT_NAME" "${SCRIPT_NAME}")
-  body=$(json_set_value "${body}" ".TIMESTAMP_FORMAT" "${TIMESTAMP_FORMAT}")
-  body=$(json_set_value "${body}" ".DATE_FORMAT" "${DATE_FORMAT}")
-  body=$(json_set_value "${body}" ".JWT_SECRET" "${JWT_SECRET}")
-  body=$(json_set_value "${body}" ".EVIDENCE_DIR" "${EVIDENCE_DIR}")
+  local v
+  for v in "${framework_vars[@]}"; do
+    body=$(json_set_value "${body}" ".${v}" "${(P)v}")
+  done
 
   # Output the configuration JSON to stdout
   echo "${body}"
@@ -72,17 +84,11 @@ role_name=$(json_get_value "${body}" ".ROLE_NAME")
 validate_required "${auth_url}" "Missing AUTH_URL in config JSON" || error_exit "Config is missing AUTH_URL"
 validate_required "${role_name}" "Missing ROLE_NAME in config JSON" || error_exit "Config is missing ROLE_NAME"
 
-# Append framework configuration parameters from config.sh
-body=$(json_set_value "${body}" ".PROJECT_ROOT" "${PROJECT_ROOT}")
-body=$(json_set_value "${body}" ".LOG_LEVEL" "${LOG_LEVEL}")
-body=$(json_set_value "${body}" ".LOG_DIR" "${LOG_DIR}")
-body=$(json_set_value "${body}" ".SCRIPT_NAME" "${SCRIPT_NAME}")
-body=$(json_set_value "${body}" ".TIMESTAMP_FORMAT" "${TIMESTAMP_FORMAT}")
-body=$(json_set_value "${body}" ".DATE_FORMAT" "${DATE_FORMAT}")
-body=$(json_set_value "${body}" ".JWT_SECRET" "${JWT_SECRET}")
-body=$(json_set_value "${body}" ".EVIDENCE_DIR" "${EVIDENCE_DIR}")
+# Append framework configuration parameters dynamically from config.sh
+  local v
+  for v in "${framework_vars[@]}"; do
+    body=$(json_set_value "${body}" ".${v}" "${(P)v}")
+  done
 
 # Output the valid JSON to stdout
 echo "${body}"
-
-

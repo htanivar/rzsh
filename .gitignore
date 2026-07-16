@@ -70,7 +70,7 @@ bin/
 app-data/
 node_modules/
 jspm_packages/
-
+evidence/
 # ============================================
 # BUILD OUTPUTS & DISTRIBUTIONS
 # ============================================
