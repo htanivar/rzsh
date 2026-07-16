@@ -24,6 +24,7 @@ DATE_FORMAT="${DATE_FORMAT:-}"
 JWT_SECRET="${JWT_SECRET:-}"
 EVIDENCE_DIR="${EVIDENCE_DIR:-}"
 RAVI_DIR="${RAVI_DIR:-}"
+GIT_IGNORE_FOLDERS="${GIT_IGNORE_FOLDERS:-}"
 
 # Repository Configs
 typeset -g -a REPO_NAMES
@@ -61,6 +62,7 @@ init_config() {
   DATE_FORMAT="${DATE_FORMAT:-%Y-%m-%d}"
   JWT_SECRET="${JWT_SECRET:-placeholder-secret-keys-should-be-overridden}"
   EVIDENCE_DIR="${EVIDENCE_DIR:-${PROJECT_ROOT}/evidence}"
+  GIT_IGNORE_FOLDERS="${GIT_IGNORE_FOLDERS:-vendor,.idea,.git}"
 
   # Export variables to make them available to subshells
   export PROJECT_ROOT
@@ -71,6 +73,7 @@ init_config() {
   export DATE_FORMAT
   export JWT_SECRET
   export EVIDENCE_DIR
+  export GIT_IGNORE_FOLDERS
 
   return 0
 }
