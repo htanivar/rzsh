@@ -53,6 +53,27 @@ test_ensure_directory_exists() {
   rm -rf "${test_dir}"
 }
 
+test_change_directory() {
+  local test_dir="${PROJECT_ROOT}/logs/test_cd_dir"
+  ensure_directory_exists "${test_dir}"
+
+  # Test success
+  change_directory "${test_dir}"
+  assert_equals 0 $? "change_directory should return 0 on success"
+  assert_equals "${test_dir}" "${PWD}" "PWD should be updated to target directory"
+
+  # Test failure with non-existent directory
+  change_directory "${test_dir}/non_existent_subdir"
+  assert_equals 1 $? "change_directory should return 1 on failure"
+
+  # Test failure with empty path
+  change_directory ""
+  assert_equals 1 $? "change_directory should return 1 on empty path"
+
+  # Clean up
+  rm -rf "${test_dir}"
+}
+
 test_get_current_directory() {
   local cur
   cur=$(get_current_directory)
@@ -74,5 +95,6 @@ run_test test_get_project_root
 run_test test_is_inside_git_repo
 run_test test_normalize_path
 run_test test_ensure_directory_exists
+run_test test_change_directory
 
 exit $(( TESTS_FAILED > 0 ? 1 : 0 ))

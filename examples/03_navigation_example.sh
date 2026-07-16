@@ -30,3 +30,14 @@ fi
 # 6. Ensure folder exists
 ensure_directory_exists "${PROJECT_ROOT}/logs/backup_folder"
 echo "Verified that logs/backup_folder directory exists."
+
+# 7. Change directory
+local target_dir="${PROJECT_ROOT}/logs/backup_folder"
+if change_directory "${target_dir}"; then
+  echo "Successfully changed directory to: ${PWD}"
+  # Change back to project root
+  change_directory "${PROJECT_ROOT}"
+else
+  echo "Failed to change directory."
+fi
+

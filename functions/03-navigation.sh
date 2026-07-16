@@ -141,3 +141,20 @@ ensure_directory_exists() {
   fi
   mkdir -p "${p}"
 }
+
+# /**
+#  * @function change_directory
+#  * @description Changes the current working directory to the specified path.
+#  * @param {string} path - The directory path to change to.
+#  * @return {number} 0 on success, or 1 on failure.
+#  * @example
+#  *   change_directory "/tmp"
+#  */
+change_directory() {
+  local target_dir="$1"
+  if [[ -z "${target_dir}" ]]; then
+    return 1
+  fi
+  cd "${target_dir}" || return 1
+}
+
