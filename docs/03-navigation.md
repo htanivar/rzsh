@@ -96,3 +96,14 @@ ensure_directory_exists "/var/log/my_app"
 ```
 
 ---
+### `change_directory`
+
+* **Signature:** `change_directory <dir_path>`
+* **Description:** Changes the current working directory to the specified path.
+
+#### Example Code:
+```zsh
+change_directory "/tmp"
+```
+
+---
