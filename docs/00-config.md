@@ -17,6 +17,14 @@ init_config
 
 ---
 
+## Configuration Variables
+
+### `GIT_IGNORE_FOLDERS`
+* **Default:** `vendor,.idea,.git`
+* **Description:** Comma-separated list of directories to ignore during Git branch comparisons (e.g. `vendor`, `.idea`, `.git`).
+
+---
+
 ## Function Signatures & Descriptions
 
 ### `init_config`

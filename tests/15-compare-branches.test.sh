@@ -34,7 +34,10 @@ rm file_to_delete.txt
 git rm file_to_delete.txt
 git mv file_to_rename.txt file_renamed.txt
 echo "new file contents" > file_added.txt
-git add file_to_modify.txt file_added.txt
+mkdir -p vendor .idea
+echo "vendor file" > vendor/ignored_lib.txt
+echo "idea workspace" > .idea/workspace.xml
+git add file_to_modify.txt file_added.txt vendor/ignored_lib.txt .idea/workspace.xml
 git commit -m "feature commit"
 
 assert_contains() {
@@ -102,8 +105,51 @@ test_git_compare_branches_function() {
   assert_contains "${report_content}" "## Detailed Content Changes" "Function report should have Detailed Content Changes section"
 }
 
+test_git_compare_branches_ignore() {
+  local report_file_ignored="${test_git_dir}/report_ignored.md"
+  local report_file_all="${test_git_dir}/report_all.md"
+  
+  # Source functions
+  source "${PROJECT_ROOT}/functions/05-git.sh"
+  
+  # 1. Compare with default ignore configuration (which contains 'vendor' and '.idea')
+  git_compare_branches main feature -o "${report_file_ignored}" -s
+  assert_equals 0 $? "git_compare_branches with ignore should exit 0"
+  
+  local content_ignored
+  content_ignored=$(cat "${report_file_ignored}")
+  
+  # Verify that ignored files are NOT present in the report
+  if [[ "${content_ignored}" == *"vendor/ignored_lib.txt"* ]]; then
+    printf "\n    \e[31mAssertion failed: vendor/ignored_lib.txt should be ignored\e[0m\n" >&2
+    return 1
+  fi
+  if [[ "${content_ignored}" == *".idea/workspace.xml"* ]]; then
+    printf "\n    \e[31mAssertion failed: .idea/workspace.xml should be ignored\e[0m\n" >&2
+    return 1
+  fi
+  
+  # 2. Compare with custom/empty ignore configuration
+  local old_ignore="${GIT_IGNORE_FOLDERS}"
+  GIT_IGNORE_FOLDERS=""
+  
+  git_compare_branches main feature -o "${report_file_all}" -s
+  assert_equals 0 $? "git_compare_branches with empty ignore should exit 0"
+  
+  local content_all
+  content_all=$(cat "${report_file_all}")
+  
+  # Restore
+  GIT_IGNORE_FOLDERS="${old_ignore}"
+  
+  # Verify that ignored files ARE present now
+  assert_contains "${content_all}" "vendor/ignored_lib.txt" "Report should list vendor file when not ignoring"
+  assert_contains "${content_all}" ".idea/workspace.xml" "Report should list idea file when not ignoring"
+}
+
 run_test test_compare_branches_execution
 run_test test_git_compare_branches_function
+run_test test_git_compare_branches_ignore
 
 # Cleanup
 cd "${original_pwd}"

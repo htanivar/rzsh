@@ -330,10 +330,33 @@ EOF
   local -a renamed_files
   local -a other_files
 
+  local -a ignore_folders
+  ignore_folders=( ${(s:,:)GIT_IGNORE_FOLDERS} )
+
   local line diff_status file1 file2
   for line in "${diff_lines[@]}"; do
     [[ -z "${line}" ]] && continue
     IFS=$'\t' read -r diff_status file1 file2 <<< "${line}"
+    
+    local should_ignore=0
+    local folder
+    for folder in "${ignore_folders[@]}"; do
+      [[ -z "${folder}" ]] && continue
+      if [[ "${file1}" == "${folder}" ]] || [[ "${file1}" == "${folder}"/* ]] || [[ "${file1}" == */"${folder}"/* ]]; then
+        should_ignore=1
+        break
+      fi
+      if [[ -n "${file2}" ]]; then
+        if [[ "${file2}" == "${folder}" ]] || [[ "${file2}" == "${folder}"/* ]] || [[ "${file2}" == */"${folder}"/* ]]; then
+          should_ignore=1
+          break
+        fi
+      fi
+    done
+
+    if (( should_ignore == 1 )); then
+      continue
+    fi
     
     if [[ "${diff_status}" == A ]]; then
       added_files+=("${file1}")
