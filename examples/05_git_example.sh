@@ -23,3 +23,16 @@ git_status_message
 # 4. Get active commit hash
 local hash=$(git_get_commit_hash)
 echo "Active Commit Hash (SHA-1): ${hash}"
+
+# 5. Compare current branch with another branch (e.g. main)
+local target_cmp="main"
+if [[ "${branch}" == "main" ]] && git_branch_exists "master"; then
+  target_cmp="master"
+fi
+
+if git_branch_exists "${target_cmp}"; then
+  echo "Comparing current branch with ${target_cmp}..."
+  git_compare_branches --silent --output "${PROJECT_ROOT}/logs/compare_example.md" "${target_cmp}" "${branch}"
+  echo "Comparison report written to logs/compare_example.md"
+fi
+

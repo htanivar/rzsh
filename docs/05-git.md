@@ -96,3 +96,20 @@ local head_sha=$(git_get_commit_hash)
 ```
 
 ---
+### `git_compare_branches`
+
+* **Signature:** `git_compare_branches [options] [<branch_a>] [<branch_b>]`
+* **Description:** Compares two git branches, outputs a structured summary, and optionally writes a Markdown report.
+
+#### Options:
+* `-h, --help`: Show help message.
+* `-o, --output <file>`: Write the Markdown report to a specific file.
+* `-s, --silent`: Do not output details to stdout.
+
+#### Example Code:
+```zsh
+git_compare_branches --silent --output "./report.md" main feature
+```
+
+---
+
