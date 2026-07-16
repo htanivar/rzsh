@@ -115,20 +115,21 @@ local current_branch
 current_branch=$(git_get_current_branch)
 
 if [[ ${#branches} -eq 0 ]]; then
-  # Default comparison: compare current branch with default branch (main/master)
-  branch_a="${current_branch}"
-  # Detect default branch
+  # Default comparison: compare default branch (base) with current branch (target)
+  local default_branch=""
   if git_branch_exists "main"; then
-    branch_b="main"
+    default_branch="main"
   elif git_branch_exists "master"; then
-    branch_b="master"
+    default_branch="master"
   else
     error_exit "Could not detect default branch (neither 'main' nor 'master' exists). Please specify branches explicitly." 1
   fi
+  branch_a="${default_branch}"
+  branch_b="${current_branch}"
 elif [[ ${#branches} -eq 1 ]]; then
-  # One branch specified: compare current branch with it
-  branch_a="${current_branch}"
-  branch_b="${branches[1]}"
+  # One branch specified: compare it (base) with current branch (target)
+  branch_a="${branches[1]}"
+  branch_b="${current_branch}"
 elif [[ ${#branches} -eq 2 ]]; then
   # Two branches specified
   branch_a="${branches[1]}"
@@ -310,14 +311,18 @@ for f_path in "${all_changed_files[@]}"; do
   
   # Get git diff for this file
   local diff_content
-  diff_content=$(git diff "${branch_a}" "${branch_b}" -- "${f_path}" 2>/dev/null)
-  
-  # If diff is empty (e.g. rename without changes, or binary differences)
-  if [[ -z "${diff_content}" ]]; then
-    if git diff --numstat "${branch_a}" "${branch_b}" -- "${f_path}" | grep -q '^-'; then
-      diff_content="[Binary file differences]"
-    else
-      diff_content="[No content changes or file is metadata-only]"
+  if [[ "${f_status}" == "Deleted" ]]; then
+    diff_content="[File deleted]"
+  else
+    diff_content=$(git diff "${branch_a}" "${branch_b}" -- "${f_path}" 2>/dev/null)
+    
+    # If diff is empty (e.g. rename without changes, or binary differences)
+    if [[ -z "${diff_content}" ]]; then
+      if git diff --numstat "${branch_a}" "${branch_b}" -- "${f_path}" | grep -q '^-'; then
+        diff_content="[Binary file differences]"
+      else
+        diff_content="[No content changes or file is metadata-only]"
+      fi
     fi
   fi
   
