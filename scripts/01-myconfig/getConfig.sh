@@ -12,7 +12,45 @@ source "${PROJECT_ROOT}/config/config.sh"
 init_config
 
 URL="${1:-}"
-validate_required "${URL}" "URL parameter is required" || error_exit "Usage: $0 <config_url>"
+
+# If no URL parameter is provided, simply list the config variables and create the evidence
+if [[ -z "${URL}" ]]; then
+  local body='{}'
+  body=$(json_set_value "${body}" ".PROJECT_ROOT" "${PROJECT_ROOT}")
+  body=$(json_set_value "${body}" ".LOG_LEVEL" "${LOG_LEVEL}")
+  body=$(json_set_value "${body}" ".LOG_DIR" "${LOG_DIR}")
+  body=$(json_set_value "${body}" ".SCRIPT_NAME" "${SCRIPT_NAME}")
+  body=$(json_set_value "${body}" ".TIMESTAMP_FORMAT" "${TIMESTAMP_FORMAT}")
+  body=$(json_set_value "${body}" ".DATE_FORMAT" "${DATE_FORMAT}")
+  body=$(json_set_value "${body}" ".JWT_SECRET" "${JWT_SECRET}")
+  body=$(json_set_value "${body}" ".EVIDENCE_DIR" "${EVIDENCE_DIR}")
+
+  # Output the configuration JSON to stdout
+  echo "${body}"
+
+  # Determine evidence file path with timestamp folder in DDMMYYYY_HHMMSS format
+  local ts
+  ts=$(date +"%d%m%Y_%H%M%S")
+  local ev_dir="${EVIDENCE_DIR}/${ts}"
+  local ev_file="${ev_dir}/evidence.md"
+
+  # Write to the evidence file
+  local ev_title="# Test Execution Evidence"
+  local ev_content="
+## Configuration Variables Set (Run without URL)
+
+* **Timestamp:** $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+\`\`\`json
+$(json_beautify "${body}")
+\`\`\`
+"
+  mkdir -p "${ev_dir}"
+  file_write "${ev_file}" "${ev_title}${ev_content}"
+
+  log_info "Configuration listed and logged to evidence: ${ev_file}"
+  exit 0
+fi
 
 # Perform the HTTP GET call using framework utility
 res=$(http_get "${URL}")
@@ -34,5 +72,17 @@ role_name=$(json_get_value "${body}" ".ROLE_NAME")
 validate_required "${auth_url}" "Missing AUTH_URL in config JSON" || error_exit "Config is missing AUTH_URL"
 validate_required "${role_name}" "Missing ROLE_NAME in config JSON" || error_exit "Config is missing ROLE_NAME"
 
+# Append framework configuration parameters from config.sh
+body=$(json_set_value "${body}" ".PROJECT_ROOT" "${PROJECT_ROOT}")
+body=$(json_set_value "${body}" ".LOG_LEVEL" "${LOG_LEVEL}")
+body=$(json_set_value "${body}" ".LOG_DIR" "${LOG_DIR}")
+body=$(json_set_value "${body}" ".SCRIPT_NAME" "${SCRIPT_NAME}")
+body=$(json_set_value "${body}" ".TIMESTAMP_FORMAT" "${TIMESTAMP_FORMAT}")
+body=$(json_set_value "${body}" ".DATE_FORMAT" "${DATE_FORMAT}")
+body=$(json_set_value "${body}" ".JWT_SECRET" "${JWT_SECRET}")
+body=$(json_set_value "${body}" ".EVIDENCE_DIR" "${EVIDENCE_DIR}")
+
 # Output the valid JSON to stdout
 echo "${body}"
+
+
