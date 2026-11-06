@@ -2,11 +2,15 @@
 # tests/02-errors.test.sh
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
-# Source helpers, config, and target script
+# Source helpers, config, and target script via RZSH_DIR
 my_dir="${${(%):-%x}:A:h}"
-source "${my_dir}/test_helpers.sh"
-source "${my_dir}/../config/config.sh"
-source "${my_dir}/../functions/02-errors.sh"
+if [[ -z "${RZSH_DIR:-}" ]]; then
+  printf '[WARN] RZSH_DIR is not set. Please set export RZSH_DIR="%s" in your environment (e.g., ~/.zshrc).\n' "${my_dir:h}" >&2
+  export RZSH_DIR="${my_dir:h}"
+fi
+source "${RZSH_DIR}/tests/test_helpers.sh"
+source "${RZSH_DIR}/config/config.sh"
+source "${RZSH_DIR}/functions/02-errors.sh"
 
 init_config
 

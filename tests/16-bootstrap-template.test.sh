@@ -2,16 +2,20 @@
 # tests/16-bootstrap-template.test.sh
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
-# Source helpers, config, and target script
+# Source helpers, config, and target script via RZSH_DIR
 my_dir="${${(%):-%x}:A:h}"
-source "${my_dir}/test_helpers.sh"
-source "${my_dir}/../config/config.sh"
+if [[ -z "${RZSH_DIR:-}" ]]; then
+  printf '[WARN] RZSH_DIR is not set. Please set export RZSH_DIR="%s" in your environment (e.g., ~/.zshrc).\n' "${my_dir:h}" >&2
+  export RZSH_DIR="${my_dir:h}"
+fi
+source "${RZSH_DIR}/tests/test_helpers.sh"
+source "${RZSH_DIR}/config/config.sh"
 
 init_config
 
 test_bootstrap_template_execution() {
   # Run the template with mock username and password piped
-  output_log=$(printf "mock_admin\nmock_secret_password\n" | zsh "${PROJECT_ROOT}/scripts/bootstrap_template.sh" 2>&1)
+  output_log=$(printf "mock_admin\nmock_secret_password\n" | zsh "${RZSH_DIR}/scripts/bootstrap_template.sh" 2>&1)
   local exit_code=$?
   
   assert_equals 0 "${exit_code}" "bootstrap_template.sh should exit with code 0"

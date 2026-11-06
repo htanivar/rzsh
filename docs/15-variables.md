@@ -8,12 +8,21 @@
 ## Detailed Usage Examples
 
 ### Integration Setup
-To use the Configuration Variables module, you only need to source the configuration script, which automatically imports it:
+To use the Configuration Variables module, source the configuration script via `RZSH_DIR`, which automatically imports it:
 
 ```zsh
-source ./config/config.sh
+source "${RZSH_DIR}/config/config.sh"
 init_config
 ```
+
+---
+
+## Module Variables (Keys)
+
+| Variable Key | Type | Description |
+| :--- | :--- | :--- |
+| `REPO_NAMES` | Array (`typeset -g -a`) | Global array of registered repository names. |
+| `REPO_LOCATIONS` | Associative Array (`typeset -g -A`) | Global key-value map associating each repository name with its filesystem path. |
 
 ---
 

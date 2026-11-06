@@ -8,12 +8,21 @@
 ## Detailed Usage Examples
 
 ### Integration Setup
-To use the Evidence Collector module, you only need to source the configuration script, which automatically imports it:
+To use the Evidence Collector module, source the configuration script via `RZSH_DIR`, which automatically imports it:
 
 ```zsh
-source ./config/config.sh
+source "${RZSH_DIR}/config/config.sh"
 init_config
 ```
+
+---
+
+## Module Variables (Keys)
+
+| Variable Key | Description |
+| :--- | :--- |
+| `EVIDENCE_DIR` | Base directory where evidence session folders are stored. |
+| `CURRENT_EVIDENCE_DIR` | Path to the active timestamped evidence session directory created by `init_evidence`. |
 
 ---
 
@@ -63,14 +72,15 @@ collect_custom_evidence '{"metric": "CPU peak 98%"}'
 ```
 
 ---
-### `evidence_to_json / evidence_to_markdown`
+### `evidence_to_json / evidence_to_markdown / generate_evidence_report`
 
-* **Signature:** `evidence_to_json / evidence_to_markdown`
-* **Description:** Consolidates all collected incident files into a single unified JSON object, or formats a Markdown report.
+* **Signature:** `evidence_to_json / evidence_to_markdown / generate_evidence_report`
+* **Description:** Outputs the consolidated session `metadata.json` (`evidence_to_json`), renders all collected evidence files into Markdown (`evidence_to_markdown`), or writes the compiled Markdown report directly to `${CURRENT_EVIDENCE_DIR}/report.md` (`generate_evidence_report`).
 
 #### Example Code:
 ```zsh
 evidence_to_markdown > report.md
+local report_path=$(generate_evidence_report)
 ```
 
 ---

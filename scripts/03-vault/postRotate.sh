@@ -1,14 +1,16 @@
 #!/usr/bin/env zsh
 # scripts/03-vault/postRotate.sh
 # Renews/rotates Vault client token or secrets via framework functions.
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
-# Resolve PROJECT_ROOT if not set
-if [[ -z "${PROJECT_ROOT:-}" ]]; then
-  export PROJECT_ROOT="${0:A:h:h:h}"
+# Advise if RZSH_DIR is not set, and fallback to local framework directory
+if [[ -z "${RZSH_DIR:-}" ]]; then
+  printf '[WARN] RZSH_DIR is not set. Please set export RZSH_DIR="%s" in your environment (e.g., ~/.zshrc).\n' "${0:A:h:h:h}" >&2
+  export RZSH_DIR="${0:A:h:h:h}"
 fi
 
-# Source framework config and functions
-source "${PROJECT_ROOT}/config/config.sh"
+# Source framework config and functions via RZSH_DIR
+source "${RZSH_DIR}/config/config.sh"
 init_config
 
 VAULT_ADDR="${1:-}"

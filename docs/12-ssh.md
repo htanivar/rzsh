@@ -8,10 +8,10 @@
 ## Detailed Usage Examples
 
 ### Integration Setup
-Since all modules are loaded dynamically, simply source the configuration script:
+Since all modules are loaded dynamically, simply source the configuration script via `RZSH_DIR`:
 
 ```zsh
-source ./config/config.sh
+source "${RZSH_DIR}/config/config.sh"
 init_config
 ```
 

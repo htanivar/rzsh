@@ -10,8 +10,8 @@ readonly _ERRORS_SH_SOURCED=1
 typeset -g -a TEMP_FILES
 
 # Source logs if available
-if [[ -f "${PROJECT_ROOT:-.}/functions/01-logs.sh" ]]; then
-  source "${PROJECT_ROOT:-.}/functions/01-logs.sh"
+if [[ -f "${RZSH_DIR:-${PROJECT_ROOT:-.}}/functions/01-logs.sh" ]]; then
+  source "${RZSH_DIR:-${PROJECT_ROOT:-.}}/functions/01-logs.sh"
 fi
 
 # /**

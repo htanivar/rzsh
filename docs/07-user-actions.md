@@ -8,10 +8,10 @@
 ## Detailed Usage Examples
 
 ### Integration Setup
-To use the Interactive Prompts module, you only need to source the configuration script, which automatically imports it:
+To use the Interactive Prompts module, source the configuration script via `RZSH_DIR`, which automatically imports it:
 
 ```zsh
-source ./config/config.sh
+source "${RZSH_DIR}/config/config.sh"
 init_config
 ```
 

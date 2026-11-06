@@ -3,7 +3,12 @@
 # Non-technical guide to running SSH remote commands, SCP file transfers, and SSH tunnels.
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
-source "$(dirname "$0")/../config/config.sh"
+if [[ -z "${RZSH_DIR:-}" ]]; then
+  printf '[WARN] RZSH_DIR is not set. Please set export RZSH_DIR="%s" in your environment (e.g., ~/.zshrc).\n' "${0:A:h:h}" >&2
+  export RZSH_DIR="${0:A:h:h}"
+fi
+
+source "${RZSH_DIR}/config/config.sh"
 init_config
 
 echo "=== SSH and Network utilities Demo ==="

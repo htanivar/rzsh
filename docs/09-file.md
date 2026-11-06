@@ -8,10 +8,10 @@
 ## Detailed Usage Examples
 
 ### Integration Setup
-To use the File Utilities module, you only need to source the configuration script, which automatically imports it:
+To use the File Utilities module, source the configuration script via `RZSH_DIR`, which automatically imports it:
 
 ```zsh
-source ./config/config.sh
+source "${RZSH_DIR}/config/config.sh"
 init_config
 ```
 
@@ -30,14 +30,15 @@ file_exists "/etc/hosts"
 ```
 
 ---
-### `file_write / file_append`
+### `file_read / file_write / file_append`
 
-* **Signature:** `file_write <file> <content> / file_append <file> <content>`
-* **Description:** Writes or appends the content to the target file. Backslash escape sequences (e.g., \n) are interpreted.
+* **Signature:** `file_read <file> / file_write <file> <content> / file_append <file> <content>`
+* **Description:** Reads, writes, or appends content to the target file.
 
 #### Example Code:
 ```zsh
 file_write "out.txt" "line1\nline2"
+local content=$(file_read "out.txt")
 ```
 
 ---
@@ -63,14 +64,29 @@ local size=$(file_get_size "data.db")
 ```
 
 ---
-### `file_backup_and_restore`
+### `file_get_permissions / file_set_permissions / file_get_owner / file_get_group`
 
-* **Signature:** `file_backup_and_restore <action> <file> [backup_path]`
-* **Description:** Creates a backup of a file with a timestamp suffix, or restores from it.
+* **Signature:** `file_get_permissions <file> / file_set_permissions <file> <mode> / file_get_owner <file> / file_get_group <file>`
+* **Description:** Queries or modifies file octal permissions (`chmod`) and inspects file owner and group metadata.
 
 #### Example Code:
 ```zsh
-file_backup_and_restore "backup" "settings.conf"
+file_set_permissions "script.sh" "755"
+local perms=$(file_get_permissions "script.sh")
+local owner=$(file_get_owner "script.sh")
+local group=$(file_get_group "script.sh")
+```
+
+---
+### `file_backup / file_restore / file_backup_and_restore`
+
+* **Signature:** `file_backup <file> / file_restore <backup_file> [target] / file_backup_and_restore <action> <file>`
+* **Description:** Creates a timestamped `.bak` backup of a file, or restores a file from its backup.
+
+#### Example Code:
+```zsh
+local bak=$(file_backup "settings.conf")
+file_restore "${bak}" "settings.conf"
 ```
 
 ---

@@ -61,14 +61,12 @@ show_readme() {
   echo -e "performant, and structurally robust using native Zsh features.${RESET}"
 
   print_section "GETTING STARTED (USABLES)"
-  echo -e "To use this framework in any of your scripts, source the configuration manager and initialize it:"
+  echo -e "Set RZSH_DIR in your environment, then source the configuration manager and initialize it in any script:"
   echo ""
-  echo -e "  ${COLOR_CODE}# Sourcing the config and function modules${RESET}"
-  echo -e "  ${COLOR_CODE}source ./config/config.sh${RESET}"
+  echo -e "  ${COLOR_CODE}export RZSH_DIR=\"/path/to/rzsh\"${RESET}"
+  echo -e "  ${COLOR_CODE}source \"\${RZSH_DIR}/config/config.sh\"${RESET}"
   echo -e "  ${COLOR_CODE}init_config${RESET}"
-  echo -e "  ${COLOR_CODE}source ./functions/01-logs.sh${RESET}"
-  echo -e "  ${COLOR_CODE}source ./functions/02-errors.sh${RESET}"
-  echo -e "  ${COLOR_CODE}# ... source other modules as needed${RESET}"
+  echo -e "  ${COLOR_CODE}# All function modules in \${RZSH_DIR}/functions/*.sh are loaded automatically!${RESET}"
 
   print_section "MODULES & AVAILABLE FUNCTIONS"
 
