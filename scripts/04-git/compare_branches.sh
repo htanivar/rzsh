@@ -3,32 +3,18 @@
 # Compare two git branches, output a structured summary, and show contents in separate sections.
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
-# Resolve PROJECT_ROOT dynamically by searching upwards for config/config.sh
-if [[ -z "${PROJECT_ROOT:-}" ]]; then
-  current_dir="${0:A:h}"
-  while [[ "${current_dir}" != "/" ]]; do
-    if [[ -f "${current_dir}/config/config.sh" ]]; then
-      export PROJECT_ROOT="${current_dir}"
-      break
-    fi
-    current_dir="${current_dir:h}"
-  done
-  unset current_dir
+# Advise if RZSH_DIR is not set, and fallback to local framework directory
+if [[ -z "${RZSH_DIR:-}" ]]; then
+  printf '[WARN] RZSH_DIR is not set. Please set export RZSH_DIR="%s" in your environment (e.g., ~/.zshrc).\n' "${0:A:h:h:h}" >&2
+  export RZSH_DIR="${0:A:h:h:h}"
 fi
 
-# Source framework config and functions
-source "${PROJECT_ROOT}/config/config.sh"
+# Source framework config and functions via RZSH_DIR
+source "${RZSH_DIR}/config/config.sh"
 init_config || {
   printf "Error: Failed to initialize framework configuration.\n" >&2
   exit 1
 }
-
-# Ensure git functions are sourced
-if ! typeset -f git_compare_branches >/dev/null; then
-  if [[ -f "${PROJECT_ROOT}/functions/05-git.sh" ]]; then
-    source "${PROJECT_ROOT}/functions/05-git.sh"
-  fi
-fi
 
 git_compare_branches "$@"
 exit $?

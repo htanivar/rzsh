@@ -3,10 +3,13 @@
 A modular, reusable, and beginner-friendly shell scripting framework built on Zsh 5.8+. Designed so both engineers and non-technical users can build automation scripts using plain, readable building blocks.
 
 > [!IMPORTANT]
-> To load all framework functions in any script, you only need two lines at the top: `source ./config/config.sh` and `init_config`. That automatically loads every module in `functions/*.sh`!
+> Set `export RZSH_DIR="/path/to/rzsh"` in your environment (`~/.zshrc`). Then, to load all framework functions in any script anywhere on your system, you only need two lines at the top: `source "${RZSH_DIR}/config/config.sh"` and `init_config`. That automatically loads every module in `functions/*.sh`! (If `RZSH_DIR` is not set, the framework advises you and falls back automatically.)
+>
+> See [**`GLOSSARY.md`**](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/GLOSSARY.md) for a complete quick-reference list of all framework **variables** and **functions**.
 
 ## Table of Contents
 - [Quick Start: Create Your Own Script in 3 Steps](#quick-start-create-your-own-script-in-3-steps)
+- [Framework Glossary (All Variables & Functions)](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/GLOSSARY.md)
 - [Guide: Sending HTTP Calls & JSON Payloads (All 5 Ways)](#guide-sending-http-calls--json-payloads-all-5-ways)
 - [Copy-Paste Recipes for Non-Technical Users](#copy-paste-recipes-for-non-technical-users)
 - [Framework Directory Structure](#framework-directory-structure)
@@ -20,16 +23,23 @@ A modular, reusable, and beginner-friendly shell scripting framework built on Zs
 
 ## Quick Start: Create Your Own Script in 3 Steps
 
-Even if you have never written a shell script before, you can create your own automation script in 3 simple steps:
+Even if you have never written a shell script before, you can create your own automation script anywhere on your machine in 3 simple steps:
+
+### Step 0 (One-Time Setup): Set `RZSH_DIR` in your environment
+Add `RZSH_DIR` to your `~/.zshrc` (or export it in your terminal) so any script can find the framework without hardcoding relative paths:
+
+```zsh
+export RZSH_DIR="/home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh"
+```
 
 ### Step 1: Create a new `.sh` file
-Create a file named `my_script.sh` in the project folder (or inside `scripts/`) and paste this starter template:
+Create a file named `my_script.sh` anywhere and paste this starter template:
 
 ```zsh
 #!/usr/bin/env zsh
 
-# 1. Load the framework (this imports all helper functions automatically)
-source "$(dirname "$0")/config/config.sh"
+# 1. Load the framework via RZSH_DIR (this imports all helper functions automatically)
+source "${RZSH_DIR}/config/config.sh"
 init_config
 init_logging
 
@@ -77,7 +87,7 @@ Create a normal `.json` file (using any text editor or inside your script) and p
 2. **Send `payload.json` in your script:**
    ```zsh
    #!/usr/bin/env zsh
-   source "$(dirname "$0")/config/config.sh"
+   source "${RZSH_DIR}/config/config.sh"
    init_config
 
    # Pass the path to payload.json directly as the 2nd argument!
@@ -161,7 +171,7 @@ response=$(http_post "https://httpbin.org/post" "./payload.json" "${headers}")
 ### Recipe 1: Ask the User Questions & Validate Their Answers
 ```zsh
 #!/usr/bin/env zsh
-source "$(dirname "$0")/config/config.sh"
+source "${RZSH_DIR}/config/config.sh"
 init_config
 
 # Ask for input with a default value if they just press Enter
@@ -187,7 +197,7 @@ fi
 ### Recipe 2: Safely Back Up and Edit a File
 ```zsh
 #!/usr/bin/env zsh
-source "$(dirname "$0")/config/config.sh"
+source "${RZSH_DIR}/config/config.sh"
 init_config
 
 target_file="./logs/app_settings.txt"
@@ -207,7 +217,7 @@ file_append "${target_file}" "updated_by=automation"
 ### Recipe 3: Compare Two Git Branches and Generate a Markdown Report
 ```zsh
 #!/usr/bin/env zsh
-source "$(dirname "$0")/config/config.sh"
+source "${RZSH_DIR}/config/config.sh"
 init_config
 
 # Compares 'main' and your current branch, saving a clean Markdown summary report
@@ -220,6 +230,7 @@ git_compare_branches --output "./logs/branch_diff_report.md" main
 ```
 .
 ├── README.md               # Main documentation & beginner guide
+├── GLOSSARY.md             # Quick-reference catalog of all variables & functions
 ├── help.sh                 # Executable console reference help manual
 ├── test.sh                 # Unit test runner
 ├── config/

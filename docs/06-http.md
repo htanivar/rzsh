@@ -8,11 +8,11 @@
 
 ## Integration Setup
 
-To use the HTTP Client Wrapper module, source the configuration script, which automatically imports all HTTP and JSON functions:
+To use the HTTP Client Wrapper module, source the configuration script via `RZSH_DIR`, which automatically imports all HTTP and JSON functions:
 
 ```zsh
 #!/usr/bin/env zsh
-source ./config/config.sh
+source "${RZSH_DIR}/config/config.sh"
 init_config
 ```
 

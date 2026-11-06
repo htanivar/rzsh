@@ -2,10 +2,14 @@
 # tests/15-compare-branches.test.sh
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
-# Source helpers, config, and target script
+# Source helpers, config, and target script via RZSH_DIR
 my_dir="${${(%):-%x}:A:h}"
-source "${my_dir}/test_helpers.sh"
-source "${my_dir}/../config/config.sh"
+if [[ -z "${RZSH_DIR:-}" ]]; then
+  printf '[WARN] RZSH_DIR is not set. Please set export RZSH_DIR="%s" in your environment (e.g., ~/.zshrc).\n' "${my_dir:h}" >&2
+  export RZSH_DIR="${my_dir:h}"
+fi
+source "${RZSH_DIR}/tests/test_helpers.sh"
+source "${RZSH_DIR}/config/config.sh"
 
 init_config
 
@@ -58,7 +62,7 @@ test_compare_branches_execution() {
   local report_file="${test_git_dir}/report.md"
   
   # Run the comparison script from the test repo directory comparing main with feature
-  zsh "${PROJECT_ROOT}/scripts/04-git/compare_branches.sh" main feature -o "${report_file}" -s
+  zsh "${RZSH_DIR}/scripts/04-git/compare_branches.sh" main feature -o "${report_file}" -s
   local exit_code=$?
   
   assert_equals 0 "${exit_code}" "compare_branches.sh should exit with code 0"
@@ -83,7 +87,7 @@ test_git_compare_branches_function() {
   local report_file="${test_git_dir}/report_func.md"
   
   # Source functions
-  source "${PROJECT_ROOT}/functions/05-git.sh"
+  source "${RZSH_DIR}/functions/05-git.sh"
   
   # Run the comparison function directly comparing main with feature
   git_compare_branches main feature -o "${report_file}" -s
@@ -112,7 +116,7 @@ test_git_compare_branches_ignore() {
   local report_file_all="${test_git_dir}/report_all.md"
   
   # Source functions
-  source "${PROJECT_ROOT}/functions/05-git.sh"
+  source "${RZSH_DIR}/functions/05-git.sh"
   
   # 1. Compare with default ignore configuration (which contains 'vendor' and '.idea')
   git_compare_branches main feature -o "${report_file_ignored}" -s

@@ -8,12 +8,20 @@
 ## Detailed Usage Examples
 
 ### Integration Setup
-To use the Git Operations module, you only need to source the configuration script, which automatically imports it:
+To use the Git Operations module, source the configuration script via `RZSH_DIR`, which automatically imports it:
 
 ```zsh
-source ./config/config.sh
+source "${RZSH_DIR}/config/config.sh"
 init_config
 ```
+
+---
+
+## Module Variables (Keys)
+
+| Variable Key | Description |
+| :--- | :--- |
+| `GIT_IGNORE_FOLDERS` | Comma-separated list of folder names excluded during `git_compare_branches`. |
 
 ---
 
@@ -66,7 +74,7 @@ git_status_message
 ### `git_commit`
 
 * **Signature:** `git_commit <commit_message>`
-* **Description:** Stages all changes and commits them, returning the commit hash.
+* **Description:** Stages all tracked modifications (`git add -u`) and commits them with the given message.
 
 #### Example Code:
 ```zsh
@@ -74,10 +82,22 @@ git_commit "feat: add user auth"
 ```
 
 ---
+### `git_push / git_pull / git_safe_pull`
+
+* **Signature:** `git_push [remote] [branch]` / `git_pull [remote] [branch]` / `git_safe_pull [remote] [branch]`
+* **Description:** Pushes or pulls changes from a remote branch. `git_safe_pull` ensures the working tree is clean before pulling with `--ff-only`.
+
+#### Example Code:
+```zsh
+git_safe_pull "origin" "main"
+git_push "origin" "main"
+```
+
+---
 ### `git_branch_exists`
 
 * **Signature:** `git_branch_exists <branch_name>`
-* **Description:** Checks if the specified branch name exists in local or remote tracking.
+* **Description:** Checks if the specified branch name exists locally or on `origin`.
 
 #### Example Code:
 ```zsh
@@ -85,14 +105,15 @@ git_branch_exists "main"
 ```
 
 ---
-### `git_get_commit_hash`
+### `git_get_commit_hash / git_get_commit_message`
 
-* **Signature:** `git_get_commit_hash [ref]`
-* **Description:** Outputs the full 40-character SHA-1 commit hash of the specified ref (default: HEAD).
+* **Signature:** `git_get_commit_hash [short=0]` / `git_get_commit_message [commit_ref="HEAD"]`
+* **Description:** Outputs the SHA-1 commit hash (full or short) or the commit message for a commit reference.
 
 #### Example Code:
 ```zsh
 local head_sha=$(git_get_commit_hash)
+local head_msg=$(git_get_commit_message "HEAD")
 ```
 
 ---

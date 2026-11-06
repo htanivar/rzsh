@@ -7,11 +7,11 @@ fi
 readonly _GIT_SH_SOURCED=1
 
 # Ensure config & logs are sourced if available
-if [[ -f "${PROJECT_ROOT:-.}/config/config.sh" ]]; then
-  source "${PROJECT_ROOT:-.}/config/config.sh"
+if [[ -f "${RZSH_DIR:-${PROJECT_ROOT:-.}}/config/config.sh" ]]; then
+  source "${RZSH_DIR:-${PROJECT_ROOT:-.}}/config/config.sh"
 fi
-if [[ -f "${PROJECT_ROOT:-.}/functions/01-logs.sh" ]]; then
-  source "${PROJECT_ROOT:-.}/functions/01-logs.sh"
+if [[ -f "${RZSH_DIR:-${PROJECT_ROOT:-.}}/functions/01-logs.sh" ]]; then
+  source "${RZSH_DIR:-${PROJECT_ROOT:-.}}/functions/01-logs.sh"
 fi
 
 # /**
@@ -201,8 +201,8 @@ git_get_commit_message() {
 git_compare_branches() {
   # Ensure navigation functions are sourced
   if ! typeset -f is_inside_git_repo >/dev/null; then
-    if [[ -f "${PROJECT_ROOT:-.}/functions/03-navigation.sh" ]]; then
-      source "${PROJECT_ROOT:-.}/functions/03-navigation.sh"
+    if [[ -f "${RZSH_DIR:-${PROJECT_ROOT:-.}}/functions/03-navigation.sh" ]]; then
+      source "${RZSH_DIR:-${PROJECT_ROOT:-.}}/functions/03-navigation.sh"
     fi
   fi
 

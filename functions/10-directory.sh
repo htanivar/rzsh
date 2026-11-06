@@ -7,12 +7,12 @@ fi
 readonly _DIRECTORY_SH_SOURCED=1
 
 # Ensure config is sourced if available
-if [[ -f "${PROJECT_ROOT:-.}/config/config.sh" ]]; then
-  source "${PROJECT_ROOT:-.}/config/config.sh"
+if [[ -f "${RZSH_DIR:-${PROJECT_ROOT:-.}}/config/config.sh" ]]; then
+  source "${RZSH_DIR:-${PROJECT_ROOT:-.}}/config/config.sh"
 fi
 # Source user-actions for confirm if available
-if [[ -f "${PROJECT_ROOT:-.}/functions/07-user-actions.sh" ]]; then
-  source "${PROJECT_ROOT:-.}/functions/07-user-actions.sh"
+if [[ -f "${RZSH_DIR:-${PROJECT_ROOT:-.}}/functions/07-user-actions.sh" ]]; then
+  source "${RZSH_DIR:-${PROJECT_ROOT:-.}}/functions/07-user-actions.sh"
 fi
 
 # /**

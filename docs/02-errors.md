@@ -8,12 +8,20 @@
 ## Detailed Usage Examples
 
 ### Integration Setup
-To use the Error Handling module, you only need to source the configuration script, which automatically imports it:
+To use the Error Handling module, source the configuration script via `RZSH_DIR`, which automatically imports it:
 
 ```zsh
-source ./config/config.sh
+source "${RZSH_DIR}/config/config.sh"
 init_config
 ```
+
+---
+
+## Module Variables (Keys)
+
+| Variable Key | Description |
+| :--- | :--- |
+| `TEMP_FILES` | Global array (`typeset -g -a`) storing temporary file and directory paths registered via `register_temp_file` for automatic cleanup. |
 
 ---
 

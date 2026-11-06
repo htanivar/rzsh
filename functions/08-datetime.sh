@@ -7,8 +7,8 @@ fi
 readonly _DATETIME_SH_SOURCED=1
 
 # Ensure config is sourced if available
-if [[ -f "${PROJECT_ROOT:-.}/config/config.sh" ]]; then
-  source "${PROJECT_ROOT:-.}/config/config.sh"
+if [[ -f "${RZSH_DIR:-${PROJECT_ROOT:-.}}/config/config.sh" ]]; then
+  source "${RZSH_DIR:-${PROJECT_ROOT:-.}}/config/config.sh"
 fi
 
 # Load Zsh datetime module if available

@@ -8,12 +8,21 @@
 ## Detailed Usage Examples
 
 ### Integration Setup
-To use the Time & Duration module, you only need to source the configuration script, which automatically imports it:
+To use the Time & Duration module, source the configuration script via `RZSH_DIR`, which automatically imports it:
 
 ```zsh
-source ./config/config.sh
+source "${RZSH_DIR}/config/config.sh"
 init_config
 ```
+
+---
+
+## Module Variables (Keys)
+
+| Variable Key | Description |
+| :--- | :--- |
+| `DATE_FORMAT` | Default calendar date format used by `date_now`. |
+| `TIMESTAMP_FORMAT` | Default full timestamp format used by date conversion helpers. |
 
 ---
 
@@ -76,12 +85,23 @@ local seconds=$(date_diff "2026-07-01" "2026-07-08")
 ---
 ### `date_format`
 
-* **Signature:** `date_format <epoch_seconds> <format_string>`
-* **Description:** Formats a Unix timestamp to a custom string representation.
+* **Signature:** `date_format <date_string> <format_string>`
+* **Description:** Reformats a date string into a custom `strftime` representation.
 
 #### Example Code:
 ```zsh
-local formatted=$(date_format 1774849200 "%A, %B %d, %Y")
+local formatted=$(date_format "2026-07-08 12:00:00" "%A, %B %d, %Y")
+```
+
+---
+### `timezone_convert`
+
+* **Signature:** `timezone_convert <date_string> <from_tz> <to_tz> [format]`
+* **Description:** Converts a timestamp from one timezone (e.g., `UTC`) to another (e.g., `America/New_York`).
+
+#### Example Code:
+```zsh
+local ny_time=$(timezone_convert "2026-07-08 12:00:00" "UTC" "America/New_York")
 ```
 
 ---

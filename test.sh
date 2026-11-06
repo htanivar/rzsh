@@ -2,10 +2,12 @@
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Core test runner for the Zsh script framework
-SCRIPT_DIR="${0:A:h}"
-PROJECT_ROOT="${SCRIPT_DIR}"
+if [[ -z "${RZSH_DIR:-}" ]]; then
+  printf '[WARN] RZSH_DIR is not set. Please set export RZSH_DIR="%s" in your environment (e.g., ~/.zshrc).\n' "${0:A:h}" >&2
+  export RZSH_DIR="${0:A:h}"
+fi
 
-source "${PROJECT_ROOT}/config/config.sh"
+source "${RZSH_DIR}/config/config.sh"
 init_config
 
 echo "================================================================================"
@@ -19,7 +21,7 @@ TOTAL_SCRIPTS_FAILED=0
 mkdir -p "${LOG_DIR}"
 
 # Run tests
-for test_script in "${PROJECT_ROOT}/tests"/*.test.sh; do
+for test_script in "${RZSH_DIR}/tests"/*.test.sh; do
   [[ -f "${test_script}" ]] || continue
   
   echo "Running test script: ${test_script:t}"
