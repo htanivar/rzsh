@@ -5,7 +5,7 @@
 source "$(dirname "$0")/../config/config.sh"
 init_config
 
-local my_dir="${PROJECT_ROOT}/logs/temp_demo_dir"
+my_dir="${PROJECT_ROOT}/logs/temp_demo_dir"
 
 # 1. Create directory recursively
 dir_create "${my_dir}"
@@ -19,7 +19,7 @@ echo "Filtered files (*.txt):"
 dir_list "${my_dir}" "*.txt"
 
 # 4. Sync directory to backup location
-local backup_dir="${PROJECT_ROOT}/logs/temp_demo_dir_backup"
+backup_dir="${PROJECT_ROOT}/logs/temp_demo_dir_backup"
 dir_sync "${my_dir}" "${backup_dir}"
 echo "Synchronized directory contents to: ${backup_dir}"
 

@@ -8,6 +8,7 @@ readonly _TEST_HELPERS_SH_SOURCED=1
 
 TESTS_RUN=0
 TESTS_FAILED=0
+TEST_ASSERTION_FAILED=0
 CURRENT_TEST_NAME=""
 
 assert_equals() {
@@ -15,6 +16,7 @@ assert_equals() {
   local actual="$2"
   local msg="${3:-Expected '$expected' to equal '$actual'}"
   if [[ "${expected}" != "${actual}" ]]; then
+    TEST_ASSERTION_FAILED=1
     printf "\n    \e[31mAssertion failed: %s\e[0m\n" "${msg}" >&2
     printf "      Expected: '%s'\n" "${expected}" >&2
     printf "      Actual:   '%s'\n" "${actual}" >&2
@@ -27,6 +29,7 @@ assert_true() {
   local cmd="$1"
   local msg="${2:-Expected command to succeed}"
   if ! eval "${cmd}"; then
+    TEST_ASSERTION_FAILED=1
     printf "\n    \e[31mAssertion failed: %s (command: %s)\e[0m\n" "${msg}" "${cmd}" >&2
     return 1
   fi
@@ -37,6 +40,7 @@ assert_false() {
   local cmd="$1"
   local msg="${2:-Expected command to fail}"
   if eval "${cmd}"; then
+    TEST_ASSERTION_FAILED=1
     printf "\n    \e[31mAssertion failed: %s (command: %s)\e[0m\n" "${msg}" "${cmd}" >&2
     return 1
   fi
@@ -50,7 +54,13 @@ run_test() {
   (( TESTS_RUN++ ))
   # Run in subshell to prevent test failures/environment pollution from spilling over
   (
+    TEST_ASSERTION_FAILED=0
     "${t_func}"
+    local func_ret=$?
+    if (( func_ret != 0 || TEST_ASSERTION_FAILED != 0 )); then
+      exit 1
+    fi
+    exit 0
   )
   local exit_code=$?
   if (( exit_code == 0 )); then

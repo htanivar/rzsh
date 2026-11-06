@@ -31,6 +31,20 @@ test_log_levels() {
   output=$(log_warn "this should be printed" 2>&1)
   assert_true "[[ \"\${output}\" == *\"[WARN]\"* ]]" "WARN log should be printed"
   assert_true "[[ \"\${output}\" == *\"this should be printed\"* ]]" "Log should contain message"
+
+  output=$(log_error "critical error occurred" 2>&1)
+  assert_true "[[ \"\${output}\" == *\"[ERROR]\"* ]]" "ERROR log should be printed"
+  assert_true "[[ \"\${output}\" == *\"critical error occurred\"* ]]" "Error log should contain message"
+
+  # Set log level to DEBUG to verify log_debug and direct log calls
+  export LOG_LEVEL="DEBUG"
+  output=$(log_debug "debug trace message" 2>&1)
+  assert_true "[[ \"\${output}\" == *\"[DEBUG]\"* ]]" "DEBUG log should be printed when LOG_LEVEL=DEBUG"
+  assert_true "[[ \"\${output}\" == *\"debug trace message\"* ]]" "Debug log should contain message"
+
+  output=$(log "INFO" "direct log call" 2>&1)
+  assert_true "[[ \"\${output}\" == *\"[INFO]\"* ]]" "Direct log call should print INFO level"
+  assert_true "[[ \"\${output}\" == *\"direct log call\"* ]]" "Direct log call should contain message"
 }
 
 test_log_steps() {

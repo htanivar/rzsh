@@ -77,6 +77,34 @@ test_file_backup_and_restore() {
   assert_equals "original" "${content}" "Restored content should match original"
   
   rm -f "${test_file}" "${backup}"
+
+  # Also test direct file_backup and file_restore calls
+  file_write "${test_file}" "direct backup content"
+  backup=$(file_backup "${test_file}")
+  assert_true "file_exists '${backup}'" "Direct backup file should exist"
+  file_write "${test_file}" "modified content"
+  file_restore "${backup}"
+  content=$(file_read "${test_file}")
+  assert_equals "direct backup content" "${content}" "file_restore should restore original content"
+  rm -f "${test_file}" "${backup}"
+}
+
+test_file_permissions_owner_group() {
+  file_write "${test_file}" "perm test"
+  file_set_permissions "${test_file}" "640"
+  local perms
+  perms=$(file_get_permissions "${test_file}")
+  assert_equals "640" "${perms}" "Permissions should be 640 after file_set_permissions"
+
+  local owner
+  owner=$(file_get_owner "${test_file}")
+  assert_true "[[ -n \"${owner}\" ]]" "file_get_owner should return non-empty owner name"
+
+  local grp
+  grp=$(file_get_group "${test_file}")
+  assert_true "[[ -n \"${grp}\" ]]" "file_get_group should return non-empty group name"
+
+  rm -f "${test_file}"
 }
 
 test_file_hash() {
@@ -115,6 +143,7 @@ run_test test_file_copy_and_move
 run_test test_file_delete
 run_test test_file_get_size
 run_test test_file_backup_and_restore
+run_test test_file_permissions_owner_group
 run_test test_file_hash
 run_test test_file_head_tail_grep
 

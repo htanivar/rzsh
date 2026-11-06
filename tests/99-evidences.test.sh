@@ -30,6 +30,9 @@ test_evidence_lifecycle() {
   collect_git_evidence
   assert_true "[[ -f \"${CURRENT_EVIDENCE_DIR}/git.json\" ]]" "Git evidence file should be created"
   
+  collect_docker_evidence
+  assert_true "[[ -f \"${CURRENT_EVIDENCE_DIR}/docker.json\" ]]" "Docker evidence file should be created"
+  
   collect_custom_evidence '{"custom_key":"custom_val"}'
   assert_true "[[ -f \"${CURRENT_EVIDENCE_DIR}/custom.json\" ]]" "Custom evidence file should be created"
   
@@ -38,10 +41,19 @@ test_evidence_lifecycle() {
   combined=$(evidence_to_json)
   assert_true "evidence_validate '${combined}'" "Consolidated JSON should be valid"
   
-  # Check MD report
+  # Check MD report via both evidence_to_markdown and generate_evidence_report
   local md
+  md=$(evidence_to_markdown)
+  assert_true "[[ \"${md}\" == *\"# System Evidence Report\"* ]]" "evidence_to_markdown should return markdown header"
   md=$(generate_evidence_report)
   assert_true "[[ -f \"${CURRENT_EVIDENCE_DIR}/report.md\" ]]" "Report.md should be created"
+  
+  # Check evidence_compare
+  local modified_json
+  modified_json=$(echo "${combined}" | jq '.custom.custom_key = "changed_val"')
+  local diff_out
+  diff_out=$(evidence_compare "${combined}" "${modified_json}")
+  assert_true "[[ \"${diff_out}\" == *\"changed_val\"* ]]" "evidence_compare should show JSON difference"
   
   # Check Archive
   local archive

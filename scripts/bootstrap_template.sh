@@ -4,7 +4,7 @@
 
 # Resolve PROJECT_ROOT dynamically by searching upwards for config/config.sh
 if [[ -z "${PROJECT_ROOT:-}" ]]; then
-  local current_dir="${0:A:h}"
+  current_dir="${0:A:h}"
   while [[ "${current_dir}" != "/" ]]; do
     if [[ -f "${current_dir}/config/config.sh" ]]; then
       export PROJECT_ROOT="${current_dir}"
@@ -12,6 +12,7 @@ if [[ -z "${PROJECT_ROOT:-}" ]]; then
     fi
     current_dir="${current_dir:h}"
   done
+  unset current_dir
 fi
 
 # Source framework config and functions
@@ -31,9 +32,6 @@ done
 log_section "Credentials Setup & Evidence Logging"
 
 # 1. Prompt for User Input using framework functions
-local username
-local password
-
 username=$(read_input "Enter Username")
 password=$(read_password "Enter Password")
 
@@ -42,7 +40,6 @@ validate_required "${username}" "Username must not be empty" || error_exit "User
 validate_required "${password}" "Password must not be empty" || error_exit "Password validation failed" 1
 
 # Create a masked password for printing/logging
-local masked_pass
 masked_pass="${(l:${#password}::*:)}" # Zsh string padding to match length with '*'
 
 log_info "Credentials captured successfully (User: ${username}, Password: ${masked_pass})"
@@ -56,8 +53,8 @@ collect_environment_evidence
 collect_script_evidence "$@"
 
 # Generate a custom user input markdown evidence file
-local evidence_file="${CURRENT_EVIDENCE_DIR}/user_credentials_evidence.md"
-local evidence_content="
+evidence_file="${CURRENT_EVIDENCE_DIR}/user_credentials_evidence.md"
+evidence_content="
 # User Input & Execution Evidence
 
 - **Execution Date:** $(date)
