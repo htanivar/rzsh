@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 # examples/15_variables_example.sh
 # Guide to getting, setting, and unsetting global configuration variables and repository locations.
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 source "$(dirname "$0")/../config/config.sh"
 init_config

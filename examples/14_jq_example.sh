@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 # examples/14_jq_example.sh
 # Non-technical guide to JSON query, update, insert, delete, and YAML conversions.
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 source "$(dirname "$0")/../config/config.sh"
 init_config

@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 # examples/08_datetime_example.sh
 # Non-technical guide to calendar dates, conversions, and timestamps.
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 source "$(dirname "$0")/../config/config.sh"
 init_config

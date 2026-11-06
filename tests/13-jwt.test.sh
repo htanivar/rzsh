@@ -1,15 +1,17 @@
+#!/usr/bin/env zsh
 # tests/13-jwt.test.sh
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Source helpers, config, and target script
-local my_dir="${${(%):-%x}:A:h}"
+my_dir="${${(%):-%x}:A:h}"
 source "${my_dir}/test_helpers.sh"
 source "${my_dir}/../config/config.sh"
 source "${my_dir}/../functions/13-jwt.sh"
 
 init_config
 
-local payload='{"sub":"12345","name":"Alice","exp":2000000000,"iss":"test-issuer","aud":"test-audience"}'
-local secret="test-secret"
+payload='{"sub":"12345","name":"Alice","exp":2000000000,"iss":"test-issuer","aud":"test-audience"}'
+secret="test-secret"
 
 test_jwt_generate_and_decode() {
   local token

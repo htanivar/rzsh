@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 # examples/05_git_example.sh
 # Non-technical guide to Git commands and branch states.
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 source "$(dirname "$0")/../config/config.sh"
 init_config

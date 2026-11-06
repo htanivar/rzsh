@@ -1,4 +1,10 @@
+#!/usr/bin/env zsh
 # config/config.sh
+
+# Re-execute under zsh if invoked via bash/sh
+if [ -z "${ZSH_VERSION:-}" ] && [ -f "$0" ]; then
+  exec zsh "$0" "$@"
+fi
 
 # Protect against double sourcing
 if [[ -n "${_CONFIG_SH_SOURCED:-}" ]]; then

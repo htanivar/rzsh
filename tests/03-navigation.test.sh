@@ -1,7 +1,9 @@
+#!/usr/bin/env zsh
 # tests/03-navigation.test.sh
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Source helpers, config, and target script
-local my_dir="${${(%):-%x}:A:h}"
+my_dir="${${(%):-%x}:A:h}"
 source "${my_dir}/test_helpers.sh"
 source "${my_dir}/../config/config.sh"
 source "${my_dir}/../functions/03-navigation.sh"
@@ -63,7 +65,7 @@ test_change_directory() {
   assert_equals "${test_dir}" "${PWD}" "PWD should be updated to target directory"
 
   # Test failure with non-existent directory
-  change_directory "${test_dir}/non_existent_subdir"
+  change_directory "${test_dir}/non_existent_subdir" 2>/dev/null
   assert_equals 1 $? "change_directory should return 1 on failure"
 
   # Test failure with empty path

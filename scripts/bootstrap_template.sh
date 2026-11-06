@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 # scripts/04-git/bootstrap_template.sh
 # Template script to bootstrap framework functions, request credentials, and record evidence.
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Resolve PROJECT_ROOT dynamically by searching upwards for config/config.sh
 if [[ -z "${PROJECT_ROOT:-}" ]]; then

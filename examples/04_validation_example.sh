@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 # examples/04_validation_example.sh
 # Non-technical guide to checking input format validity (emails, urls, dates, numbers).
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 source "$(dirname "$0")/../config/config.sh"
 init_config
