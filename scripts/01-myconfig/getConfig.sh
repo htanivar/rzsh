@@ -3,13 +3,14 @@
 # Retrieves the configuration JSON from the specified URL using framework functions.
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
-# Resolve PROJECT_ROOT if not set
-if [[ -z "${PROJECT_ROOT:-}" ]]; then
-  export PROJECT_ROOT="${0:A:h:h:h}"
+# Advise if RZSH_DIR is not set, and fallback to local framework directory
+if [[ -z "${RZSH_DIR:-}" ]]; then
+  printf '[WARN] RZSH_DIR is not set. Please set export RZSH_DIR="%s" in your environment (e.g., ~/.zshrc).\n' "${0:A:h:h:h}" >&2
+  export RZSH_DIR="${0:A:h:h:h}"
 fi
 
-# Source framework config and functions
-source "${PROJECT_ROOT}/config/config.sh"
+# Source framework config and functions via RZSH_DIR
+source "${RZSH_DIR}/config/config.sh"
 init_config
 
 # Dynamically detect variables set/exported in config.sh
@@ -25,7 +26,7 @@ while IFS= read -r parse_line || [[ -n "${parse_line}" ]]; do
       framework_vars+=("${parse_var}")
     fi
   fi
-done < "${PROJECT_ROOT}/config/config.sh"
+done < "${RZSH_DIR}/config/config.sh"
 framework_vars=( ${(u)framework_vars} )
 
 

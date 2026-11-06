@@ -8,12 +8,20 @@
 ## Detailed Usage Examples
 
 ### Integration Setup
-To use the JSON Web Tokens module, you only need to source the configuration script, which automatically imports it:
+To use the JSON Web Tokens module, source the configuration script via `RZSH_DIR`, which automatically imports it:
 
 ```zsh
-source ./config/config.sh
+source "${RZSH_DIR}/config/config.sh"
 init_config
 ```
+
+---
+
+## Module Variables (Keys)
+
+| Variable Key | Description |
+| :--- | :--- |
+| `JWT_SECRET` | Default HMAC-SHA256 secret key used when no explicit secret parameter is passed to `jwt_generate`, `jwt_verify`, `jwt_valid`, or `jwt_refresh`. |
 
 ---
 
@@ -96,13 +104,14 @@ local renewed=$(jwt_refresh "${token}" "secret")
 ```
 
 ---
-### `jwt_get_audience / jwt_get_issuer`
+### `jwt_parse_claims / jwt_get_audience / jwt_get_issuer`
 
-* **Signature:** `jwt_get_audience <token> / jwt_get_issuer <token>`
-* **Description:** Queries aud or iss claim properties directly.
+* **Signature:** `jwt_parse_claims <token> / jwt_get_audience <token> / jwt_get_issuer <token>`
+* **Description:** Parses all payload claims into `key=value` lines (`jwt_parse_claims`), or queries `aud` / `iss` claim properties directly.
 
 #### Example Code:
 ```zsh
+jwt_parse_claims "${token}"
 local issuer=$(jwt_get_issuer "${token}")
 ```
 

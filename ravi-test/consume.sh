@@ -3,14 +3,16 @@
 # Orchestrates steps 1 to 6 for each config URL found in myconfig.txt.
 # Automatically starts a mock server if none is running on port 1717.
 # Uses framework functions exclusively.
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
-# Resolve PROJECT_ROOT if not set
-if [[ -z "${PROJECT_ROOT:-}" ]]; then
-  export PROJECT_ROOT="${0:A:h:h}"
+# Advise if RZSH_DIR is not set, and fallback to local framework directory
+if [[ -z "${RZSH_DIR:-}" ]]; then
+  printf '[WARN] RZSH_DIR is not set. Please set export RZSH_DIR="%s" in your environment (e.g., ~/.zshrc).\n' "${0:A:h:h}" >&2
+  export RZSH_DIR="${0:A:h:h}"
 fi
 
-# Source framework config and functions
-source "${PROJECT_ROOT}/config/config.sh"
+# Source framework config and functions via RZSH_DIR
+source "${RZSH_DIR}/config/config.sh"
 init_config
 
 CONFIG_FILE="${1:-ravi-test/myconfig.txt}"
@@ -28,12 +30,12 @@ if ! validate_file_exists "${CONFIG_FILE}"; then
 fi
 
 # Ensure scripts have execute permissions using framework utility function
-file_set_permissions "${PROJECT_ROOT}/scripts/01-myconfig/getConfig.sh" "755"
-file_set_permissions "${PROJECT_ROOT}/scripts/02-ssh/getJwt.sh" "755"
-file_set_permissions "${PROJECT_ROOT}/scripts/03-vault/jwtLogin.sh" "755"
-file_set_permissions "${PROJECT_ROOT}/scripts/03-vault/getSecret.sh" "755"
-file_set_permissions "${PROJECT_ROOT}/scripts/03-vault/postSecret.sh" "755"
-file_set_permissions "${PROJECT_ROOT}/scripts/03-vault/postRotate.sh" "755"
+file_set_permissions "${RZSH_DIR}/scripts/01-myconfig/getConfig.sh" "755"
+file_set_permissions "${RZSH_DIR}/scripts/02-ssh/getJwt.sh" "755"
+file_set_permissions "${RZSH_DIR}/scripts/03-vault/jwtLogin.sh" "755"
+file_set_permissions "${RZSH_DIR}/scripts/03-vault/getSecret.sh" "755"
+file_set_permissions "${RZSH_DIR}/scripts/03-vault/postSecret.sh" "755"
+file_set_permissions "${RZSH_DIR}/scripts/03-vault/postRotate.sh" "755"
 
 log_info "=========================================================="
 log_info "Starting test suite orchestration..."
@@ -104,7 +106,7 @@ for URL in "${urls[@]}"; do
 
   # Step 1: Get Config
   log_info "  1. Fetching config..."
-  if CONFIG_PAYLOAD=$("${PROJECT_ROOT}/scripts/01-myconfig/getConfig.sh" "${URL}"); then
+  if CONFIG_PAYLOAD=$("${RZSH_DIR}/scripts/01-myconfig/getConfig.sh" "${URL}"); then
     ROLE_NAME=$(json_get_value "${CONFIG_PAYLOAD}" ".ROLE_NAME")
     AUTH_URL=$(json_get_value "${CONFIG_PAYLOAD}" ".AUTH_URL")
   else
@@ -115,7 +117,7 @@ for URL in "${urls[@]}"; do
   # Step 2: Get JWT Token
   if [[ "${STEP_STATUS}" == "SUCCESS" ]]; then
     log_info "  2. Getting machine identity JWT..."
-    if ! JWT=$("${PROJECT_ROOT}/scripts/02-ssh/getJwt.sh" 2>/dev/null); then
+    if ! JWT=$("${RZSH_DIR}/scripts/02-ssh/getJwt.sh" 2>/dev/null); then
       STEP_STATUS="FAILED"
       FAILURE_REASON="Step 2 (getJwt.sh) failed. Check logs."
     fi
@@ -124,7 +126,7 @@ for URL in "${urls[@]}"; do
   # Step 3: Vault Login
   if [[ "${STEP_STATUS}" == "SUCCESS" ]]; then
     log_info "  3. Executing Vault JWT login..."
-    if LOGIN_RESP=$("${PROJECT_ROOT}/scripts/03-vault/jwtLogin.sh" "${AUTH_URL}" "${ROLE_NAME}" "${JWT}"); then
+    if LOGIN_RESP=$("${RZSH_DIR}/scripts/03-vault/jwtLogin.sh" "${AUTH_URL}" "${ROLE_NAME}" "${JWT}"); then
       CLIENT_TOKEN=$(json_get_value "${LOGIN_RESP}" ".auth.client_token // .auth.data.client_token // empty")
       
       # Extract Vault address from AUTH_URL using str_replace (pre-defined function)
@@ -141,7 +143,7 @@ for URL in "${urls[@]}"; do
     SECRET_PATH="secret/data/${ROLE_NAME}"
 
     log_info "  6a. Issuing GET call for secret..."
-    if ! GET_SECRET_RESP=$("${PROJECT_ROOT}/scripts/03-vault/getSecret.sh" "${VAULT_ADDR}" "${CLIENT_TOKEN}" "${SECRET_PATH}"); then
+    if ! GET_SECRET_RESP=$("${RZSH_DIR}/scripts/03-vault/getSecret.sh" "${VAULT_ADDR}" "${CLIENT_TOKEN}" "${SECRET_PATH}"); then
       STEP_STATUS="FAILED"
       FAILURE_REASON="Step 6a (getSecret.sh) failed. Check logs."
     fi
@@ -153,7 +155,7 @@ for URL in "${urls[@]}"; do
     post_payload=$(json_set_value "${post_payload}" ".data.role_assigned" "${ROLE_NAME}")
     post_payload=$(json_set_value "${post_payload}" ".data.updated_by" "test-script")
 
-    if ! POST_SECRET_RESP=$("${PROJECT_ROOT}/scripts/03-vault/postSecret.sh" "${VAULT_ADDR}" "${CLIENT_TOKEN}" "${SECRET_PATH}" "${post_payload}"); then
+    if ! POST_SECRET_RESP=$("${RZSH_DIR}/scripts/03-vault/postSecret.sh" "${VAULT_ADDR}" "${CLIENT_TOKEN}" "${SECRET_PATH}" "${post_payload}"); then
       STEP_STATUS="FAILED"
       FAILURE_REASON="Step 6b (postSecret.sh) failed. Check logs."
     fi
@@ -161,7 +163,7 @@ for URL in "${urls[@]}"; do
 
   if [[ "${STEP_STATUS}" == "SUCCESS" ]]; then
     log_info "  6c. Issuing POST call to rotate token..."
-    if ! ROTATE_RESP=$("${PROJECT_ROOT}/scripts/03-vault/postRotate.sh" "${VAULT_ADDR}" "${CLIENT_TOKEN}"); then
+    if ! ROTATE_RESP=$("${RZSH_DIR}/scripts/03-vault/postRotate.sh" "${VAULT_ADDR}" "${CLIENT_TOKEN}"); then
       STEP_STATUS="FAILED"
       FAILURE_REASON="Step 6c (postRotate.sh) failed. Check logs."
     fi

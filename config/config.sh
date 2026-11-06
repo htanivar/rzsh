@@ -21,8 +21,14 @@ setopt TYPESET_SILENT 2>/dev/null
 _CFG_DIR="${${(%):-%x}:A:h}"
 [[ -z "${_CFG_DIR}" ]] && _CFG_DIR="${0:A:h}"
 
-# Default PROJECT_ROOT is the parent of config dir
-: "${PROJECT_ROOT:="${_CFG_DIR:h}"}"
+# Advise if RZSH_DIR is not set, and default to the parent of config dir
+if [[ -z "${RZSH_DIR:-}" ]]; then
+  printf '[WARN] RZSH_DIR is not set. Please set export RZSH_DIR="%s" in your environment (e.g., ~/.zshrc).\n' "${_CFG_DIR:h}" >&2
+  export RZSH_DIR="${_CFG_DIR:h}"
+fi
+
+# Default PROJECT_ROOT is RZSH_DIR (parent of config dir)
+: "${PROJECT_ROOT:="${RZSH_DIR}"}"
 
 # Global Variables (declared with defaults, allowing override)
 LOG_DIR="${LOG_DIR:-}"
@@ -54,7 +60,15 @@ REPO_LOCATIONS=(
 #  *   init_config
 #  */
 init_config() {
-  # Ensure PROJECT_ROOT is absolute and exists
+  # Ensure RZSH_DIR and PROJECT_ROOT are set and exist
+  RZSH_DIR="${RZSH_DIR:-${PROJECT_ROOT}}"
+  PROJECT_ROOT="${PROJECT_ROOT:-${RZSH_DIR}}"
+
+  if [[ ! -d "${RZSH_DIR}" ]]; then
+    printf 'Error: RZSH_DIR (%s) does not exist.\n' "${RZSH_DIR}" >&2
+    return 1
+  fi
+
   if [[ ! -d "${PROJECT_ROOT}" ]]; then
     printf 'Error: PROJECT_ROOT (%s) does not exist.\n' "${PROJECT_ROOT}" >&2
     return 1
@@ -74,6 +88,7 @@ init_config() {
   GIT_IGNORE_FOLDERS="${GIT_IGNORE_FOLDERS:-vendor,.idea,.git}"
 
   # Export variables to make them available to subshells
+  export RZSH_DIR
   export PROJECT_ROOT
   export LOG_LEVEL
   export LOG_DIR
@@ -82,6 +97,7 @@ init_config() {
   export DATE_FORMAT
   export JWT_SECRET
   export EVIDENCE_DIR
+  export RAVI_DIR
   export GIT_IGNORE_FOLDERS
 
   return 0
@@ -89,7 +105,7 @@ init_config() {
 
 # Automatically source all function modules in numerical order
 () {
-  local func_dir="${PROJECT_ROOT}/functions"
+  local func_dir="${RZSH_DIR}/functions"
   if [[ -d "${func_dir}" ]]; then
     local f
     for f in "${func_dir}"/*.sh(nN); do

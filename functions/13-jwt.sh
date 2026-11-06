@@ -7,11 +7,11 @@ fi
 readonly _JWT_SH_SOURCED=1
 
 # Ensure config & json are sourced if available
-if [[ -f "${PROJECT_ROOT:-.}/config/config.sh" ]]; then
-  source "${PROJECT_ROOT:-.}/config/config.sh"
+if [[ -f "${RZSH_DIR:-${PROJECT_ROOT:-.}}/config/config.sh" ]]; then
+  source "${RZSH_DIR:-${PROJECT_ROOT:-.}}/config/config.sh"
 fi
-if [[ -f "${PROJECT_ROOT:-.}/functions/14-jq.sh" ]]; then
-  source "${PROJECT_ROOT:-.}/functions/14-jq.sh"
+if [[ -f "${RZSH_DIR:-${PROJECT_ROOT:-.}}/functions/14-jq.sh" ]]; then
+  source "${RZSH_DIR:-${PROJECT_ROOT:-.}}/functions/14-jq.sh"
 fi
 
 # Load datetime module

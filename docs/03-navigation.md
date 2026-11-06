@@ -8,21 +8,30 @@
 ## Detailed Usage Examples
 
 ### Integration Setup
-To use the File Navigation & Git Checks module, you only need to source the configuration script, which automatically imports it:
+To use the File Navigation & Git Checks module, source the configuration script via `RZSH_DIR`, which automatically imports it:
 
 ```zsh
-source ./config/config.sh
+source "${RZSH_DIR}/config/config.sh"
 init_config
 ```
 
 ---
 
+## Module Variables (Keys)
+
+| Variable Key | Description |
+| :--- | :--- |
+| `RZSH_DIR` | Root directory of the `rzsh` framework. |
+| `PROJECT_ROOT` | Active project root directory used by `to_project_root` and `get_project_root`. |
+
+---
+
 ## Function Signatures & Descriptions
 
-### `get_current_directory`
+### `current_directory` / `get_current_directory`
 
-* **Signature:** `get_current_directory`
-* **Description:** Outputs the absolute directory of the currently executing/sourced script.
+* **Signature:** `current_directory` / `get_current_directory`
+* **Description:** Outputs the absolute path of the current working directory.
 
 #### Example Code:
 ```zsh
@@ -32,8 +41,8 @@ local current_dir=$(get_current_directory)
 ---
 ### `dir_up`
 
-* **Signature:** `dir_up <levels>`
-* **Description:** Outputs the directory path that is N levels above the current script location.
+* **Signature:** `dir_up [levels=1]`
+* **Description:** Outputs the directory path that is N levels above the current working directory.
 
 #### Example Code:
 ```zsh
@@ -41,14 +50,25 @@ local grandparent_dir=$(dir_up 2)
 ```
 
 ---
-### `get_absolute_path`
+### `absolute_path` / `get_absolute_path`
 
-* **Signature:** `get_absolute_path <relative_path>`
-* **Description:** Resolves a relative path to its absolute location on the disk, even if the target does not exist.
+* **Signature:** `absolute_path [target_path="."]` / `get_absolute_path [target_path="."]`
+* **Description:** Resolves a relative path or symlink to its canonical absolute location on disk.
 
 #### Example Code:
 ```zsh
 local abs_path=$(get_absolute_path "../data/config.json")
+```
+
+---
+### `to_project_root`
+
+* **Signature:** `to_project_root`
+* **Description:** Changes the current working directory (`cd`) to `PROJECT_ROOT`.
+
+#### Example Code:
+```zsh
+to_project_root
 ```
 
 ---

@@ -3,32 +3,18 @@
 # Template script to bootstrap framework functions, request credentials, and record evidence.
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
-# Resolve PROJECT_ROOT dynamically by searching upwards for config/config.sh
-if [[ -z "${PROJECT_ROOT:-}" ]]; then
-  current_dir="${0:A:h}"
-  while [[ "${current_dir}" != "/" ]]; do
-    if [[ -f "${current_dir}/config/config.sh" ]]; then
-      export PROJECT_ROOT="${current_dir}"
-      break
-    fi
-    current_dir="${current_dir:h}"
-  done
-  unset current_dir
+# Advise if RZSH_DIR is not set, and fallback to local framework directory
+if [[ -z "${RZSH_DIR:-}" ]]; then
+  printf '[WARN] RZSH_DIR is not set. Please set export RZSH_DIR="%s" in your environment (e.g., ~/.zshrc).\n' "${0:A:h:h}" >&2
+  export RZSH_DIR="${0:A:h:h}"
 fi
 
-# Source framework config and functions
-source "${PROJECT_ROOT}/config/config.sh"
+# Source framework config and functions via RZSH_DIR
+source "${RZSH_DIR}/config/config.sh"
 init_config || {
   printf "Error: Failed to initialize framework configuration.\n" >&2
   exit 1
 }
-
-# Ensure required modules are sourced (validation, user-actions, errors, evidences)
-for mod in 02-errors 04-validation 07-user-actions 99-evidences; do
-  if [[ -f "${PROJECT_ROOT}/functions/${mod}.sh" ]]; then
-    source "${PROJECT_ROOT}/functions/${mod}.sh"
-  fi
-done
 
 log_section "Credentials Setup & Evidence Logging"
 

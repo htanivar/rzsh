@@ -3,7 +3,12 @@
 # Non-technical guide to Git commands and branch states.
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
-source "$(dirname "$0")/../config/config.sh"
+if [[ -z "${RZSH_DIR:-}" ]]; then
+  printf '[WARN] RZSH_DIR is not set. Please set export RZSH_DIR="%s" in your environment (e.g., ~/.zshrc).\n' "${0:A:h:h}" >&2
+  export RZSH_DIR="${0:A:h:h}"
+fi
+
+source "${RZSH_DIR}/config/config.sh"
 init_config
 
 # 1. Get current branch

@@ -8,10 +8,10 @@
 ## Detailed Usage Examples
 
 ### Integration Setup
-To use the Directory Management module, you only need to source the configuration script, which automatically imports it:
+To use the Directory Management module, source the configuration script via `RZSH_DIR`, which automatically imports it:
 
 ```zsh
-source ./config/config.sh
+source "${RZSH_DIR}/config/config.sh"
 init_config
 ```
 
@@ -52,14 +52,16 @@ dir_delete "/tmp/workspace" "--force"
 ```
 
 ---
-### `dir_list`
+### `dir_list / dir_size / dir_tree`
 
-* **Signature:** `dir_list <dir> [pattern]`
-* **Description:** Lists items directly in a directory matching glob pattern (forces Zsh glob evaluation).
+* **Signature:** `dir_list <dir> [pattern] / dir_size <dir> / dir_tree <dir> [max_depth]`
+* **Description:** Lists items directly in a directory matching a glob pattern, outputs human-readable disk usage (`dir_size`), or renders an indented visual directory tree (`dir_tree`).
 
 #### Example Code:
 ```zsh
 local logs=$(dir_list "/var/log" "*.log")
+local usage=$(dir_size "/var/log")
+dir_tree "./src" 2
 ```
 
 ---

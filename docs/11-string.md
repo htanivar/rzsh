@@ -8,10 +8,10 @@
 ## Detailed Usage Examples
 
 ### Integration Setup
-To use the String Formatting module, you only need to source the configuration script, which automatically imports it:
+To use the String Formatting module, source the configuration script via `RZSH_DIR`, which automatically imports it:
 
 ```zsh
-source ./config/config.sh
+source "${RZSH_DIR}/config/config.sh"
 init_config
 ```
 
@@ -74,14 +74,15 @@ local array=($(str_split "a,b,c" ","))
 ```
 
 ---
-### `str_to_lower / str_to_upper`
+### `str_to_lower / str_to_upper / str_capitalize`
 
-* **Signature:** `str_to_lower <string> / str_to_upper <string>`
-* **Description:** Changes character casing using Zsh parameter modifiers.
+* **Signature:** `str_to_lower <string> / str_to_upper <string> / str_capitalize <string>`
+* **Description:** Changes character casing (lowercase, uppercase, or capitalized first letter) using Zsh parameter modifiers.
 
 #### Example Code:
 ```zsh
 local lower=$(str_to_lower "UPPER")
+local cap=$(str_capitalize "hello world")
 ```
 
 ---
@@ -129,13 +130,14 @@ local slug=$(str_slugify "Zsh Framework 1.0!")
 ```
 
 ---
-### `str_random_alphanumeric / str_uuid`
+### `str_random / str_uuid`
 
-* **Signature:** `str_random_alphanumeric <length> / str_uuid`
+* **Signature:** `str_random [length=16] / str_uuid`
 * **Description:** Generates random alphanumeric sequences or RFC 4122 v4 UUIDs.
 
 #### Example Code:
 ```zsh
+local rnd=$(str_random 12)
 local uid=$(str_uuid)
 ```
 

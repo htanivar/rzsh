@@ -8,12 +8,25 @@
 ## Detailed Usage Examples
 
 ### Integration Setup
-To use the Logging Utility module, you only need to source the configuration script, which automatically imports it:
+To use the Logging Utility module, source the configuration script via `RZSH_DIR`, which automatically imports it:
 
 ```zsh
-source ./config/config.sh
+source "${RZSH_DIR}/config/config.sh"
 init_config
 ```
+
+---
+
+## Module Variables (Keys)
+
+| Variable Key | Description |
+| :--- | :--- |
+| `LOG_DIR` | Directory where log files are written (configured by `init_config`). |
+| `LOG_LEVEL` | Minimum severity level to output (`DEBUG`, `INFO`, `WARN`, `ERROR`). |
+| `SCRIPT_NAME` | Script basename used as prefix for the log filename. |
+| `TIMESTAMP_FORMAT` | Timestamp format used on each log line. |
+| `CURRENT_LOG_FILE` | Full path to the active log file set by `init_logging`. |
+| `LOG_STEPS_COUNT` | Step counter incremented by `log_steps`. |
 
 ---
 
@@ -22,11 +35,22 @@ init_config
 ### `init_logging`
 
 * **Signature:** `init_logging`
-* **Description:** Ensures the log directory exists and prepares log files.
+* **Description:** Ensures `LOG_DIR` exists, initializes `CURRENT_LOG_FILE`, and rotates older log files (keeping the 5 most recent).
 
 #### Example Code:
 ```zsh
 init_logging
+```
+
+---
+### `log`
+
+* **Signature:** `log <level> <message>`
+* **Description:** Core logging function that formats a message with a timestamp and severity level (`INFO`, `WARN`, `ERROR`, `DEBUG`), prints it to the terminal, and appends it to `CURRENT_LOG_FILE`.
+
+#### Example Code:
+```zsh
+log "INFO" "Custom log entry"
 ```
 
 ---
