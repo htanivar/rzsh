@@ -128,7 +128,7 @@ _duration_to_seconds() {
 #  */
 date_add() {
   local dt="$1"
-  local dur="$2"
+  local dur="${*:2}"
   local epoch
   epoch=$(parse_date "${dt}") || return 1
   local secs
@@ -149,7 +149,7 @@ date_add() {
 #  */
 date_subtract() {
   local dt="$1"
-  local dur="$2"
+  local dur="${*:2}"
   local epoch
   epoch=$(parse_date "${dt}") || return 1
   local secs

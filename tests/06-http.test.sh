@@ -15,10 +15,14 @@ curl() {
   local is_put=0
   local is_patch=0
   local is_delete=0
+  local out_file=""
+  local prev_arg=""
   local url=""
   
   for arg in "$@"; do
-    if [[ "${arg}" == "POST" ]]; then
+    if [[ "${prev_arg}" == "-o" ]]; then
+      out_file="${arg}"
+    elif [[ "${arg}" == "POST" ]]; then
       is_post=1
     elif [[ "${arg}" == "PUT" ]]; then
       is_put=1
@@ -29,9 +33,13 @@ curl() {
     elif [[ "${arg}" =~ ^https?:// ]]; then
       url="${arg}"
     fi
+    prev_arg="${arg}"
   done
 
-  if (( is_post == 1 )); then
+  if [[ -n "${out_file}" ]]; then
+    printf "downloaded content from %s" "${url}" > "${out_file}"
+    return 0
+  elif (( is_post == 1 )); then
     printf '{"success":true,"method":"POST"}\n201'
   elif (( is_put == 1 )); then
     printf '{"success":true,"method":"PUT"}\n200'
@@ -124,6 +132,17 @@ test_http_get_body() {
   assert_equals '{"status":"ok"}' "${body}" "http_get_body should strip the status code last line"
 }
 
+test_download_file() {
+  local dest="${PROJECT_ROOT}/logs/test_downloaded.txt"
+  rm -f "${dest}"
+  assert_true "download_file 'https://example.com/file.txt' '${dest}'" "download_file should succeed"
+  assert_true "[[ -f '${dest}' ]]" "Downloaded destination file should exist"
+  local content
+  content=$(cat "${dest}")
+  assert_equals "downloaded content from https://example.com/file.txt" "${content}" "Downloaded file content should match"
+  rm -f "${dest}"
+}
+
 run_test test_http_get
 run_test test_http_post
 run_test test_http_put
@@ -133,5 +152,6 @@ run_test test_http_get_body
 run_test test_is_json_response
 run_test test_extract_json_field
 run_test test_http_get_with_retry
+run_test test_download_file
 
 exit $(( TESTS_FAILED > 0 ? 1 : 0 ))

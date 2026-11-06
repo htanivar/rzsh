@@ -6,6 +6,9 @@ if [[ -n "${_CONFIG_SH_SOURCED:-}" ]]; then
 fi
 readonly _CONFIG_SH_SOURCED=1
 
+# Prevent repeated local/typeset declarations from printing variable values to stdout
+setopt TYPESET_SILENT 2>/dev/null
+
 # Get the directory of the current file in Zsh.
 # ${(%):-%x} is the standard Zsh way to get the path of the current sourced script.
 # Fallback to ${0} if not available.

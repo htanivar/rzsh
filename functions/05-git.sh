@@ -333,13 +333,12 @@ EOF
   local -a ignore_folders
   ignore_folders=( ${(s:,:)GIT_IGNORE_FOLDERS} )
 
-  local line diff_status file1 file2
+  local line diff_status file1 file2 should_ignore folder
   for line in "${diff_lines[@]}"; do
     [[ -z "${line}" ]] && continue
     IFS=$'\t' read -r diff_status file1 file2 <<< "${line}"
     
-    local should_ignore=0
-    local folder
+    should_ignore=0
     for folder in "${ignore_folders[@]}"; do
       [[ -z "${folder}" ]] && continue
       if [[ "${file1}" == "${folder}" ]] || [[ "${file1}" == "${folder}"/* ]] || [[ "${file1}" == */"${folder}"/* ]]; then
@@ -476,9 +475,9 @@ EOF
   all_changed_files=( "${added_files[@]}" "${modified_files[@]}" "${other_files[@]}" )
 
   # For renames, extract the target (new) filename
-  local rf
+  local rf new_part
   for rf in "${renamed_files[@]}"; do
-    local new_part="${rf##* -> }"
+    new_part="${rf##* -> }"
     all_changed_files+=("${new_part}")
   done
 
@@ -488,12 +487,13 @@ EOF
   # Unique elements
   all_changed_files=( ${(u)all_changed_files} )
 
-  local f_path
+  local f_path f_status diff_content status_color diff_line
+  local -a diff_lines_arr
   for f_path in "${all_changed_files[@]}"; do
     [[ -z "${f_path}" ]] && continue
     
     # Determine status for this file
-    local f_status="Modified"
+    f_status="Modified"
     if [[ ${added_files[(Ie)${f_path}]} -ne 0 ]]; then
       f_status="Added"
     elif [[ ${deleted_files[(Ie)${f_path}]} -ne 0 ]]; then
@@ -505,7 +505,7 @@ EOF
     fi
     
     # Get git diff for this file
-    local diff_content
+    diff_content=""
     if [[ "${f_status}" == "Deleted" ]]; then
       diff_content="[File deleted]"
     else
@@ -530,7 +530,7 @@ EOF
     fi
     
     # Terminal representation
-    local status_color="${yellow}"
+    status_color="${yellow}"
     [[ "${f_status}" == "Added" ]] && status_color="${green}"
     [[ "${f_status}" == "Deleted" ]] && status_color="${red}"
     [[ "${f_status}" == "Renamed" ]] && status_color="${cyan}"
@@ -542,8 +542,6 @@ EOF
     if [[ "${diff_content}" == "["* ]]; then
       terminal_output+="  ${magenta}${diff_content}${reset}\n\n"
     else
-      local diff_line
-      local -a diff_lines_arr
       diff_lines_arr=( ${(f)diff_content} )
       for diff_line in "${diff_lines_arr[@]}"; do
         if [[ "${diff_line}" =~ "^\\+\\+\\+" ]] || [[ "${diff_line}" =~ "^---" ]]; then

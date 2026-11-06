@@ -91,12 +91,29 @@ test_dir_watch() {
   assert_equals "1" "${changed}" "Callback should be triggered when file is added"
 }
 
+test_dir_size_tree_and_delete() {
+  dir_create "${test_root_dir}/sub"
+  echo "hello" > "${test_root_dir}/sub/item.txt"
+
+  local sz
+  sz=$(dir_size "${test_root_dir}")
+  assert_true "[[ \"${sz}\" =~ ^[0-9]+$ && ${sz} -gt 0 ]]" "dir_size should return positive byte count"
+
+  local tree_out
+  tree_out=$(dir_tree "${test_root_dir}")
+  assert_true "[[ \"${tree_out}\" == *\"item.txt\"* ]]" "dir_tree output should include item.txt"
+
+  dir_delete "${test_root_dir}" "--force"
+  assert_false "dir_exists '${test_root_dir}'" "dir_delete should remove directory"
+}
+
 run_test test_dir_exists_and_create
 run_test test_dir_is_empty_and_clean
 run_test test_dir_copy_and_move
 run_test test_dir_list
 run_test test_dir_sync
 run_test test_dir_watch
+run_test test_dir_size_tree_and_delete
 
 # Cleanup
 rm -rf "${test_root_dir}"

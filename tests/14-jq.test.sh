@@ -13,6 +13,9 @@ local json='{"user":{"id":42,"name":"Alice","roles":["admin","user"]}}'
 test_json_parse_and_validate() {
   assert_true "json_validate '${json}'" "Valid JSON should pass validation"
   assert_false "json_validate 'invalid'" "Invalid JSON should fail validation"
+  local parsed
+  parsed=$(json_parse '{"a":1}')
+  assert_true '[[ "${parsed}" == *"\"a\": 1"* ]]' "json_parse should output formatted JSON"
 }
 
 test_json_get_value() {
@@ -84,6 +87,14 @@ test_json_beautify_and_compact() {
   local flat
   flat=$(json_compact $'{\n  "a": 1\n}')
   assert_equals '{"a":1}' "${flat}" "Should compact JSON"
+
+  local pretty
+  pretty=$(json_beautify '{"a":1}')
+  assert_true '[[ "${pretty}" == *"\"a\": 1"* ]]' "json_beautify should pretty-print JSON"
+
+  local escaped
+  escaped=$(json_escape '{"a":1}')
+  assert_equals '"{\"a\":1}"' "${escaped}" "json_escape should escape quotes"
 }
 
 run_test test_json_parse_and_validate

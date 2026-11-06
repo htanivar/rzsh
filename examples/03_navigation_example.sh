@@ -6,20 +6,20 @@ source "$(dirname "$0")/../config/config.sh"
 init_config
 
 # 1. Get the directory containing this script
-local current_dir=$(get_current_directory)
+current_dir=$(get_current_directory)
 echo "This script is located in: ${current_dir}"
 
 # 2. Go two folders up
-local parent_dir=$(dir_up 2)
+parent_dir=$(dir_up 2)
 echo "Two folders above this script is: ${parent_dir}"
 
 # 3. Get canonical absolute path
-local raw_path="../functions/01-logs.sh"
-local clean_path=$(get_absolute_path "${raw_path}")
+raw_path="../functions/01-logs.sh"
+clean_path=$(get_absolute_path "${raw_path}")
 echo "Relative path '${raw_path}' resolves to absolute: ${clean_path}"
 
 # 4. Locate project root
-local root=$(get_project_root)
+root=$(get_project_root)
 echo "Framework project root is: ${root}"
 
 # 5. Check if inside Git
@@ -32,7 +32,7 @@ ensure_directory_exists "${PROJECT_ROOT}/logs/backup_folder"
 echo "Verified that logs/backup_folder directory exists."
 
 # 7. Change directory
-local target_dir="${PROJECT_ROOT}/logs/backup_folder"
+target_dir="${PROJECT_ROOT}/logs/backup_folder"
 if change_directory "${target_dir}"; then
   echo "Successfully changed directory to: ${PWD}"
   # Change back to project root
@@ -40,4 +40,5 @@ if change_directory "${target_dir}"; then
 else
   echo "Failed to change directory."
 fi
+rm -rf "${PROJECT_ROOT}/logs/backup_folder"
 

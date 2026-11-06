@@ -6,7 +6,7 @@ source "$(dirname "$0")/../config/config.sh"
 init_config
 
 # 1. Get current branch
-local branch=$(git_get_current_branch)
+branch=$(git_get_current_branch)
 echo "Active Git branch: ${branch}"
 
 # 2. Check if clean
@@ -21,11 +21,11 @@ echo "Git Status Summary:"
 git_status_message
 
 # 4. Get active commit hash
-local hash=$(git_get_commit_hash)
+hash=$(git_get_commit_hash)
 echo "Active Commit Hash (SHA-1): ${hash}"
 
 # 5. Compare current branch with another branch (e.g. main)
-local target_cmp="main"
+target_cmp="main"
 if [[ "${branch}" == "main" ]] && git_branch_exists "master"; then
   target_cmp="master"
 fi

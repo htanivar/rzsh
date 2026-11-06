@@ -162,17 +162,13 @@ collect_file_evidence() {
   
   local -a collected
   collected=()
-  local f
+  local f size hash content file_entry
   for f in "${files_arr[@]}"; do
     if [[ -f "${f}" ]]; then
-      local size
       size=$(stat -c %s "${f}" 2>/dev/null || stat -f %z "${f}" 2>/dev/null)
-      local hash
       hash=$(sha256sum "${f}" 2>/dev/null | cut -d' ' -f1 || echo "unknown")
-      local content
       content=$(cat "${f}" | head -n 50)
       
-      local file_entry
       file_entry=$(jq -n \
         --arg path "${f:A}" \
         --arg size "${size}" \
@@ -206,8 +202,8 @@ collect_docker_evidence() {
   local images="Docker not available"
   local containers="Docker not available"
   if command -v docker &>/dev/null; then
-    images=$(docker images --format "{{.Repository}}:{{.Tag}}" | head -n 30)
-    containers=$(docker ps --format "{{.Names}} ({{.Image}})" | head -n 30)
+    images=$(docker images --format "{{.Repository}}:{{.Tag}}" 2>/dev/null | head -n 30)
+    containers=$(docker ps --format "{{.Names}} ({{.Image}})" 2>/dev/null | head -n 30)
   fi
   
   local docker_json
@@ -303,11 +299,9 @@ evidence_to_json() {
   
   local length
   length=$(jq '.files | length' "${meta_file}")
-  local i
+  local i name type
   for (( i = 0; i < length; i++ )); do
-    local name
     name=$(jq -r ".files[${i}].name" "${meta_file}")
-    local type
     type=$(jq -r ".files[${i}].type" "${meta_file}")
     if [[ -f "${CURRENT_EVIDENCE_DIR}/${name}" ]]; then
       consolidated=$(echo "${consolidated}" | jq --arg type "${type}" --argjson data "$(cat "${CURRENT_EVIDENCE_DIR}/${name}")" '. + {($type): $data}')

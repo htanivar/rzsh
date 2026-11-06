@@ -142,10 +142,10 @@ config_unset_repo_location() {
 #  *   config_list_repos
 #  */
 config_list_repos() {
-  local repo_name
+  local repo_name ref location
   for repo_name in "${REPO_NAMES[@]}"; do
-    local ref="REPO_LOCATIONS[${repo_name}]"
-    local location="${(P)ref}"
+    ref="REPO_LOCATIONS[${repo_name}]"
+    location="${(P)ref}"
     printf "%s: %s\n" "${repo_name}" "${location:-(not set)}"
   done
   return 0
