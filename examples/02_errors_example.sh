@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 # examples/02_errors_example.sh
 # Non-technical guide to error trapping and temporary file cleanup.
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 source "$(dirname "$0")/../config/config.sh"
 init_config

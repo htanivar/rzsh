@@ -1,7 +1,9 @@
+#!/usr/bin/env zsh
 # tests/12-ssh.test.sh
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Source helpers, config, and target script
-local my_dir="${${(%):-%x}:A:h}"
+my_dir="${${(%):-%x}:A:h}"
 source "${my_dir}/test_helpers.sh"
 source "${my_dir}/../config/config.sh"
 source "${my_dir}/../functions/12-ssh.sh"
@@ -9,10 +11,10 @@ source "${my_dir}/../functions/12-ssh.sh"
 init_config
 
 # Files for persistent mock verification across subshells
-local ssh_args_file="${PROJECT_ROOT}/logs/mock_ssh_args.txt"
-local scp_args_file="${PROJECT_ROOT}/logs/mock_scp_args.txt"
-local sshpass_args_file="${PROJECT_ROOT}/logs/mock_sshpass_args.txt"
-local MOCK_SSHPASS_EXISTS=1
+ssh_args_file="${PROJECT_ROOT}/logs/mock_ssh_args.txt"
+scp_args_file="${PROJECT_ROOT}/logs/mock_scp_args.txt"
+sshpass_args_file="${PROJECT_ROOT}/logs/mock_sshpass_args.txt"
+MOCK_SSHPASS_EXISTS=1
 
 # Clean up mock files before testing
 rm -f "${ssh_args_file}" "${scp_args_file}" "${sshpass_args_file}"

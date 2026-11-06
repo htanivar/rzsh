@@ -2,6 +2,7 @@
 # examples/06_http_example.sh
 # Non-technical guide to performing HTTP GET, POST, PUT, PATCH & DELETE calls
 # and all the different ways you can pass JSON payloads (especially using .json files).
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 source "$(dirname "$0")/../config/config.sh"
 init_config

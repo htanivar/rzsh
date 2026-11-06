@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 # examples/99_evidences_example.sh
 # Non-technical guide to generating incident audit snapshots and markdown reports.
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 source "$(dirname "$0")/../config/config.sh"
 init_config

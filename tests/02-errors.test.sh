@@ -1,7 +1,9 @@
+#!/usr/bin/env zsh
 # tests/02-errors.test.sh
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Source helpers, config, and target script
-local my_dir="${${(%):-%x}:A:h}"
+my_dir="${${(%):-%x}:A:h}"
 source "${my_dir}/test_helpers.sh"
 source "${my_dir}/../config/config.sh"
 source "${my_dir}/../functions/02-errors.sh"
@@ -9,8 +11,8 @@ source "${my_dir}/../functions/02-errors.sh"
 init_config
 
 test_error_exit_status() {
-  # We run error_exit in a subshell and check its exit code
-  ( error_exit "test error" 42 )
+  # Run error_exit in a subshell (capturing expected error output) and check its exit code
+  ( error_exit "test error" 42 >/dev/null 2>&1 )
   local exit_code=$?
   assert_equals 42 "${exit_code}" "error_exit should exit with code 42"
 }
@@ -20,7 +22,7 @@ test_error_exit_cleanup() {
   touch "${temp_file}"
   register_temp_file "${temp_file}"
   
-  ( error_exit "cleanup test" 1 )
+  ( error_exit "cleanup test" 1 >/dev/null 2>&1 )
   
   assert_false "[[ -f \"${temp_file}\" ]]" "TEMP_FILES should be deleted after error_exit"
 }
@@ -37,7 +39,7 @@ test_register_and_cleanup() {
   register_temp_file "${temp1}"
   assert_equals 2 "${#TEMP_FILES}" "Duplicate registration should be ignored"
   
-  cleanup_temp_files
+  cleanup_temp_files >/dev/null 2>&1
   
   assert_false "[[ -f \"${temp1}\" ]]" "temp1 should be deleted by cleanup"
   assert_false "[[ -f \"${temp2}\" ]]" "temp2 should be deleted by cleanup"

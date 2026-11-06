@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 # scripts/04-git/compare_branches.sh
 # Compare two git branches, output a structured summary, and show contents in separate sections.
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Resolve PROJECT_ROOT dynamically by searching upwards for config/config.sh
 if [[ -z "${PROJECT_ROOT:-}" ]]; then

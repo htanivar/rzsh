@@ -1,14 +1,16 @@
+#!/usr/bin/env zsh
 # tests/10-directory.test.sh
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Source helpers, config, and target script
-local my_dir="${${(%):-%x}:A:h}"
+my_dir="${${(%):-%x}:A:h}"
 source "${my_dir}/test_helpers.sh"
 source "${my_dir}/../config/config.sh"
 source "${my_dir}/../functions/10-directory.sh"
 
 init_config
 
-local test_root_dir="${PROJECT_ROOT}/logs/test_dir_mod"
+test_root_dir="${PROJECT_ROOT}/logs/test_dir_mod"
 
 # Cleanup from previous runs
 rm -rf "${test_root_dir}"

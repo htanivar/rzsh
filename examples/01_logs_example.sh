@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 # examples/01_logs_example.sh
 # Non-technical guide to writing colored terminal text and files logs.
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 source "$(dirname "$0")/../config/config.sh"
 init_config

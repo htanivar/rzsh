@@ -1,7 +1,9 @@
+#!/usr/bin/env zsh
 # tests/04-validation.test.sh
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Source helpers, config, and target script
-local my_dir="${${(%):-%x}:A:h}"
+my_dir="${${(%):-%x}:A:h}"
 source "${my_dir}/test_helpers.sh"
 source "${my_dir}/../config/config.sh"
 source "${my_dir}/../functions/04-validation.sh"
@@ -10,7 +12,7 @@ init_config
 
 test_validate_required() {
   assert_true "validate_required 'hello'" "Non-empty should pass"
-  assert_false "validate_required ''" "Empty should fail"
+  assert_false "validate_required '' >/dev/null 2>&1" "Empty should fail"
 }
 
 test_validate_in_list() {
