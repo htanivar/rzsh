@@ -108,7 +108,7 @@ confirm() {
 #  */
 select_option() {
   local prompt="$1"
-  local options_str="$2"
+  local options_str="${*:2}"
   local -a options
   options=( ${(s: :)${options_str//,/ }} )
   
@@ -121,7 +121,9 @@ select_option() {
   local choice
   while true; do
     printf "Select option (1-%d): " "${#options}" >&2
-    read -r choice
+    if ! read -r choice; then
+      return 1
+    fi
     if [[ "${choice}" =~ ^[0-9]+$ ]] && (( choice >= 1 && choice <= ${#options} )); then
       echo "${options[choice]}"
       return 0
@@ -161,7 +163,9 @@ read_with_validation() {
   
   while true; do
     printf "%s: " "${prompt}" >&2
-    read -r response
+    if ! read -r response; then
+      return 1
+    fi
     if "${val_func}" "${response}" &>/dev/null; then
       echo "${response}"
       return 0

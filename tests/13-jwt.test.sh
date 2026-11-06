@@ -41,6 +41,22 @@ test_jwt_get_claim() {
   local aud
   aud=$(jwt_get_audience "${token}")
   assert_equals "test-audience" "${aud}" "Audience should be test-audience"
+
+  local hdr
+  hdr=$(jwt_get_header "${token}")
+  local alg
+  alg=$(echo "${hdr}" | jq -r ".alg")
+  assert_equals "HS256" "${alg}" "Header alg should be HS256"
+
+  local pay
+  pay=$(jwt_get_payload "${token}")
+  local name
+  name=$(echo "${pay}" | jq -r ".name")
+  assert_equals "Alice" "${name}" "Payload name should be Alice"
+
+  local claims
+  claims=$(jwt_parse_claims "${token}")
+  assert_equals "${pay}" "${claims}" "jwt_parse_claims should match jwt_get_payload"
 }
 
 test_jwt_expired_and_valid() {

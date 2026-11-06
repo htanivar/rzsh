@@ -68,6 +68,55 @@ test_git_get_commit_hash() {
   assert_equals 40 ${#h} "Commit hash should be 40 characters long"
 }
 
+test_git_get_commit_message() {
+  local msg
+  msg=$(git_get_commit_message)
+  assert_true "[[ -n \"${msg}\" ]]" "Commit message for HEAD should not be empty"
+}
+
+test_git_push_pull_and_safe_pull() {
+  local bare_dir="${PROJECT_ROOT}/logs/test_git_bare.git"
+  local clone_dir="${PROJECT_ROOT}/logs/test_git_clone"
+  rm -rf "${bare_dir}" "${clone_dir}"
+  git init --bare -b main "${bare_dir}" &>/dev/null
+
+  git remote add origin "${bare_dir}" 2>/dev/null || git remote set-url origin "${bare_dir}"
+  assert_true "git_push &>/dev/null" "git_push should push current branch to origin"
+
+  # Clone to a second repo, commit & push a change so we can test git_pull and git_safe_pull
+  git clone "${bare_dir}" "${clone_dir}" &>/dev/null
+  (
+    cd "${clone_dir}"
+    git config user.email "test@example.com"
+    git config user.name "Test User"
+    echo "remote update 1" >> file.txt
+    git add file.txt
+    git commit -m "remote commit 1" &>/dev/null
+    git push origin main &>/dev/null
+  )
+
+  assert_true "git_pull &>/dev/null" "git_pull should pull changes from origin"
+  local msg
+  msg=$(git_get_commit_message "HEAD")
+  assert_equals "remote commit 1" "${msg}" "HEAD should match pulled commit"
+
+  # Make another remote commit and test git_safe_pull with dirty local tree
+  (
+    cd "${clone_dir}"
+    echo "remote update 2" > remote_file.txt
+    git add remote_file.txt
+    git commit -m "remote commit 2" &>/dev/null
+    git push origin main &>/dev/null
+  )
+
+  echo "uncommitted local work" > local_untracked.txt
+  assert_true "git_safe_pull &>/dev/null" "git_safe_pull should stash, pull, and pop"
+  assert_true "[[ -f remote_file.txt ]]" "Pulled remote_file.txt should exist"
+  assert_true "[[ -f local_untracked.txt ]]" "Stashed local_untracked.txt should be restored"
+  rm -f local_untracked.txt
+  rm -rf "${bare_dir}" "${clone_dir}"
+}
+
 run_test test_git_get_current_branch
 run_test test_git_is_clean
 run_test test_git_get_root
@@ -75,6 +124,8 @@ run_test test_git_status_message
 run_test test_git_commit
 run_test test_git_branch_exists
 run_test test_git_get_commit_hash
+run_test test_git_get_commit_message
+run_test test_git_push_pull_and_safe_pull
 
 # Cleanup
 cd "${original_pwd}"

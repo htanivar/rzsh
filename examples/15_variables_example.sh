@@ -8,17 +8,17 @@ init_config
 echo "=== Configuration Variables Example ==="
 
 # 1. Get a global variable with dynamic fallback
-local level=$(config_get_var LOG_LEVEL "INFO")
+level=$(config_get_var LOG_LEVEL "INFO")
 echo "Current LOG_LEVEL: ${level}"
 
 # 2. Set/Override a global variable
 config_set_var MY_NEW_VAR "Antigravity Active"
-local my_var=$(config_get_var MY_NEW_VAR)
+my_var=$(config_get_var MY_NEW_VAR)
 echo "MY_NEW_VAR value: ${my_var}"
 
 # 3. Unset a global variable
 config_unset_var MY_NEW_VAR
-local my_var_after=$(config_get_var MY_NEW_VAR "not found")
+my_var_after=$(config_get_var MY_NEW_VAR "not found")
 echo "MY_NEW_VAR after unset: ${my_var_after}"
 
 echo ""
@@ -29,7 +29,7 @@ echo "Initial Repositories:"
 config_list_repos
 
 # 5. Get location of an existing repo
-local loc=$(config_get_repo_location "service1")
+loc=$(config_get_repo_location "service1")
 echo "Location of service1: ${loc}"
 
 # 6. Set location of a new repository

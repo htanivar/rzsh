@@ -233,12 +233,10 @@ dir_tree() {
     local prefix="$2"
     local files
     files=( "${current_dir}"/*(N) )
-    local i
+    local i f is_last pointer next_prefix
     for (( i = 1; i <= ${#files}; i++ )); do
-      local f="${files[i]}"
-      local is_last=$(( i == ${#files} ))
-      local pointer
-      local next_prefix
+      f="${files[i]}"
+      is_last=$(( i == ${#files} ))
       if (( is_last == 1 )); then
         pointer="└── "
         next_prefix="${prefix}    "

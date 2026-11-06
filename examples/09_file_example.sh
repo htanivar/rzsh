@@ -6,7 +6,7 @@ source "$(dirname "$0")/../config/config.sh"
 init_config
 init_logging
 
-local my_file="${PROJECT_ROOT}/logs/notes.txt"
+my_file="${PROJECT_ROOT}/logs/notes.txt"
 
 # 1. Write text content (interprets newlines)
 file_write "${my_file}" "line 1: initial text\nline 2: second text"
@@ -16,17 +16,19 @@ echo "Wrote initial content to: ${my_file}"
 file_append "${my_file}" "line 3: appended text"
 
 # 3. Read size in bytes
-local size=$(file_get_size "${my_file}")
+size=$(file_get_size "${my_file}")
 echo "File size: ${size} bytes."
 
 # 4. Run backups
 echo "Creating backup..."
-file_backup_and_restore "backup" "${my_file}"
+backup_file=$(file_backup_and_restore "backup" "${my_file}")
+echo "Created backup: ${backup_file}"
 
 # 5. Cryptographic digests
-local sha=$(file_hash "${my_file}" "sha256")
+sha=$(file_hash "${my_file}" "sha256")
 echo "SHA-256 Checksum: ${sha}"
 
 # 6. Read parts or search patterns
 echo "File content match search:"
 file_grep "${my_file}" "appended"
+rm -f "${my_file}" "${backup_file}"

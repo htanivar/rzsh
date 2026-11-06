@@ -15,7 +15,7 @@ collect_network_evidence
 collect_git_evidence
 
 # 3. Add file snapshots
-local file_to_log="${PROJECT_ROOT}/logs/notes.txt"
+file_to_log="${PROJECT_ROOT}/logs/notes.txt"
 echo "Dummy context info" > "${file_to_log}"
 collect_file_evidence "${file_to_log}"
 
@@ -24,5 +24,6 @@ echo "Synthesizing evidence files..."
 evidence_to_markdown
 
 # 5. Archive session files to compressed tarball
-local archive=$(evidence_archive)
+archive=$(evidence_archive)
 echo "Archived incident bundle package: ${archive}"
+rm -f "${file_to_log}"
