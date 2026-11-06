@@ -1,14 +1,16 @@
+#!/usr/bin/env zsh
 # tests/14-jq.test.sh
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Source helpers, config, and target script
-local my_dir="${${(%):-%x}:A:h}"
+my_dir="${${(%):-%x}:A:h}"
 source "${my_dir}/test_helpers.sh"
 source "${my_dir}/../config/config.sh"
 source "${my_dir}/../functions/14-jq.sh"
 
 init_config
 
-local json='{"user":{"id":42,"name":"Alice","roles":["admin","user"]}}'
+json='{"user":{"id":42,"name":"Alice","roles":["admin","user"]}}'
 
 test_json_parse_and_validate() {
   assert_true "json_validate '${json}'" "Valid JSON should pass validation"

@@ -1,14 +1,16 @@
+#!/usr/bin/env zsh
 # tests/09-file.test.sh
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Source helpers, config, and target script
-local my_dir="${${(%):-%x}:A:h}"
+my_dir="${${(%):-%x}:A:h}"
 source "${my_dir}/test_helpers.sh"
 source "${my_dir}/../config/config.sh"
 source "${my_dir}/../functions/09-file.sh"
 
 init_config
 
-local test_file="${PROJECT_ROOT}/logs/test_file.txt"
+test_file="${PROJECT_ROOT}/logs/test_file.txt"
 
 # Ensure clean slate
 rm -f "${test_file}"

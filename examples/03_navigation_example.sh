@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 # examples/03_navigation_example.sh
 # Non-technical guide to folder navigation and project paths.
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 source "$(dirname "$0")/../config/config.sh"
 init_config

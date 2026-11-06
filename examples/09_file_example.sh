@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 # examples/09_file_example.sh
 # Non-technical guide to file operations, backing up, size, and search text.
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 source "$(dirname "$0")/../config/config.sh"
 init_config

@@ -1,7 +1,9 @@
+#!/usr/bin/env zsh
 # tests/05-git.test.sh
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Source helpers, config, and target script
-local my_dir="${${(%):-%x}:A:h}"
+my_dir="${${(%):-%x}:A:h}"
 source "${my_dir}/test_helpers.sh"
 source "${my_dir}/../config/config.sh"
 source "${my_dir}/../functions/05-git.sh"
@@ -9,8 +11,8 @@ source "${my_dir}/../functions/05-git.sh"
 init_config
 
 # Setup temporary test Git repo
-local original_pwd="${PWD}"
-local test_git_dir="${PROJECT_ROOT}/logs/test_git_repo"
+original_pwd="${PWD}"
+test_git_dir="${PROJECT_ROOT}/logs/test_git_repo"
 rm -rf "${test_git_dir}"
 mkdir -p "${test_git_dir}"
 

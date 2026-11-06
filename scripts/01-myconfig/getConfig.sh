@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 # scripts/01-myconfig/getConfig.sh
 # Retrieves the configuration JSON from the specified URL using framework functions.
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Resolve PROJECT_ROOT if not set
 if [[ -z "${PROJECT_ROOT:-}" ]]; then
@@ -12,8 +13,9 @@ source "${PROJECT_ROOT}/config/config.sh"
 init_config
 
 # Dynamically detect variables set/exported in config.sh
-local -a framework_vars
-local parse_line parse_var
+typeset -a framework_vars
+parse_line=""
+parse_var=""
 while IFS= read -r parse_line || [[ -n "${parse_line}" ]]; do
   if [[ "${parse_line}" =~ "^[[:space:]]*export[[:space:]]+([A-Z][A-Z0-9_]*)[[:space:]]*$" ]]; then
     framework_vars+=("${match[1]}")

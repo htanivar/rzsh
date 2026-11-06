@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 # examples/00_config_example.sh
 # Non-technical guide to initialization and global configurations.
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # 1. Source the main config manager. This automatically imports all functions.
 source "$(dirname "$0")/../config/config.sh"

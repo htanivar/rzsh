@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 # examples/13_jwt_example.sh
 # Non-technical guide to generating and validating JSON Web Tokens (JWT).
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 source "$(dirname "$0")/../config/config.sh"
 init_config

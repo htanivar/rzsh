@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 # examples/12_ssh_example.sh
 # Non-technical guide to running SSH remote commands, SCP file transfers, and SSH tunnels.
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 source "$(dirname "$0")/../config/config.sh"
 init_config

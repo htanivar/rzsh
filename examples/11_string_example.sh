@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 # examples/11_string_example.sh
 # Non-technical guide to text formatting, UUIDs, pad, split/join, case changes.
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 source "$(dirname "$0")/../config/config.sh"
 init_config

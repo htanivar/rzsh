@@ -1,4 +1,5 @@
 #!/usr/bin/env zsh
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Core test runner for the Zsh script framework
 SCRIPT_DIR="${0:A:h}"

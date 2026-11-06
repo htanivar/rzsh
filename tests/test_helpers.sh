@@ -1,4 +1,10 @@
+#!/usr/bin/env zsh
 # tests/test_helpers.sh
+
+# Re-execute under zsh if invoked via bash/sh
+if [ -z "${ZSH_VERSION:-}" ] && [ -f "$0" ]; then
+  exec zsh "$0" "$@"
+fi
 
 # Protect against double sourcing
 if [[ -n "${_TEST_HELPERS_SH_SOURCED:-}" ]]; then

@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 # README.sh
 # Documentation and command-line reference manual for the modular Zsh scripting framework.
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Protect against double sourcing
 if [[ -n "${_README_SH_SOURCED:-}" ]]; then
