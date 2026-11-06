@@ -278,6 +278,8 @@ Click on any module link to view its detailed usage guide and function signature
 | 13 | JSON Web Tokens | [`functions/13-jwt.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/13-jwt.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/13-jwt.md) |
 | 14 | JQ JSON Parser | [`functions/14-jq.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/14-jq.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/14-jq.md) |
 | 15 | Config Variables & Repos | [`functions/15-variables.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/15-variables.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/15-variables.md) |
+| 97 | Zsh Loops Guide (Beginner Copy-Paste) | — | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/97-loops.md) |
+| 98 | Zsh Control Statements Guide (Beginner Copy-Paste) | — | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/98-control-statements.md) |
 | 99 | Evidence Collector | [`functions/99-evidences.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/99-evidences.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/99-evidences.md) |
 
 ## Executable Example Scripts
