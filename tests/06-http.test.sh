@@ -11,14 +11,18 @@ init_config
 # Mock curl function to avoid external dependency issues
 curl() {
   local arg
+  local prev=""
   local is_post=0
   local is_put=0
   local is_patch=0
   local is_delete=0
+  local data=""
   local url=""
   
   for arg in "$@"; do
-    if [[ "${arg}" == "POST" ]]; then
+    if [[ "${prev}" == "-d" ]]; then
+      data="${arg}"
+    elif [[ "${arg}" == "POST" ]]; then
       is_post=1
     elif [[ "${arg}" == "PUT" ]]; then
       is_put=1
@@ -29,14 +33,15 @@ curl() {
     elif [[ "${arg}" =~ ^https?:// ]]; then
       url="${arg}"
     fi
+    prev="${arg}"
   done
 
   if (( is_post == 1 )); then
-    printf '{"success":true,"method":"POST"}\n201'
+    printf '{"success":true,"method":"POST","received":%s}\n201' "${data:-null}"
   elif (( is_put == 1 )); then
-    printf '{"success":true,"method":"PUT"}\n200'
+    printf '{"success":true,"method":"PUT","received":%s}\n200' "${data:-null}"
   elif (( is_patch == 1 )); then
-    printf '{"success":true,"method":"PATCH"}\n200'
+    printf '{"success":true,"method":"PATCH","received":%s}\n200' "${data:-null}"
   elif (( is_delete == 1 )); then
     printf '{"success":true,"method":"DELETE"}\n204'
   elif [[ "${url}" == *"retry"* ]]; then
@@ -124,12 +129,37 @@ test_http_get_body() {
   assert_equals '{"status":"ok"}' "${body}" "http_get_body should strip the status code last line"
 }
 
+test_http_json_file_payload() {
+  local payload_file="${PROJECT_ROOT}/logs/test_payload.json"
+  mkdir -p "${PROJECT_ROOT}/logs"
+  printf '{"username":"ravi","environment":"production"}' > "${payload_file}"
+
+  # 1. Passing .json file path directly
+  local res
+  res=$(http_post "https://example.com/post" "${payload_file}" "Content-Type: application/json")
+  local body
+  body=$(http_get_body "${res}")
+  local user
+  user=$(extract_json_field "${body}" ".received.username")
+  assert_equals "ravi" "${user}" "http_post should read JSON payload from file path"
+
+  # 2. Passing @file.json syntax
+  res=$(http_put "https://example.com/put" "@${payload_file}" "Content-Type: application/json")
+  body=$(http_get_body "${res}")
+  local env_val
+  env_val=$(extract_json_field "${body}" ".received.environment")
+  assert_equals "production" "${env_val}" "http_put should read JSON payload from @file path"
+
+  rm -f "${payload_file}"
+}
+
 run_test test_http_get
 run_test test_http_post
 run_test test_http_put
 run_test test_http_patch
 run_test test_http_delete
 run_test test_http_get_body
+run_test test_http_json_file_payload
 run_test test_is_json_response
 run_test test_extract_json_field
 run_test test_http_get_with_retry

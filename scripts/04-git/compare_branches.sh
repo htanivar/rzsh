@@ -4,7 +4,7 @@
 
 # Resolve PROJECT_ROOT dynamically by searching upwards for config/config.sh
 if [[ -z "${PROJECT_ROOT:-}" ]]; then
-  local current_dir="${0:A:h}"
+  current_dir="${0:A:h}"
   while [[ "${current_dir}" != "/" ]]; do
     if [[ -f "${current_dir}/config/config.sh" ]]; then
       export PROJECT_ROOT="${current_dir}"
@@ -12,6 +12,7 @@ if [[ -z "${PROJECT_ROOT:-}" ]]; then
     fi
     current_dir="${current_dir:h}"
   done
+  unset current_dir
 fi
 
 # Source framework config and functions

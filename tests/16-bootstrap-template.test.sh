@@ -19,9 +19,9 @@ test_bootstrap_template_execution() {
   assert_true "[[ \"${output_log}\" == *\"Password: ********************\"* ]]" "Output should mask the 20-character password with 20 asterisks"
   assert_true "[[ \"${output_log}\" == *\"Evidence File:\"* ]]" "Output should report evidence file path"
   
-  # Extract evidence directory from the output log
+  # Extract evidence directory from the output log (stripping ANSI escape sequences)
   local ev_dir
-  ev_dir=$(echo "${output_log}" | grep -oE "Evidence Directory: [^ ]+" | cut -d' ' -f3)
+  ev_dir=$(echo "${output_log}" | sed $'s/\x1b\\[[0-9;]*m//g' | grep -oE "Evidence Directory: [^ ]+" | cut -d' ' -f3 | tr -d '\r\n')
   
   assert_true "[[ -n \"${ev_dir}\" ]]" "Evidence directory should be reported in output"
   assert_true "[[ -d \"${ev_dir}\" ]]" "Reported evidence directory should exist on disk"
@@ -32,9 +32,9 @@ test_bootstrap_template_execution() {
   # Verify evidence content
   local ev_content
   ev_content=$(cat "${ev_file}")
-  assert_true "[[ \"${ev_content}\" == *\"Captured Username: \`mock_admin\`\"* ]]" "Evidence should contain username"
-  assert_true "[[ \"${ev_content}\" == *\"Masked Password: \`********************\`\"* ]]" "Evidence should contain masked password"
-  assert_true "[[ \"${ev_content}\" == *\"Script Location:\"* ]]" "Evidence should report script location"
+  assert_true '[[ "${ev_content}" == *"Captured Username:"*"mock_admin"* ]]' "Evidence should contain username"
+  assert_true '[[ "${ev_content}" == *"Masked Password:"*"********************"* ]]' "Evidence should contain masked password"
+  assert_true '[[ "${ev_content}" == *"Script Location:"* ]]' "Evidence should report script location"
   
   # Cleanup generated evidence folder
   rm -rf "${ev_dir}"

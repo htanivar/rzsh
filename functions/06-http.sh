@@ -45,14 +45,14 @@ http_get() {
 
 # /**
 #  * @function http_post
-#  * @description Performs an HTTP POST request using curl. Appends HTTP status code to the last line of the output.
+#  * @description Performs an HTTP POST request using curl. Supports passing a JSON string, a path to a .json file, or @file.json. Appends HTTP status code to the last line of the output.
 #  * @param {string} url - The URL to request.
-#  * @param {string} data - The POST request body data.
+#  * @param {string} data - The POST request body data (inline JSON string, file path to .json file, or @file.json).
 #  * @param {string} [headers] - Newline-separated headers to include.
 #  * @return {string} Response body followed by a newline and the HTTP status code.
 #  * @example
 #  *   local res
-#  *   res=$(http_post "https://httpbin.org/post" '{"key": "value"}' "Content-Type: application/json")
+#  *   res=$(http_post "https://httpbin.org/post" "./payload.json" "Content-Type: application/json")
 #  */
 http_post() {
   local url="$1"
@@ -61,6 +61,12 @@ http_post() {
   
   if ! validate_command_exists "curl"; then
     return 1
+  fi
+
+  if [[ -f "${data}" ]]; then
+    data=$(cat "${data}")
+  elif [[ "${data}" == @* && -f "${data#@}" ]]; then
+    data=$(cat "${data#@}")
   fi
 
   local -a curl_opts=(-s -L -w "\n%{http_code}" -X POST)
@@ -76,14 +82,14 @@ http_post() {
 
 # /**
 #  * @function http_put
-#  * @description Performs an HTTP PUT request using curl. Appends HTTP status code to the last line of the output.
+#  * @description Performs an HTTP PUT request using curl. Supports passing a JSON string, a path to a .json file, or @file.json. Appends HTTP status code to the last line of the output.
 #  * @param {string} url - The URL to request.
-#  * @param {string} data - The PUT request body data.
+#  * @param {string} data - The PUT request body data (inline JSON string, file path to .json file, or @file.json).
 #  * @param {string} [headers] - Newline-separated headers to include.
 #  * @return {string} Response body followed by a newline and the HTTP status code.
 #  * @example
 #  *   local res
-#  *   res=$(http_put "https://httpbin.org/put" '{"status": "active"}')
+#  *   res=$(http_put "https://httpbin.org/put" "./payload.json" "Content-Type: application/json")
 #  */
 http_put() {
   local url="$1"
@@ -92,6 +98,12 @@ http_put() {
   
   if ! validate_command_exists "curl"; then
     return 1
+  fi
+
+  if [[ -f "${data}" ]]; then
+    data=$(cat "${data}")
+  elif [[ "${data}" == @* && -f "${data#@}" ]]; then
+    data=$(cat "${data#@}")
   fi
 
   local -a curl_opts=(-s -L -w "\n%{http_code}" -X PUT)
@@ -107,14 +119,14 @@ http_put() {
 
 # /**
 #  * @function http_patch
-#  * @description Performs an HTTP PATCH request using curl. Appends HTTP status code to the last line of the output.
+#  * @description Performs an HTTP PATCH request using curl. Supports passing a JSON string, a path to a .json file, or @file.json. Appends HTTP status code to the last line of the output.
 #  * @param {string} url - The URL to request.
-#  * @param {string} data - The PATCH request body data.
+#  * @param {string} data - The PATCH request body data (inline JSON string, file path to .json file, or @file.json).
 #  * @param {string} [headers] - Newline-separated headers to include.
 #  * @return {string} Response body followed by a newline and the HTTP status code.
 #  * @example
 #  *   local res
-#  *   res=$(http_patch "https://httpbin.org/patch" '{"name": "newname"}')
+#  *   res=$(http_patch "https://httpbin.org/patch" "./payload.json" "Content-Type: application/json")
 #  */
 http_patch() {
   local url="$1"
@@ -123,6 +135,12 @@ http_patch() {
   
   if ! validate_command_exists "curl"; then
     return 1
+  fi
+
+  if [[ -f "${data}" ]]; then
+    data=$(cat "${data}")
+  elif [[ "${data}" == @* && -f "${data#@}" ]]; then
+    data=$(cat "${data#@}")
   fi
 
   local -a curl_opts=(-s -L -w "\n%{http_code}" -X PATCH)

@@ -397,9 +397,9 @@ str_random() {
   else
     local chars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
     local res=""
-    local i
+    local i r
     for (( i = 0; i < len; i++ )); do
-      local r=$(( RANDOM % ${#chars} + 1 ))
+      r=$(( RANDOM % ${#chars} + 1 ))
       res+="${chars[r]}"
     done
     echo "${res}"
@@ -418,9 +418,20 @@ str_random() {
 str_uuid() {
   if command -v uuidgen &>/dev/null; then
     uuidgen | tr '[:upper:]' '[:lower:]'
+  elif [[ -r /proc/sys/kernel/random/uuid ]]; then
+    tr '[:upper:]' '[:lower:]' < /proc/sys/kernel/random/uuid
   else
-    local r
-    r=$(str_random 32)
+    local r=""
+    if [[ -r /dev/urandom ]]; then
+      r=$(tr -dc '0-9a-f' < /dev/urandom | head -c 32)
+    else
+      local hex_chars="0123456789abcdef"
+      local i idx
+      for (( i = 0; i < 32; i++ )); do
+        idx=$(( RANDOM % 16 + 1 ))
+        r+="${hex_chars[idx]}"
+      done
+    fi
     local hex="89ab"
     local variant_char="${hex[$(( RANDOM % 4 + 1 ))]}"
     printf "%s-%s-4%s-%s%s-%s\n" \

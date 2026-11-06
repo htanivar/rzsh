@@ -68,6 +68,12 @@ test_format_duration() {
   assert_equals "1h 1m 5s" "${res}" "Should format 3665s to 1h 1m 5s"
 }
 
+test_timezone_convert() {
+  local res
+  res=$(timezone_convert "2026-07-08 12:00:00" "UTC" "UTC")
+  assert_equals "2026-07-08 12:00:00" "${res}" "Converting UTC to UTC should preserve timestamp"
+}
+
 run_test test_timestamp
 run_test test_date_now
 run_test test_parse_date
@@ -75,6 +81,7 @@ run_test test_date_add
 run_test test_date_subtract
 run_test test_date_diff
 run_test test_date_format
+run_test test_timezone_convert
 run_test test_is_valid_date
 run_test test_date_range
 run_test test_format_duration

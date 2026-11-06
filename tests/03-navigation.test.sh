@@ -86,12 +86,22 @@ test_get_absolute_path() {
   assert_equals "${PWD}" "${abs}" "get_absolute_path of . should be PWD"
 }
 
+test_to_project_root() {
+  local orig_pwd="${PWD}"
+  cd /tmp
+  to_project_root
+  assert_equals 0 $? "to_project_root should return 0 when PROJECT_ROOT is set"
+  assert_equals "${PROJECT_ROOT}" "${PWD}" "to_project_root should change PWD to PROJECT_ROOT"
+  cd "${orig_pwd}"
+}
+
 run_test test_current_directory
 run_test test_get_current_directory
 run_test test_dir_up
 run_test test_absolute_path
 run_test test_get_absolute_path
 run_test test_get_project_root
+run_test test_to_project_root
 run_test test_is_inside_git_repo
 run_test test_normalize_path
 run_test test_ensure_directory_exists
