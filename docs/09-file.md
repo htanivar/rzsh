@@ -44,6 +44,22 @@ local content=$(file_read "out.txt")
 ```
 
 ---
+### `file_read_to_array`
+
+* **Signature:** `file_read_to_array <file_path> [array_name=FILE_LINES] [skip_empty=0]`
+* **Description:** Reads a file line-by-line into a Zsh array variable (defaulting to `FILE_LINES`) so it can be iterated over in a loop. Pass `1` as the third argument to skip blank/whitespace-only lines.
+
+#### Example Code:
+```zsh
+local -a lines
+file_read_to_array "hosts.txt" "lines" 1
+
+for line in "${lines[@]}"; do
+  echo "Processing: ${line}"
+done
+```
+
+---
 ### `file_copy / file_move / file_delete`
 
 * **Signature:** `file_copy <src> <dest> / file_move <src> <dest> / file_delete <file>`

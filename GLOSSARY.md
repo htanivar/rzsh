@@ -235,6 +235,7 @@ The table below lists all variable keys initialized or managed by the framework 
 | :--- | :--- | :--- |
 | [`file_exists`](docs/09-file.md#file_exists) | `file_exists <file_path>` | Returns `0` if the path exists and is a regular file. |
 | [`file_read`](docs/09-file.md#file_read--file_write--file_append) | `file_read <file_path>` | Outputs the contents of a file to `stdout`. |
+| [`file_read_to_array`](docs/09-file.md#file_read_to_array) | `file_read_to_array <file_path> [array_name=FILE_LINES] [skip_empty=0]` | Reads a file line-by-line into a Zsh array variable for iteration/looping. |
 | [`file_write`](docs/09-file.md#file_read--file_write--file_append) | `file_write <file_path> <content>` | Writes content to a file (creating parent directories if needed). |
 | [`file_append`](docs/09-file.md#file_read--file_write--file_append) | `file_append <file_path> <content>` | Appends content to the end of a file. |
 | [`file_copy`](docs/09-file.md#file_copy--file_move--file_delete) | `file_copy <src> <dest> [interactive=0]` | Copies a file to a destination path (with optional overwrite confirmation). |
