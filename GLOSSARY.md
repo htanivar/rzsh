@@ -289,6 +289,8 @@ The table below lists all variable keys initialized or managed by the framework 
 | [`str_rtrim`](docs/11-string.md#str_trim--str_ltrim--str_rtrim) | `str_rtrim <string>` | Strips trailing whitespace from `string`. |
 | [`str_split`](docs/11-string.md#str_split--str_join) | `str_split <string> <delimiter>` | Splits `string` by `delimiter` and prints each element on a new line. |
 | [`str_join`](docs/11-string.md#str_split--str_join) | `str_join <delimiter> <item1> [item2 ...]` | Joins multiple arguments into a single string separated by `delimiter`. |
+| [`str_to_array`](docs/11-string.md#str_to_array) | `str_to_array <string> <delimiter> [array_name=STR_ARRAY]` | Splits `string` by `delimiter` and populates a Zsh array variable. |
+| [`array_get_element`](docs/11-string.md#array_get_element) | `array_get_element <array_name> <index_or_keyword>` | Retrieves an element from a Zsh array by 1-based/negative index or `'first'` / `'last'`. |
 | [`str_to_lower`](docs/11-string.md#str_to_lower--str_to_upper--str_capitalize) | `str_to_lower <string>` | Converts all characters in `string` to lowercase. |
 | [`str_to_upper`](docs/11-string.md#str_to_lower--str_to_upper--str_capitalize) | `str_to_upper <string>` | Converts all characters in `string` to uppercase. |
 | [`str_capitalize`](docs/11-string.md#str_to_lower--str_to_upper--str_capitalize) | `str_capitalize <string>` | Capitalizes the first character of `string` and lowercases the rest. |

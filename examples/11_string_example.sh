@@ -29,6 +29,12 @@ str_split "${text}" ","
 joined=$(str_join " - " "apple" "banana" "orange")
 echo "Joined string: '${joined}'"
 
+# 3b. Converting a delimited string directly into a Zsh array
+str_to_array "apple,banana,cherry" "," "FRUITS"
+echo "Array from string (${#FRUITS[@]} items): ${FRUITS[@]}"
+echo "First fruit: $(array_get_element "FRUITS" "first")"
+echo "Last fruit:  $(array_get_element "FRUITS" "last")"
+
 # 4. Letter case modifications
 upper=$(str_to_upper "hello world")
 echo "Uppercase representation: ${upper}"

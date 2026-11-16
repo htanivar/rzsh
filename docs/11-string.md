@@ -76,6 +76,33 @@ local array=($(str_split "a,b,c" ","))
 ```
 
 ---
+### `str_to_array`
+
+* **Signature:** `str_to_array <string> <delimiter> [array_name=STR_ARRAY]`
+* **Description:** Splits a string by the specified separator into a named Zsh array variable (defaulting to `STR_ARRAY`), preserving spaces within elements.
+
+#### Example Code:
+```zsh
+local -a FRUITS
+str_to_array "apple,banana,cherry" "," "FRUITS"
+echo "${FRUITS[@]}"   # apple banana cherry
+```
+
+---
+### `array_get_element`
+
+* **Signature:** `array_get_element <array_name> <index_or_keyword>`
+* **Description:** Retrieves a specific element from a Zsh array by 1-based index (`1`, `2`, ...), negative index (`-1` for last), or keyword (`first`, `last`). Returns `1` if the array is empty or the index is out of bounds.
+
+#### Example Code:
+```zsh
+str_to_array "apple,banana,cherry" "," "FRUITS"
+local first_fruit=$(array_get_element "FRUITS" "first")
+local second_fruit=$(array_get_element "FRUITS" 2)
+local last_fruit=$(array_get_element "FRUITS" "last")   # cherry
+```
+
+---
 ### `str_to_lower / str_to_upper / str_capitalize`
 
 * **Signature:** `str_to_lower <string> / str_to_upper <string> / str_capitalize <string>`

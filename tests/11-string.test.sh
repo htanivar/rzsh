@@ -120,6 +120,55 @@ test_str_random_and_uuid() {
   assert_true "[[ \"${id}\" =~ ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$ ]]" "Should match UUID pattern"
 }
 
+test_str_to_array() {
+  local -a FRUITS
+  str_to_array "apple,banana,cherry" "," "FRUITS"
+  assert_equals "3" "${#FRUITS[@]}" "FRUITS should have 3 elements"
+  assert_equals "apple banana cherry" "${FRUITS[*]}" "FRUITS should expand to apple banana cherry"
+  assert_equals "banana" "${FRUITS[2]}" "Second element should be banana"
+
+  # Multi-character delimiter and spaces inside elements
+  local -a items
+  str_to_array "red apple::yellow banana::sweet cherry" "::" "items"
+  assert_equals "3" "${#items[@]}" "Should split on multi-character delimiter"
+  assert_equals "red apple" "${items[1]}" "Should preserve spaces inside elements"
+  assert_equals "sweet cherry" "${items[3]}" "Third element should be sweet cherry"
+
+  # Empty string produces empty array
+  str_to_array "" "," "items"
+  assert_equals "0" "${#items[@]}" "Empty string should yield 0 elements"
+
+  # Default array name STR_ARRAY
+  str_to_array "one:two" ":"
+  assert_equals "2" "${#STR_ARRAY[@]}" "Default STR_ARRAY should be populated"
+  assert_equals "one two" "${STR_ARRAY[*]}" "Default STR_ARRAY should contain one two"
+
+  # Invalid inputs
+  assert_false "str_to_array 'a,b' '' 'items'" "Empty delimiter should return 1"
+  assert_false "str_to_array 'a,b' ',' '123-bad'" "Invalid array name should return 1"
+}
+
+test_array_get_element() {
+  local -a FRUITS=("red apple" "banana" "sweet cherry")
+
+  assert_equals "red apple" "$(array_get_element "FRUITS" 1)" "Index 1 should return first element"
+  assert_equals "banana" "$(array_get_element "FRUITS" 2)" "Index 2 should return second element"
+  assert_equals "sweet cherry" "$(array_get_element "FRUITS" -1)" "Index -1 should return last element"
+  assert_equals "banana" "$(array_get_element "FRUITS" -2)" "Index -2 should return second-to-last element"
+  assert_equals "red apple" "$(array_get_element "FRUITS" "first")" "Keyword 'first' should return first element"
+  assert_equals "sweet cherry" "$(array_get_element "FRUITS" "last")" "Keyword 'last' should return last element"
+
+  # Out-of-bounds, 0, empty array, and invalid inputs
+  assert_false "array_get_element 'FRUITS' 0" "Index 0 should return 1"
+  assert_false "array_get_element 'FRUITS' 4" "Out-of-bounds positive index should return 1"
+  assert_false "array_get_element 'FRUITS' -4" "Out-of-bounds negative index should return 1"
+  assert_false "array_get_element 'FRUITS' 'middle'" "Invalid keyword should return 1"
+  assert_false "array_get_element '123-bad' 1" "Invalid array name should return 1"
+
+  local -a EMPTY=()
+  assert_false "array_get_element 'EMPTY' 'last'" "Empty array should return 1"
+}
+
 run_test test_str_contains
 run_test test_str_starts_and_ends_with
 run_test test_str_replace
@@ -132,5 +181,7 @@ run_test test_str_padding
 run_test test_str_escape_unescape
 run_test test_str_slugify
 run_test test_str_random_and_uuid
+run_test test_str_to_array
+run_test test_array_get_element
 
 exit $(( TESTS_FAILED > 0 ? 1 : 0 ))
