@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # tests/16-bootstrap-template.test.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/00-config.md -> examples/00_config_example.sh -> tests/16-bootstrap-template.test.sh
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Source helpers, config, and target script via RZSH_DIR

@@ -156,7 +156,7 @@ str_rtrim() {
 
 # /**
 #  * @function str_split
-#  * @description Splits a string by a delimiter and outputs each piece on a new line.
+#  * @description Splits a string by a delimiter and outputs each piece on a ask line.
 #  * @param {string} str - String to split.
 #  * @param {string} delimiter - Splitting character/string.
 #  * @return {string} Newline-separated tokens.

@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # examples/09_file_example.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/09-file.md -> examples/09_file_example.sh -> tests/09-file.test.sh
 # Non-technical guide to file operations, backing up, size, and search text.
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 

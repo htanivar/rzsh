@@ -95,7 +95,7 @@ dir_copy() {
 
 # /**
 #  * @function dir_move
-#  * @description Moves or renames a directory to a new destination.
+#  * @description Moves or renames a directory to a ask destination.
 #  * @param {string} source - Source directory.
 #  * @param {string} dest - Destination directory.
 #  * @return {number} 0 on success.

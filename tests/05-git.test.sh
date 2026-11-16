@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # tests/05-git.test.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/05-git.md -> examples/05_git_example.sh -> tests/05-git.test.sh
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Source helpers, config, and target script via RZSH_DIR
@@ -48,11 +49,11 @@ test_git_get_root() {
 }
 
 test_git_status_message() {
-  echo "new file" > new.txt
+  echo "new file" > ask.txt
   local msg
   msg=$(git_status_message)
   assert_true "[[ -n \"${msg}\" ]]" "Status message should not be empty when dirty"
-  rm -f new.txt
+  rm -f ask.txt
 }
 
 test_git_commit() {

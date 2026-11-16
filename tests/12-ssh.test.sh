@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # tests/12-ssh.test.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/12-ssh.md -> examples/12_ssh_example.sh -> tests/12-ssh.test.sh
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Source helpers, config, and target script via RZSH_DIR

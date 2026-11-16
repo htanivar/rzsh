@@ -1,6 +1,8 @@
 # SSH Module Reference
 
-- **Source File:** [`functions/12-ssh.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/12-ssh.sh)
+**Navigation:** [README](../README.md) › [GLOSSARY](../GLOSSARY.md) › **12-ssh.md** › [Example](../examples/12_ssh_example.sh) › [Tests](../tests/12-ssh.test.sh)
+
+- **Source File:** [`functions/12-ssh.sh`](../functions/12-ssh.sh)
 - **Description:** SSH connection, command execution, SCP file copy, and tunnel management utilities supporting key or password authentication.
 
 ---

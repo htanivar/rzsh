@@ -1,6 +1,8 @@
 # Evidence Collector Module Reference
 
-- **Source File:** [`functions/99-evidences.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/99-evidences.sh)
+**Navigation:** [README](../README.md) › [GLOSSARY](../GLOSSARY.md) › **99-evidences.md** › [Example](../examples/99_evidences_example.sh) › [Tests](../tests/99-evidences.test.sh)
+
+- **Source File:** [`functions/99-evidences.sh`](../functions/99-evidences.sh)
 - **Description:** Comprehensive system metadata audit incident logs collector.
 
 ---

@@ -1,6 +1,8 @@
 # Input & Format Validation Module Reference
 
-- **Source File:** [`functions/04-validation.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/04-validation.sh)
+**Navigation:** [README](../README.md) › [GLOSSARY](../GLOSSARY.md) › **04-validation.md** › [Example](../examples/04_validation_example.sh) › [Tests](../tests/04-validation.test.sh)
+
+- **Source File:** [`functions/04-validation.sh`](../functions/04-validation.sh)
 - **Description:** Format checkers for data structures, numbers, urls, dates, and JWTs.
 
 ---

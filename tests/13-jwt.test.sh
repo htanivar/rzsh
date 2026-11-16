@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # tests/13-jwt.test.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/13-jwt.md -> examples/13_jwt_example.sh -> tests/13-jwt.test.sh
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Source helpers, config, and target script via RZSH_DIR

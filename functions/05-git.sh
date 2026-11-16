@@ -474,7 +474,7 @@ EOF
   local -a all_changed_files
   all_changed_files=( "${added_files[@]}" "${modified_files[@]}" "${other_files[@]}" )
 
-  # For renames, extract the target (new) filename
+  # For renames, extract the target (ask) filename
   local rf new_part
   for rf in "${renamed_files[@]}"; do
     new_part="${rf##* -> }"

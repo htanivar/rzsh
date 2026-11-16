@@ -1,6 +1,8 @@
 # JSON Web Tokens Module Reference
 
-- **Source File:** [`functions/13-jwt.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/13-jwt.sh)
+**Navigation:** [README](../README.md) › [GLOSSARY](../GLOSSARY.md) › **13-jwt.md** › [Example](../examples/13_jwt_example.sh) › [Tests](../tests/13-jwt.test.sh)
+
+- **Source File:** [`functions/13-jwt.sh`](../functions/13-jwt.sh)
 - **Description:** HS256 generation, signature verification, claims, expiration checking.
 
 ---

@@ -5,11 +5,13 @@ A modular, reusable, and beginner-friendly shell scripting framework built on Zs
 > [!IMPORTANT]
 > Set `export RZSH_DIR="/path/to/rzsh"` in your environment (`~/.zshrc`). Then, to load all framework functions in any script anywhere on your system, you only need two lines at the top: `source "${RZSH_DIR}/config/config.sh"` and `init_config`. That automatically loads every module in `functions/*.sh`! (If `RZSH_DIR` is not set, the framework advises you and falls back automatically.)
 >
-> See [**`GLOSSARY.md`**](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/GLOSSARY.md) for a complete quick-reference list of all framework **variables** and **functions**.
+> See [**`GLOSSARY.md`**](GLOSSARY.md) for a complete quick-reference list of all framework **variables** and **functions**.
+>
+> **Navigation Trail:** `README.md` › [`GLOSSARY.md`](GLOSSARY.md) › [`docs/`](docs) › [`examples/`](examples) › [`tests/`](tests)
 
 ## Table of Contents
 - [Quick Start: Create Your Own Script in 3 Steps](#quick-start-create-your-own-script-in-3-steps)
-- [Framework Glossary (All Variables & Functions)](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/GLOSSARY.md)
+- [Framework Glossary (All Variables & Functions)](GLOSSARY.md)
 - [Guide: Sending HTTP Calls & JSON Payloads (All 5 Ways)](#guide-sending-http-calls--json-payloads-all-5-ways)
 - [Copy-Paste Recipes for Non-Technical Users](#copy-paste-recipes-for-non-technical-users)
 - [Framework Directory Structure](#framework-directory-structure)
@@ -69,7 +71,7 @@ chmod +x my_script.sh
 
 When calling REST APIs (`POST`, `PUT`, `PATCH`), typing JSON inside quotes on a single command line is hard to read and easy to break.
 
-With this framework's HTTP module ([`functions/06-http.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/06-http.sh)), **you do not have to pass messy escaped strings**. You can create a clean `.json` file and pass it directly as input!
+With this framework's HTTP module ([`functions/06-http.sh`](functions/06-http.sh)), **you do not have to pass messy escaped strings**. You can create a clean `.json` file and pass it directly as input!
 
 ### Way 1 (Recommended for Non-Technical Users): Pass a `.json` File Directly
 Create a normal `.json` file (using any text editor or inside your script) and pass the file path directly to `http_post`, `http_put`, or `http_patch`:
@@ -207,7 +209,7 @@ file_write "${target_file}" "mode=standard"
 backup_path=$(file_backup "${target_file}")
 log_info "Backup saved at: ${backup_path}"
 
-# Append a new line to the file
+# Append a ask line to the file
 file_append "${target_file}" "updated_by=automation"
 
 # If something goes wrong, restore from backup in one command:
@@ -272,51 +274,51 @@ git_report_missed_commits "${target_branch}" "${release_branch}" "./logs/backpor
 
 ## Module Reference Directory
 
-Click on any module link to view its detailed usage guide and function signatures:
+Click on any module link to view its source, detailed usage guide, runnable example, or unit tests:
 
-| ID | Module Name | Source File | Usage Guide |
-|---|---|---|---|
-| 00 | Global Configuration | [`config/config.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/config/config.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/00-config.md) |
-| 01 | Logging Utility | [`functions/01-logs.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/01-logs.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/01-logs.md) |
-| 02 | Error Handling | [`functions/02-errors.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/02-errors.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/02-errors.md) |
-| 03 | File Navigation & Git Checks | [`functions/03-navigation.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/03-navigation.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/03-navigation.md) |
-| 04 | Input & Format Validation | [`functions/04-validation.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/04-validation.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/04-validation.md) |
-| 05 | Git Operations | [`functions/05-git.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/05-git.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/05-git.md) |
-| 06 | HTTP Client Wrapper | [`functions/06-http.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/06-http.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/06-http.md) |
-| 07 | Interactive Prompts | [`functions/07-user-actions.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/07-user-actions.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/07-user-actions.md) |
-| 08 | Time & Duration | [`functions/08-datetime.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/08-datetime.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/08-datetime.md) |
-| 09 | File Utilities | [`functions/09-file.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/09-file.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/09-file.md) |
-| 10 | Directory Management | [`functions/10-directory.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/10-directory.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/10-directory.md) |
-| 11 | String Formatting | [`functions/11-string.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/11-string.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/11-string.md) |
-| 12 | SSH & SCP Client | [`functions/12-ssh.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/12-ssh.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/12-ssh.md) |
-| 13 | JSON Web Tokens | [`functions/13-jwt.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/13-jwt.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/13-jwt.md) |
-| 14 | JQ JSON Parser | [`functions/14-jq.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/14-jq.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/14-jq.md) |
-| 15 | Config Variables & Repos | [`functions/15-variables.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/15-variables.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/15-variables.md) |
-| 97 | Zsh Loops Guide (Beginner Copy-Paste) | — | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/97-loops.md) |
-| 98 | Zsh Control Statements Guide (Beginner Copy-Paste) | — | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/98-control-statements.md) |
-| 99 | Evidence Collector | [`functions/99-evidences.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/99-evidences.sh) | [Usage Documentation](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/99-evidences.md) |
+| ID | Module Name | Source File | Usage Guide | Example Script | Unit Tests |
+|---|---|---|---|---|---|
+| 00 | Global Configuration | [`config/config.sh`](config/config.sh) | [Usage Documentation](docs/00-config.md) | [`00_config_example.sh`](examples/00_config_example.sh) | — |
+| 01 | Logging Utility | [`functions/01-logs.sh`](functions/01-logs.sh) | [Usage Documentation](docs/01-logs.md) | [`01_logs_example.sh`](examples/01_logs_example.sh) | [`01-logs.test.sh`](tests/01-logs.test.sh) |
+| 02 | Error Handling | [`functions/02-errors.sh`](functions/02-errors.sh) | [Usage Documentation](docs/02-errors.md) | [`02_errors_example.sh`](examples/02_errors_example.sh) | [`02-errors.test.sh`](tests/02-errors.test.sh) |
+| 03 | File Navigation & Git Checks | [`functions/03-navigation.sh`](functions/03-navigation.sh) | [Usage Documentation](docs/03-navigation.md) | [`03_navigation_example.sh`](examples/03_navigation_example.sh) | [`03-navigation.test.sh`](tests/03-navigation.test.sh) |
+| 04 | Input & Format Validation | [`functions/04-validation.sh`](functions/04-validation.sh) | [Usage Documentation](docs/04-validation.md) | [`04_validation_example.sh`](examples/04_validation_example.sh) | [`04-validation.test.sh`](tests/04-validation.test.sh) |
+| 05 | Git Operations | [`functions/05-git.sh`](functions/05-git.sh) | [Usage Documentation](docs/05-git.md) | [`05_git_example.sh`](examples/05_git_example.sh) | [`05-git.test.sh`](tests/05-git.test.sh) |
+| 06 | HTTP Client Wrapper | [`functions/06-http.sh`](functions/06-http.sh) | [Usage Documentation](docs/06-http.md) | [`06_http_example.sh`](examples/06_http_example.sh) | [`06-http.test.sh`](tests/06-http.test.sh) |
+| 07 | Interactive Prompts | [`functions/07-user-actions.sh`](functions/07-user-actions.sh) | [Usage Documentation](docs/07-user-actions.md) | [`07_user_actions_example.sh`](examples/07_user_actions_example.sh) | [`07-user-actions.test.sh`](tests/07-user-actions.test.sh) |
+| 08 | Time & Duration | [`functions/08-datetime.sh`](functions/08-datetime.sh) | [Usage Documentation](docs/08-datetime.md) | [`08_datetime_example.sh`](examples/08_datetime_example.sh) | [`08-datetime.test.sh`](tests/08-datetime.test.sh) |
+| 09 | File Utilities | [`functions/09-file.sh`](functions/09-file.sh) | [Usage Documentation](docs/09-file.md) | [`09_file_example.sh`](examples/09_file_example.sh) | [`09-file.test.sh`](tests/09-file.test.sh) |
+| 10 | Directory Management | [`functions/10-directory.sh`](functions/10-directory.sh) | [Usage Documentation](docs/10-directory.md) | [`10_directory_example.sh`](examples/10_directory_example.sh) | [`10-directory.test.sh`](tests/10-directory.test.sh) |
+| 11 | String Formatting | [`functions/11-string.sh`](functions/11-string.sh) | [Usage Documentation](docs/11-string.md) | [`11_string_example.sh`](examples/11_string_example.sh) | [`11-string.test.sh`](tests/11-string.test.sh) |
+| 12 | SSH & SCP Client | [`functions/12-ssh.sh`](functions/12-ssh.sh) | [Usage Documentation](docs/12-ssh.md) | [`12_ssh_example.sh`](examples/12_ssh_example.sh) | [`12-ssh.test.sh`](tests/12-ssh.test.sh) |
+| 13 | JSON Web Tokens | [`functions/13-jwt.sh`](functions/13-jwt.sh) | [Usage Documentation](docs/13-jwt.md) | [`13_jwt_example.sh`](examples/13_jwt_example.sh) | [`13-jwt.test.sh`](tests/13-jwt.test.sh) |
+| 14 | JQ JSON Parser | [`functions/14-jq.sh`](functions/14-jq.sh) | [Usage Documentation](docs/14-jq.md) | [`14_jq_example.sh`](examples/14_jq_example.sh) | [`14-jq.test.sh`](tests/14-jq.test.sh) |
+| 15 | Config Variables & Repos | [`functions/15-variables.sh`](functions/15-variables.sh) | [Usage Documentation](docs/15-variables.md) | [`15_variables_example.sh`](examples/15_variables_example.sh) | [`17-variables.test.sh`](tests/17-variables.test.sh) |
+| 97 | Zsh Loops Guide (Beginner Copy-Paste) | — | [Usage Documentation](docs/97-loops.md) | — | — |
+| 98 | Zsh Control Statements Guide (Beginner Copy-Paste) | — | [Usage Documentation](docs/98-control-statements.md) | — | — |
+| 99 | Evidence Collector | [`functions/99-evidences.sh`](functions/99-evidences.sh) | [Usage Documentation](docs/99-evidences.md) | [`99_evidences_example.sh`](examples/99_evidences_example.sh) | [`99-evidences.test.sh`](tests/99-evidences.test.sh) |
 
 ## Executable Example Scripts
 
-Ready-to-run, commented example scripts for every module are located in [`examples/`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/examples):
+Ready-to-run, commented example scripts for every module are located in [`examples/`](examples):
 
-- [`examples/00_config_example.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/examples/00_config_example.sh) — Initializing global paths and defaults
-- [`examples/01_logs_example.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/examples/01_logs_example.sh) — Colored console logs, step counters, and log files
-- [`examples/02_errors_example.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/examples/02_errors_example.sh) — Automatic temporary file cleanup and error exits
-- [`examples/03_navigation_example.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/examples/03_navigation_example.sh) — Directory navigation and project root lookup
-- [`examples/04_validation_example.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/examples/04_validation_example.sh) — Validating emails, URLs, numbers, dates, and JSON
-- [`examples/05_git_example.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/examples/05_git_example.sh) — Checking Git status, branch names, and branch diffs
-- [`examples/06_http_example.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/examples/06_http_example.sh) — HTTP GET/POST/PUT/PATCH/DELETE and all 5 ways to pass `.json` file payloads
-- [`examples/07_user_actions_example.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/examples/07_user_actions_example.sh) — Interactive prompts, hidden passwords, and menus
-- [`examples/08_datetime_example.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/examples/08_datetime_example.sh) — Date math, timestamps, and duration formatting
-- [`examples/09_file_example.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/examples/09_file_example.sh) — Reading, writing, backing up, and hashing files
-- [`examples/10_directory_example.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/examples/10_directory_example.sh) — Creating, listing, syncing, and cleaning folders
-- [`examples/11_string_example.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/examples/11_string_example.sh) — Trimming, splitting, joining, slugifying, and UUIDs
-- [`examples/12_ssh_example.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/examples/12_ssh_example.sh) — Remote SSH commands, SCP transfers, and tunnels
-- [`examples/13_jwt_example.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/examples/13_jwt_example.sh) — Generating, decoding, and verifying JWT tokens
-- [`examples/14_jq_example.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/examples/14_jq_example.sh) — Reading, updating, and converting JSON to YAML
-- [`examples/15_variables_example.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/examples/15_variables_example.sh) — Managing global variables and repository locations
-- [`examples/99_evidences_example.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/examples/99_evidences_example.sh) — Collecting audit evidence snapshots and archives
+- [`examples/00_config_example.sh`](examples/00_config_example.sh) — Initializing global paths and defaults
+- [`examples/01_logs_example.sh`](examples/01_logs_example.sh) — Colored console logs, step counters, and log files
+- [`examples/02_errors_example.sh`](examples/02_errors_example.sh) — Automatic temporary file cleanup and error exits
+- [`examples/03_navigation_example.sh`](examples/03_navigation_example.sh) — Directory navigation and project root lookup
+- [`examples/04_validation_example.sh`](examples/04_validation_example.sh) — Validating emails, URLs, numbers, dates, and JSON
+- [`examples/05_git_example.sh`](examples/05_git_example.sh) — Checking Git status, branch names, and branch diffs
+- [`examples/06_http_example.sh`](examples/06_http_example.sh) — HTTP GET/POST/PUT/PATCH/DELETE and all 5 ways to pass `.json` file payloads
+- [`examples/07_user_actions_example.sh`](examples/07_user_actions_example.sh) — Interactive prompts, hidden passwords, and menus
+- [`examples/08_datetime_example.sh`](examples/08_datetime_example.sh) — Date math, timestamps, and duration formatting
+- [`examples/09_file_example.sh`](examples/09_file_example.sh) — Reading, writing, backing up, and hashing files
+- [`examples/10_directory_example.sh`](examples/10_directory_example.sh) — Creating, listing, syncing, and cleaning folders
+- [`examples/11_string_example.sh`](examples/11_string_example.sh) — Trimming, splitting, joining, slugifying, and UUIDs
+- [`examples/12_ssh_example.sh`](examples/12_ssh_example.sh) — Remote SSH commands, SCP transfers, and tunnels
+- [`examples/13_jwt_example.sh`](examples/13_jwt_example.sh) — Generating, decoding, and verifying JWT tokens
+- [`examples/14_jq_example.sh`](examples/14_jq_example.sh) — Reading, updating, and converting JSON to YAML
+- [`examples/15_variables_example.sh`](examples/15_variables_example.sh) — Managing global variables and repository locations
+- [`examples/99_evidences_example.sh`](examples/99_evidences_example.sh) — Collecting audit evidence snapshots and archives
 
 ## Console Reference Help Manual
 

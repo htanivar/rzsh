@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # tests/04-validation.test.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/04-validation.md -> examples/04_validation_example.sh -> tests/04-validation.test.sh
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Source helpers, config, and target script via RZSH_DIR

@@ -1,6 +1,8 @@
 # Interactive Prompts Module Reference
 
-- **Source File:** [`functions/07-user-actions.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/07-user-actions.sh)
+**Navigation:** [README](../README.md) › [GLOSSARY](../GLOSSARY.md) › **07-user-actions.md** › [Example](../examples/07_user_actions_example.sh) › [Tests](../tests/07-user-actions.test.sh)
+
+- **Source File:** [`functions/07-user-actions.sh`](../functions/07-user-actions.sh)
 - **Description:** User terminal prompts, passwords, select items, and validation loops.
 
 ---

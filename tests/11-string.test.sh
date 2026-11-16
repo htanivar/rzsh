@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # tests/11-string.test.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/11-string.md -> examples/11_string_example.sh -> tests/11-string.test.sh
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Source helpers, config, and target script via RZSH_DIR

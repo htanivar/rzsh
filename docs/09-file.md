@@ -1,6 +1,8 @@
 # File Utilities Module Reference
 
-- **Source File:** [`functions/09-file.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/09-file.sh)
+**Navigation:** [README](../README.md) › [GLOSSARY](../GLOSSARY.md) › **09-file.md** › [Example](../examples/09_file_example.sh) › [Tests](../tests/09-file.test.sh)
+
+- **Source File:** [`functions/09-file.sh`](../functions/09-file.sh)
 - **Description:** File checks, writes, reads, stat sizes, checksums, backups, and search grep.
 
 ---

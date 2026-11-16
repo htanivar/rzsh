@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # examples/11_string_example.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/11-string.md -> examples/11_string_example.sh -> tests/11-string.test.sh
 # Non-technical guide to text formatting, UUIDs, pad, split/join, case changes.
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 

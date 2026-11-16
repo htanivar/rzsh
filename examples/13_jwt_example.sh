@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # examples/13_jwt_example.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/13-jwt.md -> examples/13_jwt_example.sh -> tests/13-jwt.test.sh
 # Non-technical guide to generating and validating JSON Web Tokens (JWT).
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 

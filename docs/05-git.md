@@ -1,7 +1,9 @@
 # Git Operations Module Reference
 
-- **Source File:** [`functions/05-git.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/05-git.sh)
-- **Example Script:** [`examples/05_git_example.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/examples/05_git_example.sh)
+**Navigation:** [README](../README.md) › [GLOSSARY](../GLOSSARY.md) › **05-git.md** › [Example](../examples/05_git_example.sh) › [Tests](../tests/05-git.test.sh)
+
+- **Source File:** [`functions/05-git.sh`](../functions/05-git.sh)
+- **Example Script:** [`examples/05_git_example.sh`](../examples/05_git_example.sh)
 - **Description:** Git repository operations and commit meta metrics.
 
 ---

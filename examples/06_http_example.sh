@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # examples/06_http_example.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/06-http.md -> examples/06_http_example.sh -> tests/06-http.test.sh
 # Non-technical guide to performing HTTP GET, POST, PUT, PATCH & DELETE calls
 # and all the different ways you can pass JSON payloads (especially using .json files).
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"

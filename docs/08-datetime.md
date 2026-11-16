@@ -1,6 +1,8 @@
 # Time & Duration Module Reference
 
-- **Source File:** [`functions/08-datetime.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/08-datetime.sh)
+**Navigation:** [README](../README.md) › [GLOSSARY](../GLOSSARY.md) › **08-datetime.md** › [Example](../examples/08_datetime_example.sh) › [Tests](../tests/08-datetime.test.sh)
+
+- **Source File:** [`functions/08-datetime.sh`](../functions/08-datetime.sh)
 - **Description:** Date additions, subtractions, ranges, durations, and Unix conversions.
 
 ---

@@ -1,6 +1,8 @@
 # Logging Utility Module Reference
 
-- **Source File:** [`functions/01-logs.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/01-logs.sh)
+**Navigation:** [README](../README.md) › [GLOSSARY](../GLOSSARY.md) › **01-logs.md** › [Example](../examples/01_logs_example.sh) › [Tests](../tests/01-logs.test.sh)
+
+- **Source File:** [`functions/01-logs.sh`](../functions/01-logs.sh)
 - **Description:** Formatted colored logging output and file logging.
 
 ---
