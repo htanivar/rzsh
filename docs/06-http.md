@@ -161,3 +161,45 @@ download_file "https://example.com/report.pdf" "./logs/report.pdf"
 ```zsh
 res=$(http_get_with_retry "https://api.example.com/health" 5)
 ```
+
+---
+
+## Default HTTP Headers & Header Builder
+
+`init_config` initializes `HTTP_DEFAULT_HEADERS` from `HTTP_CONTENT_TYPE`, `HTTP_ACCEPT`, `HTTP_AUTH_TOKEN`, `HTTP_VAULT_TOKEN`, and `HTTP_VAULT_REQUEST`. All `http_*` functions automatically merge `HTTP_DEFAULT_HEADERS` with any per-request headers you pass (per-request headers override matching default keys case-insensitively).
+
+### `http_build_headers`
+* **Signature:** `http_build_headers [headers...]`
+* **Description:** Builds a newline-separated `"Key: Value"` header string by merging `HTTP_DEFAULT_HEADERS` with any extra or override headers.
+```zsh
+headers=$(http_build_headers "X-Request-Id: req-42" "Accept: text/plain")
+```
+
+### `http_set_default_header`
+* **Signature:** `http_set_default_header <name> <value>`
+* **Description:** Sets or updates a default HTTP header in `HTTP_DEFAULT_HEADERS` (case-insensitive key replacement). Passing an empty value unsets the header.
+```zsh
+http_set_default_header "Authorization" "Bearer my-secret-token"
+http_set_default_header "X-Vault-Request" "true"
+```
+
+### `http_get_default_header`
+* **Signature:** `http_get_default_header <name>`
+* **Description:** Retrieves a default HTTP header value from `HTTP_DEFAULT_HEADERS` (case-insensitive lookup).
+```zsh
+ct=$(http_get_default_header "Content-Type")
+```
+
+### `http_unset_default_header`
+* **Signature:** `http_unset_default_header <name>`
+* **Description:** Removes a default HTTP header from `HTTP_DEFAULT_HEADERS` (case-insensitive lookup).
+```zsh
+http_unset_default_header "X-Vault-Request"
+```
+
+### `http_clear_default_headers`
+* **Signature:** `http_clear_default_headers`
+* **Description:** Clears all entries from `HTTP_DEFAULT_HEADERS`.
+```zsh
+http_clear_default_headers
+```
