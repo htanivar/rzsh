@@ -295,6 +295,7 @@ Click on any module link to view its source, detailed usage guide, runnable exam
 | 14 | JQ JSON Parser | [`functions/14-jq.sh`](functions/14-jq.sh) | [Usage Documentation](docs/14-jq.md) | [`14_jq_example.sh`](examples/14_jq_example.sh) | [`14-jq.test.sh`](tests/14-jq.test.sh) |
 | 15 | Config Variables & Repos | [`functions/15-variables.sh`](functions/15-variables.sh) | [Usage Documentation](docs/15-variables.md) | [`15_variables_example.sh`](examples/15_variables_example.sh) | [`17-variables.test.sh`](tests/17-variables.test.sh) |
 | 16 | Data Masking & Redaction | [`functions/16-mask.sh`](functions/16-mask.sh) | [Usage Documentation](docs/16-mask.md) | [`16_mask_example.sh`](examples/16_mask_example.sh) | [`16-mask.test.sh`](tests/16-mask.test.sh) |
+| 17 | Mocking & Test Stubs | [`functions/17-mock.sh`](functions/17-mock.sh) | [Usage Documentation](docs/17-mock.md) | [`17_mock_example.sh`](examples/17_mock_example.sh) | [`17-mock.test.sh`](tests/17-mock.test.sh) |
 | 97 | Zsh Loops Guide (Beginner Copy-Paste) | — | [Usage Documentation](docs/97-loops.md) | — | — |
 | 98 | Zsh Control Statements Guide (Beginner Copy-Paste) | — | [Usage Documentation](docs/98-control-statements.md) | — | — |
 | 99 | Evidence Collector | [`functions/99-evidences.sh`](functions/99-evidences.sh) | [Usage Documentation](docs/99-evidences.md) | [`99_evidences_example.sh`](examples/99_evidences_example.sh) | [`99-evidences.test.sh`](tests/99-evidences.test.sh) |
@@ -320,6 +321,7 @@ Ready-to-run, commented example scripts for every module are located in [`exampl
 - [`examples/14_jq_example.sh`](examples/14_jq_example.sh) — Reading, updating, and converting JSON to YAML
 - [`examples/15_variables_example.sh`](examples/15_variables_example.sh) — Managing global variables and repository locations
 - [`examples/16_mask_example.sh`](examples/16_mask_example.sh) — Masking secrets, tokens, PII, JSON fields, and config lines
+- [`examples/17_mock_example.sh`](examples/17_mock_example.sh) — Generating dummy strings, passwords, JWTs, Vault tokens, arrays, JSON, and mocking CLI/HTTP calls
 - [`examples/99_evidences_example.sh`](examples/99_evidences_example.sh) — Collecting audit evidence snapshots and archives
 
 ## Console Reference Help Manual
