@@ -143,6 +143,40 @@ test_file_head_tail_grep() {
   rm -f "${test_file}"
 }
 
+test_file_read_to_array() {
+  file_write "${test_file}" $'alpha\n\nbeta gamma\n   \ndelta'
+
+  # 1. Read all lines (including blank lines) into named array
+  local -a lines
+  file_read_to_array "${test_file}" "lines"
+  assert_equals "5" "${#lines[@]}" "Should read all 5 lines including blank lines"
+  assert_equals "alpha" "${lines[1]}" "First element should be alpha"
+  assert_equals "" "${lines[2]}" "Second element should be empty line"
+  assert_equals "beta gamma" "${lines[3]}" "Third element should preserve spaces"
+  assert_equals "delta" "${lines[5]}" "Fifth element should be delta"
+
+  # 2. Read with skip_empty=1 and loop over results
+  local -a non_empty
+  file_read_to_array "${test_file}" "non_empty" 1
+  assert_equals "3" "${#non_empty[@]}" "skip_empty=1 should skip blank and whitespace-only lines"
+
+  local joined="" item
+  for item in "${non_empty[@]}"; do
+    joined+="${item}|"
+  done
+  assert_equals "alpha|beta gamma|delta|" "${joined}" "Looping over populated array should yield expected items"
+
+  # 3. Default array name FILE_LINES
+  file_read_to_array "${test_file}" "" 1
+  assert_equals "3" "${#FILE_LINES[@]}" "Default FILE_LINES array should be populated"
+
+  # 4. Missing file & invalid array name should fail
+  assert_false "file_read_to_array '${test_file}.missing' 'lines'" "Missing file should return 1"
+  assert_false "file_read_to_array '${test_file}' '123-invalid'" "Invalid array name should return 1"
+
+  rm -f "${test_file}"
+}
+
 run_test test_file_exists
 run_test test_file_write_and_read
 run_test test_file_append
@@ -153,5 +187,6 @@ run_test test_file_backup_and_restore
 run_test test_file_permissions_owner_group
 run_test test_file_hash
 run_test test_file_head_tail_grep
+run_test test_file_read_to_array
 
 exit $(( TESTS_FAILED > 0 ? 1 : 0 ))

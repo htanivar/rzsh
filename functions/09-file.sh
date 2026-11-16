@@ -51,6 +51,46 @@ file_read() {
 }
 
 # /**
+#  * @function file_read_to_array
+#  * @description Reads a file line-by-line into a Zsh array variable for iteration/looping.
+#  * @param {string} file - The file path to read.
+#  * @param {string} [array_name=FILE_LINES] - Name of the target array variable to populate.
+#  * @param {number} [skip_empty=0] - Set to 1 to skip blank/empty lines.
+#  * @return {number} 0 on success, 1 if the file does not exist or array_name is invalid.
+#  * @example
+#  *   local -a lines
+#  *   file_read_to_array "hosts.txt" "lines" 1
+#  *   for line in "${lines[@]}"; do
+#  *     echo "${line}"
+#  *   done
+#  */
+file_read_to_array() {
+  local _file="$1"
+  local _array_name="${2:-FILE_LINES}"
+  local _skip_empty="${3:-0}"
+
+  if [[ ! -f "${_file}" ]]; then
+    return 1
+  fi
+
+  if [[ ! "${_array_name}" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]]; then
+    return 1
+  fi
+
+  local -a _lines
+  local _line
+  while IFS= read -r _line || [[ -n "${_line}" ]]; do
+    if (( _skip_empty == 1 )) && [[ -z "${_line//[[:space:]]/}" ]]; then
+      continue
+    fi
+    _lines+=("${_line}")
+  done < "${_file}"
+
+  set -A "${_array_name}" "${_lines[@]}"
+  return 0
+}
+
+# /**
 #  * @function file_write
 #  * @description Writes the specified content to a file, overwriting its previous contents.
 #  * @param {string} file - The target file path.

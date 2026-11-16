@@ -38,4 +38,15 @@ echo "SHA-256 Checksum: ${sha}"
 # 6. Read parts or search patterns
 echo "File content match search:"
 file_grep "${my_file}" "appended"
+
+# 7. Read file into an array and loop over each line
+local -a file_lines
+file_read_to_array "${my_file}" "file_lines" 1
+echo "Looping over ${#file_lines[@]} lines from ${my_file}:"
+local idx=1
+for line in "${file_lines[@]}"; do
+  echo "  [${idx}] ${line}"
+  (( idx++ ))
+done
+
 rm -f "${my_file}" "${backup_file}"
