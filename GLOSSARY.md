@@ -121,6 +121,13 @@ The table below lists all variable keys initialized or managed by the framework 
 | `git_get_commit_hash` | `git_get_commit_hash [short=0]` | Prints the full (or short if `1`) SHA hash of `HEAD`. |
 | `git_get_commit_message` | `git_get_commit_message [commit="HEAD"]` | Prints the commit message of the specified commit ref. |
 | `git_compare_branches` | `git_compare_branches [options] <base> <target>` | Compares two branches (honoring `GIT_IGNORE_FOLDERS`) and generates a detailed Markdown diff report. |
+| `git_detect_default_branch` | `git_detect_default_branch` | Detects the repository's default branch (`origin/HEAD`, `develop`, `main`, or `master`). |
+| `git_resolve_ref` | `git_resolve_ref <branch>` | Resolves a branch name to its local ref or `origin/<branch>` remote ref. |
+| `git_list_branches` | `git_list_branches [pattern]` | Lists unique local and `origin` branch names, optionally filtered by a glob pattern (e.g., `release/*`). |
+| `git_get_missed_commits` | `git_get_missed_commits <target> <source>` | Outputs SHAs of commits in `<source>` not backported to `<target>` (patch-id aware via `git cherry`). |
+| `git_format_commit` | `git_format_commit [commit="HEAD"]` | Formats a commit as `<short_hash> \| <date> \| <author> \| <subject>`. |
+| `git_pick_branch` | `git_pick_branch <prompt> [pattern]` | Prompts the user to select a branch matching `[pattern]` (falling back to all branches). |
+| `git_report_missed_commits` | `git_report_missed_commits <target> <release> [output_file] [silent]` | Highlights release commits missing from `<target>` and optionally writes a Markdown report. |
 
 ### 06. HTTP Client Wrapper ([`functions/06-http.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/06-http.sh) | [Docs](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/06-http.md))
 

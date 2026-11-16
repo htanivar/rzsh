@@ -224,6 +224,20 @@ init_config
 git_compare_branches --output "./logs/branch_diff_report.md" main
 ```
 
+### Recipe 4: Find Release Commits Not Backported to the Default Branch
+```zsh
+#!/usr/bin/env zsh
+source "${RZSH_DIR}/config/config.sh"
+init_config
+
+# 1. Detect default branch (develop/main/master) and pick a release branch
+target_branch=$(git_detect_default_branch)
+release_branch=$(git_pick_branch "Select release branch:" "release/*")
+
+# 2. Highlight commits missing from the default branch (also available via scripts/04-git/check_release_backport.sh)
+git_report_missed_commits "${target_branch}" "${release_branch}" "./logs/backport_report.md"
+```
+
 ---
 
 ## Framework Directory Structure

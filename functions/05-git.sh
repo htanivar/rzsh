@@ -584,3 +584,204 @@ EOF
 
   restore_and_return 0
 }
+
+# /**
+#  * @function git_detect_default_branch
+#  * @description Detects the repository's default branch (origin/HEAD, develop, main, or master).
+#  * @param None
+#  * @return {string} Outputs the detected default branch name, or returns 1 if none found.
+#  * @example
+#  *   local default_branch
+#  *   default_branch=$(git_detect_default_branch)
+#  */
+git_detect_default_branch() {
+  local origin_head
+  origin_head=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null)
+  if [[ -n "${origin_head}" ]]; then
+    origin_head="${origin_head#origin/}"
+    if git_branch_exists "${origin_head}"; then
+      echo "${origin_head}"
+      return 0
+    fi
+  fi
+
+  local candidate
+  for candidate in develop main master; do
+    if git_branch_exists "${candidate}"; then
+      echo "${candidate}"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+# /**
+#  * @function git_resolve_ref
+#  * @description Resolves a branch name to a local ref or origin remote ref.
+#  * @param {string} branch - Branch name to resolve.
+#  * @return {string} Resolved ref name.
+#  */
+git_resolve_ref() {
+  local branch="$1"
+  if [[ -z "${branch}" ]]; then
+    return 1
+  fi
+  if git show-ref --verify --quiet "refs/heads/${branch}"; then
+    echo "${branch}"
+  elif git show-ref --verify --quiet "refs/remotes/origin/${branch}"; then
+    echo "origin/${branch}"
+  else
+    echo "${branch}"
+  fi
+}
+
+# /**
+#  * @function git_list_branches
+#  * @description Lists unique local and origin branch names, optionally filtered by a glob pattern.
+#  * @param {string} [pattern] - Optional glob pattern (e.g., "release/*").
+#  * @return {string} Newline-separated list of branch names.
+#  */
+git_list_branches() {
+  local pattern="$1"
+  local -a branches
+  local ref_line clean_ref
+
+  while IFS= read -r ref_line; do
+    clean_ref="${ref_line#origin/}"
+    [[ -z "${clean_ref}" || "${clean_ref}" == "HEAD" ]] && continue
+    if [[ -z "${pattern}" || "${clean_ref}" == ${~pattern} ]]; then
+      branches+=("${clean_ref}")
+    fi
+  done < <(git for-each-ref --format='%(refname:short)' refs/heads refs/remotes/origin 2>/dev/null)
+
+  branches=( ${(u)branches} )
+  printf "%s\n" "${branches[@]}"
+}
+
+# /**
+#  * @function git_get_missed_commits
+#  * @description Outputs SHAs of commits in source_branch that have not been backported to target_branch.
+#  * @param {string} target_branch - Target/default branch (e.g., develop).
+#  * @param {string} source_branch - Source/release branch (e.g., release/1.0.0).
+#  * @return {string} Newline-separated list of missed commit SHAs.
+#  */
+git_get_missed_commits() {
+  local target_branch="$1"
+  local source_branch="$2"
+  if [[ -z "${target_branch}" || -z "${source_branch}" ]]; then
+    return 1
+  fi
+
+  local target_ref source_ref
+  target_ref=$(git_resolve_ref "${target_branch}")
+  source_ref=$(git_resolve_ref "${source_branch}")
+
+  local cherry_line sign sha
+  while IFS= read -r cherry_line; do
+    [[ -z "${cherry_line}" ]] && continue
+    sign="${cherry_line%% *}"
+    if [[ "${sign}" == "+" ]]; then
+      sha="${cherry_line#* }"
+      echo "${sha%% *}"
+    fi
+  done < <(git cherry -v "${target_ref}" "${source_ref}" 2>/dev/null)
+}
+
+# /**
+#  * @function git_format_commit
+#  * @description Formats a commit as "<short_hash> | <date> | <author> | <subject>".
+#  * @param {string} [commit_hash=HEAD] - Commit hash.
+#  * @return {string} Formatted commit summary line.
+#  */
+git_format_commit() {
+  local commit_hash="${1:-HEAD}"
+  git log -1 --format="%h | %ad | %an | %s" --date=short "${commit_hash}" 2>/dev/null
+}
+
+# /**
+#  * @function git_pick_branch
+#  * @description Prompts the user to select a branch (optionally filtered by pattern, falling back to all branches).
+#  * @param {string} prompt - Prompt message.
+#  * @param {string} [pattern] - Optional glob pattern (e.g., "release/*").
+#  * @return {string} Selected branch name.
+#  */
+git_pick_branch() {
+  local prompt="$1"
+  local pattern="$2"
+  local -a candidates
+  candidates=( ${(f)"$(git_list_branches "${pattern}")"} )
+  if [[ ${#candidates} -eq 0 && -n "${pattern}" ]]; then
+    candidates=( ${(f)"$(git_list_branches)"} )
+  fi
+
+  if [[ ${#candidates} -gt 0 ]]; then
+    select_option "${prompt}" "${candidates[@]}"
+  else
+    read_input "${prompt}"
+  fi
+}
+
+# /**
+#  * @function git_report_missed_commits
+#  * @description Prints (and optionally writes to Markdown) commits in release_branch missing from target_branch.
+#  * @param {string} target_branch - Target/default branch.
+#  * @param {string} release_branch - Release branch to check.
+#  * @param {string} [output_file] - Optional Markdown report path.
+#  * @param {number} [silent_mode=0] - 1 to suppress stdout.
+#  * @return {number} 0 on success, 1 on invalid branch.
+#  */
+git_report_missed_commits() {
+  local target_branch="$1"
+  local release_branch="$2"
+  local output_file="$3"
+  local silent_mode="${4:-0}"
+
+  if ! git_branch_exists "${target_branch}"; then
+    log_error "Target branch '${target_branch}' does not exist."
+    return 1
+  fi
+  if ! git_branch_exists "${release_branch}"; then
+    log_error "Release branch '${release_branch}' does not exist."
+    return 1
+  fi
+
+  local -a missed_shas
+  missed_shas=( ${(f)"$(git_get_missed_commits "${target_branch}" "${release_branch}")"} )
+
+  local bold="\033[1m" red="\033[31m" green="\033[32m" yellow="\033[33m" cyan="\033[36m" reset="\033[0m"
+  local term_out="" md_out=""
+  md_out+="# Release Backport Check\n\n"
+  md_out+="- **Release Branch:** \`${release_branch}\`\n"
+  md_out+="- **Target Branch:** \`${target_branch}\`\n"
+  md_out+="- **Missing (Not Backported):** ${#missed_shas}\n\n"
+
+  term_out+="${bold}================================================================================${reset}\n"
+  term_out+="${bold}  Release Backport Check: ${cyan}${release_branch}${reset}${bold} -> ${cyan}${target_branch}${reset}\n"
+  term_out+="${bold}================================================================================${reset}\n"
+  term_out+="  Missing commits: ${#missed_shas}\n\n"
+
+  if [[ ${#missed_shas} -eq 0 ]]; then
+    term_out+="${green}All commits from '${release_branch}' are present in '${target_branch}'.${reset}\n"
+    md_out+="All commits from \`${release_branch}\` are present in \`${target_branch}\`.\n"
+  else
+    term_out+="${red}${bold}Commits in '${release_branch}' NOT backported to '${target_branch}':${reset}\n"
+    md_out+="## Missing Commits\n\n"
+    local sha info
+    for sha in "${missed_shas[@]}"; do
+      [[ -z "${sha}" ]] && continue
+      info=$(git_format_commit "${sha}")
+      term_out+="  ${yellow}[MISSING]${reset} ${info}\n"
+      md_out+="- \`${info}\`\n"
+    done
+    md_out+="\n"
+  fi
+
+  [[ "${silent_mode}" -ne 1 ]] && printf "%b" "${term_out}"
+
+  if [[ -n "${output_file}" ]]; then
+    mkdir -p "${output_file:h}"
+    printf "%b" "${md_out}" > "${output_file}"
+    log_info "Markdown report written to: ${output_file:A}"
+  fi
+}
