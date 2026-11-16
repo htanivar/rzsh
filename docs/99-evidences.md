@@ -15,6 +15,47 @@ To use the Evidence Collector module, source the configuration script via `RZSH_
 ```zsh
 source "${RZSH_DIR}/config/config.sh"
 init_config
+init_logging
+init_evidence
+```
+
+### Keeping Console Output & Log Files Identical
+Calling `init_logging` sets `CURRENT_LOG_FILE`. Using `log_info`, `log_steps`, `log_warn`, `log_error`, and `log_command` writes the exact same timestamped output to **both** your terminal and `${CURRENT_LOG_FILE}`. Attach `${CURRENT_LOG_FILE}` at the end of your script so the evidence bundle contains the complete console transcript:
+
+```zsh
+log_steps "Deploying configuration..."
+log_command "ls -la ${PROJECT_ROOT}/config"
+cp "${CURRENT_LOG_FILE}" "${CURRENT_EVIDENCE_DIR}/execution.log"
+collect_file_evidence "${CURRENT_EVIDENCE_DIR}/execution.log"
+```
+
+> **Tip:** If you also use plain `echo` or external commands, you can mirror all stdout/stderr to `${CURRENT_LOG_FILE}` automatically with:
+> `exec > >(tee -a "${CURRENT_LOG_FILE}") 2>&1`
+
+### Redirecting HTTP Call Output into Evidence (with Masking)
+Capture `http_get` / `http_post` responses, mask sensitive fields using [`mask_json_fields`](16-mask.md#mask_json_fields), and save both the response file and a structured summary:
+
+```zsh
+res=$(http_get "https://api.example.com/health")
+code=$(check_status_code "${res}")
+body=$(http_get_body "${res}")
+safe_body=$(mask_json_fields "${body}" "token,password,secret")
+
+printf '%s\n' "${safe_body}" > "${CURRENT_EVIDENCE_DIR}/http_response.json"
+collect_file_evidence "${CURRENT_EVIDENCE_DIR}/http_response.json"
+collect_custom_evidence "{\"http_status\":\"${code}\",\"endpoint\":\"/health\"}"
+```
+
+### Capturing What a Function Did
+Log each step inside your function and call `collect_custom_evidence` with a JSON summary of inputs, status codes, and results:
+
+```zsh
+my_task() {
+  local env_name="$1"
+  log_steps "Running task for ${env_name}"
+  log_command "git status --short"
+  collect_custom_evidence "{\"function\":\"my_task\",\"env\":\"${env_name}\",\"status\":\"completed\"}"
+}
 ```
 
 ---

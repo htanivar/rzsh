@@ -71,6 +71,45 @@ test_evidence_lifecycle() {
   rm -rf "${CURRENT_EVIDENCE_DIR}" "${archive}"
 }
 
+test_evidence_http_and_log_capture() {
+  local LOG_DIR="${PROJECT_ROOT}/logs/test_ev_logs_$$"
+  init_logging
+  init_evidence
+
+  log_info "Starting audited HTTP check"
+  mock_http_response '{"status":"ok","token":"secret-abc"}' 200
+  local res code body safe_body
+  res=$(http_get "https://example.com/health")
+  code=$(check_status_code "${res}")
+  body=$(http_get_body "${res}")
+  safe_body=$(mask_json_fields "${body}" "token")
+  mock_restore "curl"
+
+  local http_file="${CURRENT_EVIDENCE_DIR}/http_out.json"
+  printf '%s\n' "${safe_body}" > "${http_file}"
+  collect_file_evidence "${http_file}"
+
+  # Plain text custom evidence should be wrapped as JSON automatically
+  collect_custom_evidence "Audited HTTP check completed with status ${code}"
+  assert_true "[[ -f \"${CURRENT_EVIDENCE_DIR}/custom.json\" ]]" "custom.json should be created for plain-text evidence"
+
+  cp "${CURRENT_LOG_FILE}" "${CURRENT_EVIDENCE_DIR}/execution.log"
+  assert_true "[[ -f \"${CURRENT_EVIDENCE_DIR}/execution.log\" ]]" "execution.log should be copied from CURRENT_LOG_FILE"
+  collect_file_evidence "${CURRENT_EVIDENCE_DIR}/execution.log"
+
+  local report_md
+  report_md=$(generate_evidence_report)
+  assert_true "[[ -f \"${CURRENT_EVIDENCE_DIR}/report.md\" ]]" "generate_evidence_report should create report.md"
+  assert_true "[[ \"${report_md}\" == *\"# System Evidence Report\"* ]]" "generate_evidence_report should return markdown content"
+
+  local combined
+  combined=$(evidence_to_json)
+  assert_true "evidence_validate '${combined}'" "Consolidated JSON with HTTP + log evidence should be valid"
+
+  rm -rf "${CURRENT_EVIDENCE_DIR}" "${LOG_DIR}"
+}
+
 run_test test_evidence_lifecycle
+run_test test_evidence_http_and_log_capture
 
 exit $(( TESTS_FAILED > 0 ? 1 : 0 ))
