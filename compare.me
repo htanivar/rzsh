@@ -1,0 +1,6 @@
+#!/usr/bin/env zsh
+source "${RZSH_DIR}/config/config.sh"
+init_config
+
+# Compares 'main' and your current branch, saving a clean Markdown summary report
+git_compare_branches --output "./logs/branch_diff_report.md" main
