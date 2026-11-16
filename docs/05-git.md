@@ -1,7 +1,39 @@
 # Git Operations Module Reference
 
 - **Source File:** [`functions/05-git.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/05-git.sh)
+- **Example Script:** [`examples/05_git_example.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/examples/05_git_example.sh)
 - **Description:** Git repository operations and commit meta metrics.
+
+---
+
+## Index
+
+- [Detailed Usage Examples](#detailed-usage-examples)
+  - [Integration Setup](#integration-setup)
+  - [Copy-Paste Script Boilerplate](#copy-paste-script-boilerplate)
+- [Module Variables (Keys)](#module-variables-keys)
+- [Function Signatures & Descriptions](#function-signatures--descriptions)
+  - **Repository & Status**
+    - [`git_get_current_branch`](#git_get_current_branch)
+    - [`git_is_clean`](#git_is_clean)
+    - [`git_get_root`](#git_get_root)
+    - [`git_status_message`](#git_status_message)
+  - **Commit & Remote Sync**
+    - [`git_commit`](#git_commit)
+    - [`git_push` / `git_pull` / `git_safe_pull`](#git_push--git_pull--git_safe_pull)
+  - **Branches & Refs**
+    - [`git_branch_exists`](#git_branch_exists)
+    - [`git_detect_default_branch`](#git_detect_default_branch)
+    - [`git_resolve_ref`](#git_resolve_ref)
+    - [`git_list_branches`](#git_list_branches)
+    - [`git_pick_branch`](#git_pick_branch)
+  - **Commits & Formatting**
+    - [`git_get_commit_hash` / `git_get_commit_message`](#git_get_commit_hash--git_get_commit_message)
+    - [`git_format_commit`](#git_format_commit)
+  - **Comparison & Backport Reports**
+    - [`git_get_missed_commits`](#git_get_missed_commits)
+    - [`git_report_missed_commits`](#git_report_missed_commits)
+    - [`git_compare_branches`](#git_compare_branches)
 
 ---
 
@@ -11,6 +43,22 @@
 To use the Git Operations module, source the configuration script via `RZSH_DIR`, which automatically imports it:
 
 ```zsh
+source "${RZSH_DIR}/config/config.sh"
+init_config
+```
+
+#### Copy-Paste Script Boilerplate
+Use this minimal header when creating a new standalone script:
+
+```zsh
+#!/usr/bin/env zsh
+[ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
+
+if [[ -z "${RZSH_DIR:-}" ]]; then
+  printf '[WARN] RZSH_DIR is not set. Falling back to script parent.\n' >&2
+  export RZSH_DIR="${0:A:h:h}"
+fi
+
 source "${RZSH_DIR}/config/config.sh"
 init_config
 ```
@@ -74,23 +122,29 @@ git_status_message
 ### `git_commit`
 
 * **Signature:** `git_commit <commit_message>`
-* **Description:** Stages all tracked modifications (`git add -u`) and commits them with the given message.
+* **Description:** Stages all changes (`git add -A`) and commits them with the given message. Returns `1` if the commit message is empty.
 
 #### Example Code:
 ```zsh
-git_commit "feat: add user auth"
+if ! git_is_clean; then
+  git_commit "feat: add user auth" || log_error "Commit failed"
+fi
 ```
 
 ---
 ### `git_push / git_pull / git_safe_pull`
 
-* **Signature:** `git_push [remote] [branch]` / `git_pull [remote] [branch]` / `git_safe_pull [remote] [branch]`
-* **Description:** Pushes or pulls changes from a remote branch. `git_safe_pull` ensures the working tree is clean before pulling with `--ff-only`.
+* **Signature:** `git_push` / `git_pull` / `git_safe_pull`
+* **Description:** Pushes or pulls changes for the current branch on `origin`. `git_safe_pull` stashes any local uncommitted changes (`git stash -u`), pulls from `origin`, and pops the stash afterward.
 
 #### Example Code:
 ```zsh
-git_safe_pull "origin" "main"
-git_push "origin" "main"
+# Safely pull latest changes even with local edits
+git_safe_pull || error_exit "Failed to pull latest changes"
+
+# Standard pull / push for the current branch
+git_pull
+git_push
 ```
 
 ---
@@ -107,20 +161,123 @@ git_branch_exists "main"
 ---
 ### `git_get_commit_hash / git_get_commit_message`
 
-* **Signature:** `git_get_commit_hash [short=0]` / `git_get_commit_message [commit_ref="HEAD"]`
-* **Description:** Outputs the SHA-1 commit hash (full or short) or the commit message for a commit reference.
+* **Signature:** `git_get_commit_hash` / `git_get_commit_message [commit_ref="HEAD"]`
+* **Description:** Outputs the full SHA-1 commit hash of `HEAD`, or the subject line of the commit message for a commit reference.
 
 #### Example Code:
 ```zsh
 local head_sha=$(git_get_commit_hash)
 local head_msg=$(git_get_commit_message "HEAD")
+echo "${head_sha}: ${head_msg}"
+```
+
+---
+### `git_format_commit`
+
+* **Signature:** `git_format_commit [commit_hash="HEAD"]`
+* **Description:** Formats a commit as `<short_hash> | <date> | <author> | <subject>`.
+
+#### Example Code:
+```zsh
+local summary
+summary=$(git_format_commit "HEAD")
+echo "Latest commit: ${summary}"
+```
+
+---
+### `git_detect_default_branch`
+
+* **Signature:** `git_detect_default_branch`
+* **Description:** Detects the repository's default branch by checking `origin/HEAD`, then `develop`, `main`, and `master` in order. Outputs the branch name or returns `1` if none are found.
+
+#### Example Code:
+```zsh
+local default_branch
+default_branch=$(git_detect_default_branch) || error_exit "No default branch found"
+echo "Default branch: ${default_branch}"
+```
+
+---
+### `git_resolve_ref`
+
+* **Signature:** `git_resolve_ref <branch>`
+* **Description:** Resolves a branch name to its local ref (`<branch>`) if present, otherwise to `origin/<branch>` if it exists on the remote (falls back to `<branch>`). Returns `1` if no branch name is provided.
+
+#### Example Code:
+```zsh
+local ref
+ref=$(git_resolve_ref "main")
+git log -n 5 --oneline "${ref}"
+```
+
+---
+### `git_list_branches`
+
+* **Signature:** `git_list_branches [pattern]`
+* **Description:** Lists unique local and `origin` branch names (one per line), optionally filtered by a glob pattern (e.g., `release/*`).
+
+#### Example Code:
+```zsh
+# List all branches
+git_list_branches
+
+# List and iterate over release branches
+local -a release_branches
+release_branches=( ${(f)"$(git_list_branches 'release/*')"} )
+for b in "${release_branches[@]}"; do
+  echo "Release branch: ${b}"
+done
+```
+
+---
+### `git_pick_branch`
+
+* **Signature:** `git_pick_branch <prompt> [pattern]`
+* **Description:** Interactively prompts the user to select a branch (optionally filtered by `[pattern]`, falling back to all branches if none match, or `read_input` if no branches exist). Requires `functions/07-user-actions.sh` (loaded automatically by `init_config`).
+
+#### Example Code:
+```zsh
+local target_branch
+target_branch=$(git_pick_branch "Select a release branch" "release/*")
+echo "Selected branch: ${target_branch}"
+```
+
+---
+### `git_get_missed_commits`
+
+* **Signature:** `git_get_missed_commits <target_branch> <source_branch>`
+* **Description:** Outputs the SHAs of commits in `<source_branch>` that have not yet been backported/applied to `<target_branch>` (patch-id aware via `git cherry -v`).
+
+#### Example Code:
+```zsh
+local -a missed_shas
+missed_shas=( ${(f)"$(git_get_missed_commits "develop" "release/1.0.0")"} )
+for sha in "${missed_shas[@]}"; do
+  [[ -z "${sha}" ]] && continue
+  echo "Missing: $(git_format_commit "${sha}")"
+done
+```
+
+---
+### `git_report_missed_commits`
+
+* **Signature:** `git_report_missed_commits <target_branch> <release_branch> [output_file] [silent_mode=0]`
+* **Description:** Highlights commits in `<release_branch>` that are missing from `<target_branch>`, prints a colorized summary to stdout (unless `silent_mode=1`), and optionally writes a Markdown report to `[output_file]`. Returns `1` if either branch does not exist.
+
+#### Example Code:
+```zsh
+# Print to terminal and save a Markdown report
+git_report_missed_commits "develop" "release/1.0.0" "${PROJECT_ROOT}/logs/backport_report.md"
+
+# Silent mode (file output only)
+git_report_missed_commits "develop" "release/1.0.0" "${PROJECT_ROOT}/logs/backport_report.md" 1
 ```
 
 ---
 ### `git_compare_branches`
 
 * **Signature:** `git_compare_branches [options] [<branch_a>] [<branch_b>]`
-* **Description:** Compares two git branches, outputs a structured summary, and optionally writes a Markdown report.
+* **Description:** Compares two git branches (honoring `GIT_IGNORE_FOLDERS`), outputs a structured summary, and writes a Markdown report (to `--output <file>` or `${PROJECT_ROOT}/evidence/branch_comparison_<timestamp>/comparison_report.md` by default).
 
 #### Options:
 * `-h, --help`: Show help message.
@@ -129,7 +286,11 @@ local head_msg=$(git_get_commit_message "HEAD")
 
 #### Example Code:
 ```zsh
+# Compare two explicit branches and save report silently
 git_compare_branches --silent --output "./report.md" main feature
+
+# Compare default branch (main/master) against current branch
+git_compare_branches
 ```
 
 ---
