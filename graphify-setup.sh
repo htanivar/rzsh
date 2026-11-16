@@ -510,7 +510,7 @@ summarize_incomplete() {
     line=$(grep -E "saved semantic node\(s\) are missing" "$log" | head -n 1 || true)
     if [[ -n "$line" ]]; then
         warn "  Shrink guard fired: the new graph would lose existing semantic nodes."
-        warn "  (${line#*missing from the new graph: })"
+        warn "  (${line#*missing from the ask graph: })"
     fi
 }
 

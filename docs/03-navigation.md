@@ -1,6 +1,8 @@
 # File Navigation & Git Checks Module Reference
 
-- **Source File:** [`functions/03-navigation.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/03-navigation.sh)
+**Navigation:** [README](../README.md) › [GLOSSARY](../GLOSSARY.md) › **03-navigation.md** › [Example](../examples/03_navigation_example.sh) › [Tests](../tests/03-navigation.test.sh)
+
+- **Source File:** [`functions/03-navigation.sh`](../functions/03-navigation.sh)
 - **Description:** Calculates workspace paths relative to active Zsh source trees.
 
 ---

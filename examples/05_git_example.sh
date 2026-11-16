@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # examples/05_git_example.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/05-git.md -> examples/05_git_example.sh -> tests/05-git.test.sh
 # Non-technical guide to Git commands and branch states.
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 

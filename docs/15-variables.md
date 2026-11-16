@@ -1,6 +1,8 @@
 # Configuration Variables Module Reference
 
-- **Source File:** [`functions/15-variables.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/15-variables.sh)
+**Navigation:** [README](../README.md) › [GLOSSARY](../GLOSSARY.md) › **15-variables.md** › [Example](../examples/15_variables_example.sh) › [Tests](../tests/17-variables.test.sh)
+
+- **Source File:** [`functions/15-variables.sh`](../functions/15-variables.sh)
 - **Description:** Dynamic configuration variables getter, setter, and unsetter utilities, with specific wrappers for managing repository locations maps.
 
 ---

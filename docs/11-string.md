@@ -1,6 +1,8 @@
 # String Formatting Module Reference
 
-- **Source File:** [`functions/11-string.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/11-string.sh)
+**Navigation:** [README](../README.md) › [GLOSSARY](../GLOSSARY.md) › **11-string.md** › [Example](../examples/11_string_example.sh) › [Tests](../tests/11-string.test.sh)
+
+- **Source File:** [`functions/11-string.sh`](../functions/11-string.sh)
 - **Description:** Trimming, casing, padding, splitting/joining, slugification, and UUID generation.
 
 ---

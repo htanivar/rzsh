@@ -1,6 +1,8 @@
 # Zsh Control Statements Guide (Copy-Paste Reference for Beginners)
 
-- **Guide File:** [`docs/98-control-statements.md`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/98-control-statements.md)
+**Navigation:** [README](../README.md) › [GLOSSARY](../GLOSSARY.md) › **98-control-statements.md**
+
+- **Guide File:** [`docs/98-control-statements.md`](98-control-statements.md)
 - **Description:** Copy-pasteable control statement templates (`if`, `if-else`, `if-elif-else`, `case/switch`, AND/OR conditions, file/number/string checks, and one-liners) designed for novice users. Copy any block below and change only the highlighted values to fit your needs.
 
 ---
@@ -376,7 +378,7 @@ validate_required "${API_KEY}" || error_exit "API_KEY is required to run this sc
 All `rzsh` validation and prompt functions work directly inside `if` statements (without needing `[[ ]]` brackets!):
 
 ### 7.1 Interactive Yes/No Confirmation (`confirm`)
-From [`docs/07-user-actions.md`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/07-user-actions.md):
+From [`docs/07-user-actions.md`](07-user-actions.md):
 
 ```zsh
 if confirm "Are you sure you want to delete old log files?" "n"; then
@@ -389,7 +391,7 @@ fi
 ---
 
 ### 7.2 Input Validation (`validate_*`)
-From [`docs/04-validation.md`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/04-validation.md):
+From [`docs/04-validation.md`](04-validation.md):
 
 ```zsh
 email="user@example.com"
@@ -424,7 +426,7 @@ fi
 ---
 
 ### 7.3 Checking HTTP Status Codes (`check_status_code`)
-From [`docs/06-http.md`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/06-http.md):
+From [`docs/06-http.md`](06-http.md):
 
 ```zsh
 response=$(http_get "https://httpbin.org/get")

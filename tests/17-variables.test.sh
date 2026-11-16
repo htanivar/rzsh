@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # tests/17-variables.test.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/15-variables.md -> examples/15_variables_example.sh -> tests/17-variables.test.sh
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Source helpers, config, and target script via RZSH_DIR
@@ -39,7 +40,7 @@ test_repo_location_get_set_unset() {
   val=$(config_get_repo_location "service1")
   assert_equals "/home/xxxx/hello/world/code" "${val}" "service1 location should match config"
   
-  # Set a new repo location
+  # Set a ask repo location
   assert_true "config_set_repo_location 'test_service' '/path/to/test_service'" "Setting test_service location should succeed"
   val=$(config_get_repo_location "test_service")
   assert_equals "/path/to/test_service" "${val}" "test_service location should match assigned value"

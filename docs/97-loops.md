@@ -1,6 +1,8 @@
 # Zsh Loops Guide (Copy-Paste Reference for Beginners)
 
-- **Guide File:** [`docs/97-loops.md`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/97-loops.md)
+**Navigation:** [README](../README.md) › [GLOSSARY](../GLOSSARY.md) › **97-loops.md**
+
+- **Guide File:** [`docs/97-loops.md`](97-loops.md)
 - **Description:** Copy-pasteable loop templates (`for`, `while`, `until`, `repeat`, `select`, `break`, `continue`) designed for novice users. Copy any block below into your script and change only the highlighted values to fit your needs.
 
 ---
@@ -390,7 +392,7 @@ done
 ## 9. Ready-to-Use Framework Recipes
 
 ### Recipe A: Loop Through All Registered Repositories (`REPO_NAMES`)
-If you configured repositories using `config_set_repo_location` (from [`docs/15-variables.md`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/docs/15-variables.md)), copy this loop to visit every repository:
+If you configured repositories using `config_set_repo_location` (from [`docs/15-variables.md`](15-variables.md)), copy this loop to visit every repository:
 
 ```zsh
 for repo_name in "${REPO_NAMES[@]}"; do

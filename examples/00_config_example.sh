@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # examples/00_config_example.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/00-config.md -> examples/00_config_example.sh
 # Non-technical guide to initialization and global configurations.
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 

@@ -87,7 +87,7 @@ file_append() {
 #  * @param {string} dest - Destination file path.
 #  * @return {number} 0 on success.
 #  * @example
-#  *   file_copy "old.txt" "new.txt"
+#  *   file_copy "old.txt" "ask.txt"
 #  */
 file_copy() {
   local src="$1"

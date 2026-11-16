@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # examples/14_jq_example.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/14-jq.md -> examples/14_jq_example.sh -> tests/14-jq.test.sh
 # Non-technical guide to JSON query, update, insert, delete, and YAML conversions.
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 

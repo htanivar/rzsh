@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # tests/01-logs.test.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/01-logs.md -> examples/01_logs_example.sh -> tests/01-logs.test.sh
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Source helpers, config, and target script via RZSH_DIR

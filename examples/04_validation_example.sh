@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # examples/04_validation_example.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/04-validation.md -> examples/04_validation_example.sh -> tests/04-validation.test.sh
 # Non-technical guide to checking input format validity (emails, urls, dates, numbers).
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 

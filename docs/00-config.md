@@ -1,6 +1,8 @@
 # Global Configuration Module Reference
 
-- **Source File:** [`config/config.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/config/config.sh)
+**Navigation:** [README](../README.md) › [GLOSSARY](../GLOSSARY.md) › **00-config.md** › [Example](../examples/00_config_example.sh)
+
+- **Source File:** [`config/config.sh`](../config/config.sh)
 - **Description:** Manages core system environment, default configuration parameters, `RZSH_DIR` resolution, and dynamically loads all framework function modules automatically.
 
 ---
@@ -28,7 +30,7 @@ init_config
 
 ## Configuration Variables (Keys)
 
-The following variable keys are defined in [`config/config.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/config/config.sh) and initialized/exported by `init_config` (values are omitted so you can override any key in your environment prior to calling `init_config`):
+The following variable keys are defined in [`config/config.sh`](../config/config.sh) and initialized/exported by `init_config` (values are omitted so you can override any key in your environment prior to calling `init_config`):
 
 | Variable Key | Type | Exported | Purpose |
 | :--- | :--- | :---: | :--- |
@@ -43,7 +45,7 @@ The following variable keys are defined in [`config/config.sh`](file:///home/ubu
 | `EVIDENCE_DIR` | String (Path) | Yes | Base directory where execution and audit evidence session folders are created. |
 | `RAVI_DIR` | String (Path) | Yes | Custom workspace/user directory variable exported for user scripts. |
 | `GIT_IGNORE_FOLDERS` | String (CSV) | Yes | Comma-separated list of directories to ignore during Git branch comparisons. |
-| `REPO_NAMES` | Array (`typeset -g -a`) | Global | Indexed array of registered repository names managed via [`15-variables.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/15-variables.sh). |
+| `REPO_NAMES` | Array (`typeset -g -a`) | Global | Indexed array of registered repository names managed via [`15-variables.sh`](../functions/15-variables.sh). |
 | `REPO_LOCATIONS` | Associative Array (`typeset -g -A`) | Global | Associative map of repository names to their filesystem directory paths. |
 
 ---

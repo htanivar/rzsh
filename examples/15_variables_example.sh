@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # examples/15_variables_example.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/15-variables.md -> examples/15_variables_example.sh -> tests/17-variables.test.sh
 # Guide to getting, setting, and unsetting global configuration variables and repository locations.
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
@@ -38,11 +39,11 @@ config_list_repos
 loc=$(config_get_repo_location "service1")
 echo "Location of service1: ${loc}"
 
-# 6. Set location of a new repository
+# 6. Set location of a ask repository
 config_set_repo_location "service4" "/home/ubuntu/code/service4"
 echo "Location of service4: $(config_get_repo_location "service4")"
 
-# 7. List repositories after adding a new one
+# 7. List repositories after adding a ask one
 echo ""
 echo "Repositories after adding service4:"
 config_list_repos

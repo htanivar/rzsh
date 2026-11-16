@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # tests/03-navigation.test.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/03-navigation.md -> examples/03_navigation_example.sh -> tests/03-navigation.test.sh
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Source helpers, config, and target script via RZSH_DIR

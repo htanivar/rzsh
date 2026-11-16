@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # examples/10_directory_example.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/10-directory.md -> examples/10_directory_example.sh -> tests/10-directory.test.sh
 # Non-technical guide to directory tree sync, creation, lists, and file watchers.
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 

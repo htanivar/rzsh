@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # tests/09-file.test.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/09-file.md -> examples/09_file_example.sh -> tests/09-file.test.sh
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Source helpers, config, and target script via RZSH_DIR

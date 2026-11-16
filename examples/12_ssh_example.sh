@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # examples/12_ssh_example.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/12-ssh.md -> examples/12_ssh_example.sh -> tests/12-ssh.test.sh
 # Non-technical guide to running SSH remote commands, SCP file transfers, and SSH tunnels.
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 

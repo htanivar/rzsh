@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # tests/02-errors.test.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/02-errors.md -> examples/02_errors_example.sh -> tests/02-errors.test.sh
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 # Source helpers, config, and target script via RZSH_DIR

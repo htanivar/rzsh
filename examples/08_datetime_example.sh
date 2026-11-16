@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # examples/08_datetime_example.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/08-datetime.md -> examples/08_datetime_example.sh -> tests/08-datetime.test.sh
 # Non-technical guide to calendar dates, conversions, and timestamps.
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 

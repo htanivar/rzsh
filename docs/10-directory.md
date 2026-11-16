@@ -1,6 +1,8 @@
 # Directory Management Module Reference
 
-- **Source File:** [`functions/10-directory.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/10-directory.sh)
+**Navigation:** [README](../README.md) › [GLOSSARY](../GLOSSARY.md) › **10-directory.md** › [Example](../examples/10_directory_example.sh) › [Tests](../tests/10-directory.test.sh)
+
+- **Source File:** [`functions/10-directory.sh`](../functions/10-directory.sh)
 - **Description:** Folder syncs, recursive purges, watchers, and listings.
 
 ---

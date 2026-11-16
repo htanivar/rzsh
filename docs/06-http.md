@@ -1,7 +1,9 @@
 # HTTP Client Wrapper Module Reference
 
-- **Source File:** [`functions/06-http.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/06-http.sh)
-- **Example Script:** [`examples/06_http_example.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/examples/06_http_example.sh)
+**Navigation:** [README](../README.md) › [GLOSSARY](../GLOSSARY.md) › **06-http.md** › [Example](../examples/06_http_example.sh) › [Tests](../tests/06-http.test.sh)
+
+- **Source File:** [`functions/06-http.sh`](../functions/06-http.sh)
+- **Example Script:** [`examples/06_http_example.sh`](../examples/06_http_example.sh)
 - **Description:** Robust network calls, flexible JSON payload handling (`.json` files, templates, or strings), status check helpers, and automated retries.
 
 ---

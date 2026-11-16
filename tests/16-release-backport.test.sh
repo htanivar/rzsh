@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # tests/16-release-backport.test.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/05-git.md -> examples/05_git_example.sh -> tests/16-release-backport.test.sh
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 my_dir="${${(%):-%x}:A:h}"

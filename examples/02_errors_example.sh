@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # examples/02_errors_example.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/02-errors.md -> examples/02_errors_example.sh -> tests/02-errors.test.sh
 # Non-technical guide to error trapping and temporary file cleanup.
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 

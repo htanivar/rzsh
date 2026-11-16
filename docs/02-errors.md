@@ -1,6 +1,8 @@
 # Error Handling Module Reference
 
-- **Source File:** [`functions/02-errors.sh`](file:///home/ubuntu/code/github/raviautopilot/rWork/shared/rzsh/functions/02-errors.sh)
+**Navigation:** [README](../README.md) › [GLOSSARY](../GLOSSARY.md) › **02-errors.md** › [Example](../examples/02_errors_example.sh) › [Tests](../tests/02-errors.test.sh)
+
+- **Source File:** [`functions/02-errors.sh`](../functions/02-errors.sh)
 - **Description:** Stack traces, termination signaling, and cleanup routines.
 
 ---

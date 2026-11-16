@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # examples/99_evidences_example.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/99-evidences.md -> examples/99_evidences_example.sh -> tests/99-evidences.test.sh
 # Non-technical guide to generating incident audit snapshots and markdown reports.
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
@@ -19,6 +20,7 @@ echo "Started evidence snapshot session inside directory: ${CURRENT_EVIDENCE_DIR
 collect_environment_evidence
 collect_network_evidence
 collect_git_evidence
+collect_script_evidence
 
 # 3. Add file snapshots
 file_to_log="${PROJECT_ROOT}/logs/notes.txt"

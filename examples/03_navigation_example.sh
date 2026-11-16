@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # examples/03_navigation_example.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/03-navigation.md -> examples/03_navigation_example.sh -> tests/03-navigation.test.sh
 # Non-technical guide to folder navigation and project paths.
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # examples/01_logs_example.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/01-logs.md -> examples/01_logs_example.sh -> tests/01-logs.test.sh
 # Non-technical guide to writing colored terminal text and files logs.
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 

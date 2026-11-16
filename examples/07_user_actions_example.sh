@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # examples/07_user_actions_example.sh
+# Breadcrumb: README.md -> GLOSSARY.md -> docs/07-user-actions.md -> examples/07_user_actions_example.sh -> tests/07-user-actions.test.sh
 # Non-technical guide to interactive input dialogs, menus, and selection loops.
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
