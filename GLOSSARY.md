@@ -394,8 +394,23 @@ The table below lists all variable keys initialized or managed by the framework 
 
 | Function | Signature | Short Description |
 | :--- | :--- | :--- |
-| [`mock_command`](docs/17-mock.md#mock_command) | `mock_command <cmd_name> [stdout_output=""] [exit_code=0]` | Mocks a command or Zsh function with static stdout, exit code, and call tracking. |
-| [`mock_http_response`](docs/17-mock.md#mock_http_response) | `mock_http_response [body='{"ok":true}'] [status_code=200]` | Convenience helper that stubs `curl` for `06-http.sh` requests. |
+| [`mock_string`](docs/17-mock.md#mock_string--mock_alphanumeric--mock_password) | `mock_string [length=12] [prefix=""]` | Generates a random alphabetic dummy string, optionally prefixed. |
+| [`mock_alphanumeric`](docs/17-mock.md#mock_string--mock_alphanumeric--mock_password) | `mock_alphanumeric [length=16]` | Generates a random `[A-Za-z0-9]` dummy string. |
+| [`mock_password`](docs/17-mock.md#mock_string--mock_alphanumeric--mock_password) | `mock_password [length=16] [include_special=1]` | Generates a strong random password with upper, lower, digit, and optional symbol chars. |
+| [`mock_int`](docs/17-mock.md#mock_int--mock_bool--mock_uuid--mock_email--mock_phone--mock_date) | `mock_int [min=1] [max=1000]` | Generates a random integer within `[min, max]` inclusive. |
+| [`mock_bool`](docs/17-mock.md#mock_int--mock_bool--mock_uuid--mock_email--mock_phone--mock_date) | `mock_bool` | Generates a random `'true'` or `'false'` boolean string. |
+| [`mock_uuid`](docs/17-mock.md#mock_int--mock_bool--mock_uuid--mock_email--mock_phone--mock_date) | `mock_uuid` | Generates a random RFC 4122 v4 UUID. |
+| [`mock_email`](docs/17-mock.md#mock_int--mock_bool--mock_uuid--mock_email--mock_phone--mock_date) | `mock_email [domain="example.com"]` | Generates a random dummy email address. |
+| [`mock_phone`](docs/17-mock.md#mock_int--mock_bool--mock_uuid--mock_email--mock_phone--mock_date) | `mock_phone` | Generates a random US-style dummy phone number (`+1-555-XXX-XXXX`). |
+| [`mock_date`](docs/17-mock.md#mock_int--mock_bool--mock_uuid--mock_email--mock_phone--mock_date) | `mock_date [format="%Y-%m-%d"]` | Prints a formatted UTC timestamp/date string. |
+| [`mock_jwt`](docs/17-mock.md#mock_jwt--mock_vault_token) | `mock_jwt [sub="mock-user"] [role="admin"]` | Generates a dummy 3-segment base64url JWT token. |
+| [`mock_vault_token`](docs/17-mock.md#mock_jwt--mock_vault_token) | `mock_vault_token [prefix="hvs."] [length=24]` | Generates a dummy HashiCorp Vault token (`hvs.<random>`). |
+| [`mock_array`](docs/17-mock.md#mock_array--mock_nested_array) | `mock_array [count=5] [array_name=MOCK_ARRAY] [item_type="string"]` | Populates a Zsh array variable with `count` dummy items of `item_type`. |
+| [`mock_nested_array`](docs/17-mock.md#mock_array--mock_nested_array) | `mock_nested_array [rows=3] [cols=3] [item_type="string"]` | Generates a compact JSON 2D nested array. |
+| [`mock_json`](docs/17-mock.md#mock_json--mock_json_user) | `mock_json [depth=1] [keys_count=3]` | Generates a dummy JSON object (with nested objects & arrays when `depth > 1`). |
+| [`mock_json_user`](docs/17-mock.md#mock_json--mock_json_user) | `mock_json_user` | Generates a realistic dummy user JSON payload with nested metadata and token. |
+| [`mock_command`](docs/17-mock.md#mock_command--mock_http_response) | `mock_command <cmd_name> [stdout_output=""] [exit_code=0]` | Mocks a command or Zsh function with static stdout, exit code, and call tracking. |
+| [`mock_http_response`](docs/17-mock.md#mock_command--mock_http_response) | `mock_http_response [body='{"ok":true}'] [status_code=200]` | Convenience helper that stubs `curl` for `06-http.sh` requests. |
 | [`mock_get_call_count`](docs/17-mock.md#mock_get_call_count--mock_get_last_args--mock_was_called) | `mock_get_call_count <cmd_name>` | Prints how many times a mocked command was invoked. |
 | [`mock_get_last_args`](docs/17-mock.md#mock_get_call_count--mock_get_last_args--mock_was_called) | `mock_get_last_args <cmd_name>` | Prints the argument string from the most recent invocation of a mocked command. |
 | [`mock_was_called`](docs/17-mock.md#mock_get_call_count--mock_get_last_args--mock_was_called) | `mock_was_called <cmd_name> [expected_count]` | Returns `0` if a mocked command was called (at least once, or `expected_count` times). |

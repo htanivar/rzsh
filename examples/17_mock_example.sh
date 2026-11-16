@@ -1,7 +1,8 @@
 #!/usr/bin/env zsh
 # examples/17_mock_example.sh
 # Breadcrumb: README.md -> GLOSSARY.md -> docs/17-mock.md -> examples/17_mock_example.sh -> tests/17-mock.test.sh
-# Non-technical guide to mocking commands, HTTP calls, and asserting invocations.
+# Non-technical guide to generating mock data (strings, passwords, JWTs, Vault tokens,
+# arrays, nested arrays, JSON) and mocking CLI/HTTP commands.
 [ -z "${ZSH_VERSION:-}" ] && exec zsh "$0" "$@"
 
 if [[ -z "${RZSH_DIR:-}" ]]; then
@@ -12,25 +13,34 @@ fi
 source "${RZSH_DIR}/config/config.sh"
 init_config
 
-echo "=== Command & HTTP Mocking Examples ==="
+echo "=== Mock Data Generators ==="
+echo "String:       $(mock_string 8 "user_")"
+echo "Alphanumeric: $(mock_alphanumeric 16)"
+echo "Password:     $(mock_password 16 1)"
+echo "Integer:      $(mock_int 100 999)"
+echo "Boolean:      $(mock_bool)"
+echo "UUID:         $(mock_uuid)"
+echo "Email:        $(mock_email "acme.test")"
+echo "Phone:        $(mock_phone)"
+echo "Date:         $(mock_date "%Y-%m-%dT%H:%M:%SZ")"
+echo "JWT:          $(mock_jwt "alice" "admin")"
+echo "Vault Token:  $(mock_vault_token)"
 
-# 1. Mock a CLI command (e.g., git)
+local -a mock_emails
+mock_array 3 "mock_emails" "email"
+echo "Array (3):    ${mock_emails[*]}"
+echo "Nested Array: $(mock_nested_array 2 3 "int")"
+echo "Nested JSON:  $(mock_json 2 2)"
+echo "User JSON:    $(mock_json_user)"
+
+echo "\n=== Command & HTTP Mocking ==="
 mock_command "git" "feature/mock-demo" 0
 branch=$(git rev-parse --abbrev-ref HEAD)
-echo "Mocked git branch: ${branch}"
-echo "git call count:    $(mock_get_call_count "git")"
-echo "git last args:     $(mock_get_last_args "git")"
+echo "Mocked git branch: ${branch} (calls: $(mock_get_call_count "git"))"
 
-# 2. Mock an HTTP call via curl
 mock_http_response '{"service":"billing","status":"ok"}' 200
 res=$(http_get "https://api.example.com/health")
-echo "HTTP status code:  $(check_status_code "${res}")"
-echo "HTTP body:         $(http_get_body "${res}")"
+echo "HTTP status: $(check_status_code "${res}"), body: $(http_get_body "${res}")"
 
-if mock_was_called "curl" 1; then
-  echo "Verified: curl was called exactly 1 time."
-fi
-
-# 3. Restore all mocks cleanly
 mock_restore_all
 echo "All mocks restored."

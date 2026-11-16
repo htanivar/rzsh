@@ -321,7 +321,7 @@ Ready-to-run, commented example scripts for every module are located in [`exampl
 - [`examples/14_jq_example.sh`](examples/14_jq_example.sh) — Reading, updating, and converting JSON to YAML
 - [`examples/15_variables_example.sh`](examples/15_variables_example.sh) — Managing global variables and repository locations
 - [`examples/16_mask_example.sh`](examples/16_mask_example.sh) — Masking secrets, tokens, PII, JSON fields, and config lines
-- [`examples/17_mock_example.sh`](examples/17_mock_example.sh) — Mocking CLI commands, HTTP calls, and asserting call counts
+- [`examples/17_mock_example.sh`](examples/17_mock_example.sh) — Generating dummy strings, passwords, JWTs, Vault tokens, arrays, JSON, and mocking CLI/HTTP calls
 - [`examples/99_evidences_example.sh`](examples/99_evidences_example.sh) — Collecting audit evidence snapshots and archives
 
 ## Console Reference Help Manual
