@@ -57,6 +57,12 @@ The table below lists all variable keys initialized or managed by the framework 
 | `EVIDENCE_DIR` | String (Path) | Yes | Base directory where audit and execution evidence folders are generated. |
 | `RAVI_DIR` | String (Path) | Yes | Optional custom workspace directory variable for user scripts. |
 | `GIT_IGNORE_FOLDERS` | String (CSV) | Yes | Comma-separated list of folder names excluded during Git branch comparisons. |
+| `HTTP_CONTENT_TYPE` | String | Yes | Default `Content-Type` HTTP header value (defaults to `application/json`). |
+| `HTTP_ACCEPT` | String | Yes | Default `Accept` HTTP header value (defaults to `application/json`). |
+| `HTTP_AUTH_TOKEN` | String (Secret) | Yes | Optional Bearer token used to populate `Authorization: Bearer <token>` in `HTTP_DEFAULT_HEADERS`. |
+| `HTTP_VAULT_TOKEN` | String (Secret) | Yes | Optional HashiCorp Vault token used to populate `X-Vault-Token` in `HTTP_DEFAULT_HEADERS`. |
+| `HTTP_VAULT_REQUEST` | String | Yes | Optional flag (e.g., `true`) used to populate `X-Vault-Request` in `HTTP_DEFAULT_HEADERS`. |
+| `HTTP_DEFAULT_HEADERS` | String (Newline-separated) | Yes | Newline-separated `"Key: Value"` default HTTP headers merged into requests by `http_build_headers`. |
 | `REPO_NAMES` | Array (`typeset -g -a`) | Global | List of registered repository identifiers managed by [`15-variables.sh`](functions/15-variables.sh). |
 | `REPO_LOCATIONS` | Associative Array (`typeset -g -A`) | Global | Key-value map of repository names to their local filesystem paths. |
 
@@ -184,6 +190,11 @@ The table below lists all variable keys initialized or managed by the framework 
 | [`extract_json_field`](docs/06-http.md#extract_json_field) | `extract_json_field <http_response> <jq_field>` | Extracts a specific field (e.g., `.data.id`) from an HTTP response body using `jq`. |
 | [`download_file`](docs/06-http.md#download_file) | `download_file <url> <output_path>` | Downloads a remote URL directly to a local file path, following redirects. |
 | [`http_get_with_retry`](docs/06-http.md#http_get_with_retry) | `http_get_with_retry <url> [retries=3] [delay=2] [headers]` | Retries an HTTP `GET` request until a `2xx` status code is returned or retries are exhausted. |
+| [`http_build_headers`](docs/06-http.md#http_build_headers) | `http_build_headers [headers...]` | Builds a newline-separated header string merging `HTTP_DEFAULT_HEADERS` with optional override headers. |
+| [`http_set_default_header`](docs/06-http.md#http_set_default_header) | `http_set_default_header <name> <value>` | Sets or updates a default HTTP header in `HTTP_DEFAULT_HEADERS` (empty value unsets). |
+| [`http_get_default_header`](docs/06-http.md#http_get_default_header) | `http_get_default_header <name>` | Retrieves a default HTTP header value from `HTTP_DEFAULT_HEADERS` (case-insensitive). |
+| [`http_unset_default_header`](docs/06-http.md#http_unset_default_header) | `http_unset_default_header <name>` | Removes a default HTTP header from `HTTP_DEFAULT_HEADERS` (case-insensitive). |
+| [`http_clear_default_headers`](docs/06-http.md#http_clear_default_headers) | `http_clear_default_headers` | Clears all entries from `HTTP_DEFAULT_HEADERS`. |
 
 [↑ Back to Index](#index)
 

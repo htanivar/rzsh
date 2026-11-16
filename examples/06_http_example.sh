@@ -147,5 +147,14 @@ echo "\n8. Sending HTTP GET with Retries (max 3 times)..."
 retry_res=$(http_get_with_retry "https://httpbin.org/status/200" 3)
 echo "Retry Status Code: $(check_status_code "${retry_res}")"
 
+# ------------------------------------------------------------------------------
+# 9. Default HTTP Headers & Header Builder (Bearer, Vault, Overrides)
+# ------------------------------------------------------------------------------
+echo "\n9. Building HTTP headers with defaults + Bearer/Vault overrides..."
+http_set_default_header "Authorization" "Bearer demo-token-123"
+http_set_default_header "X-Vault-Request" "true"
+built_headers=$(http_build_headers "X-Trace-Id: trace-001")
+echo "${built_headers}"
+
 # Clean up temporary payload file
 cleanup_temp_files

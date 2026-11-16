@@ -160,6 +160,60 @@ test_http_json_file_payload() {
   rm -f "${payload_file}"
 }
 
+test_http_default_headers_config() {
+  assert_equals "application/json" "${HTTP_CONTENT_TYPE}" "Default HTTP_CONTENT_TYPE should be application/json"
+  assert_equals "application/json" "${HTTP_ACCEPT}" "Default HTTP_ACCEPT should be application/json"
+  assert_true '[[ "${HTTP_DEFAULT_HEADERS}" == *"Content-Type: application/json"* ]]' "HTTP_DEFAULT_HEADERS should include Content-Type key and value"
+  assert_true '[[ "${HTTP_DEFAULT_HEADERS}" == *"Accept: application/json"* ]]' "HTTP_DEFAULT_HEADERS should include Accept key and value"
+
+  # Test env var overrides for Bearer & Vault headers in a fresh zsh process
+  local sub_out
+  sub_out=$(
+    HTTP_AUTH_TOKEN="test-jwt-123" \
+    HTTP_VAULT_TOKEN="hvs.vault-abc" \
+    HTTP_VAULT_REQUEST="true" \
+    zsh -c "source '${RZSH_DIR}/config/config.sh' && init_config && http_build_headers"
+  )
+  assert_true '[[ "${sub_out}" == *"Authorization: Bearer test-jwt-123"* ]]' "Should build Authorization Bearer header from HTTP_AUTH_TOKEN"
+  assert_true '[[ "${sub_out}" == *"X-Vault-Token: hvs.vault-abc"* ]]' "Should build X-Vault-Token header from HTTP_VAULT_TOKEN"
+  assert_true '[[ "${sub_out}" == *"X-Vault-Request: true"* ]]' "Should build X-Vault-Request header from HTTP_VAULT_REQUEST"
+}
+
+test_http_header_builder() {
+  # Save and restore HTTP_DEFAULT_HEADERS
+  local saved_headers="${HTTP_DEFAULT_HEADERS}"
+
+  http_set_default_header "Authorization" "Bearer my-token"
+  http_set_default_header "X-Vault-Request" "true"
+
+  local auth_val
+  auth_val=$(http_get_default_header "authorization")
+  assert_equals "Bearer my-token" "${auth_val}" "http_get_default_header should support case-insensitive lookup"
+
+  local built
+  built=$(http_build_headers "content-type: text/plain" "X-Custom: abc")
+  assert_true '[[ "${built}" == *"content-type: text/plain"* ]]' "Override header should replace default Content-Type"
+  assert_true '[[ "${built}" == *"Accept: application/json"* ]]' "Default Accept header should remain"
+  assert_true '[[ "${built}" == *"Authorization: Bearer my-token"* ]]' "Default Authorization header should be included"
+  assert_true '[[ "${built}" == *"X-Vault-Request: true"* ]]' "Default X-Vault-Request header should be included"
+  assert_true '[[ "${built}" == *"X-Custom: abc"* ]]' "Extra custom header should be included"
+
+  # Ensure original Content-Type was not duplicated
+  local ct_count
+  ct_count=$(printf '%s\n' "${built}" | grep -ci "^content-type:")
+  assert_equals "1" "${ct_count}" "Overridden header should appear only once"
+
+  http_unset_default_header "X-Vault-Request"
+  built=$(http_build_headers)
+  assert_false '[[ "${built}" == *"X-Vault-Request"* ]]' "http_unset_default_header should remove X-Vault-Request"
+
+  http_clear_default_headers
+  built=$(http_build_headers)
+  assert_equals "" "${built}" "http_clear_default_headers should clear all default headers"
+
+  HTTP_DEFAULT_HEADERS="${saved_headers}"
+}
+
 run_test test_http_get
 run_test test_http_post
 run_test test_http_put
@@ -170,5 +224,7 @@ run_test test_http_json_file_payload
 run_test test_is_json_response
 run_test test_extract_json_field
 run_test test_http_get_with_retry
+run_test test_http_default_headers_config
+run_test test_http_header_builder
 
 exit $(( TESTS_FAILED > 0 ? 1 : 0 ))

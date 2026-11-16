@@ -40,6 +40,12 @@ JWT_SECRET="${JWT_SECRET:-}"
 EVIDENCE_DIR="${EVIDENCE_DIR:-}"
 RAVI_DIR="${RAVI_DIR:-}"
 GIT_IGNORE_FOLDERS="${GIT_IGNORE_FOLDERS:-}"
+HTTP_CONTENT_TYPE="${HTTP_CONTENT_TYPE:-}"
+HTTP_ACCEPT="${HTTP_ACCEPT:-}"
+HTTP_AUTH_TOKEN="${HTTP_AUTH_TOKEN:-}"
+HTTP_VAULT_TOKEN="${HTTP_VAULT_TOKEN:-}"
+HTTP_VAULT_REQUEST="${HTTP_VAULT_REQUEST:-}"
+HTTP_DEFAULT_HEADERS="${HTTP_DEFAULT_HEADERS:-}"
 
 # Repository Configs
 typeset -g -a REPO_NAMES
@@ -86,6 +92,57 @@ init_config() {
   JWT_SECRET="${JWT_SECRET:-placeholder-secret-keys-should-be-overridden}"
   EVIDENCE_DIR="${EVIDENCE_DIR:-${PROJECT_ROOT}/evidence}"
   GIT_IGNORE_FOLDERS="${GIT_IGNORE_FOLDERS:-vendor,.idea,.git}"
+  HTTP_CONTENT_TYPE="${HTTP_CONTENT_TYPE:-application/json}"
+  HTTP_ACCEPT="${HTTP_ACCEPT:-application/json}"
+  HTTP_AUTH_TOKEN="${HTTP_AUTH_TOKEN:-}"
+  HTTP_VAULT_TOKEN="${HTTP_VAULT_TOKEN:-}"
+  HTTP_VAULT_REQUEST="${HTTP_VAULT_REQUEST:-}"
+
+  # Populate default HTTP headers without overwriting user-preconfigured entries
+  local -A _hdr_map
+  local -A _hdr_lower
+  local _line _k _v _kl _existing
+  if [[ -n "${HTTP_DEFAULT_HEADERS:-}" ]]; then
+    for _line in ${(f)HTTP_DEFAULT_HEADERS}; do
+      [[ -z "${_line}" || "${_line}" != *:* ]] && continue
+      _k="${_line%%:*}"
+      _v="${_line#*:}"
+      _k="${_k#"${_k%%[![:space:]]*}"}"
+      _k="${_k%"${_k##*[![:space:]]}"}"
+      _v="${_v#"${_v%%[![:space:]]*}"}"
+      [[ -z "${_k}" ]] && continue
+      _kl="${_k:l}"
+      _hdr_map[${_k}]="${_v}"
+      _hdr_lower[${_kl}]="${_k}"
+    done
+  fi
+
+  local -a _defaults
+  _defaults=()
+  [[ -n "${HTTP_CONTENT_TYPE}" ]] && _defaults+=("Content-Type:${HTTP_CONTENT_TYPE}")
+  [[ -n "${HTTP_ACCEPT}" ]] && _defaults+=("Accept:${HTTP_ACCEPT}")
+  [[ -n "${HTTP_AUTH_TOKEN}" ]] && _defaults+=("Authorization:Bearer ${HTTP_AUTH_TOKEN}")
+  [[ -n "${HTTP_VAULT_TOKEN}" ]] && _defaults+=("X-Vault-Token:${HTTP_VAULT_TOKEN}")
+  [[ -n "${HTTP_VAULT_REQUEST}" ]] && _defaults+=("X-Vault-Request:${HTTP_VAULT_REQUEST}")
+
+  local _entry
+  for _entry in "${_defaults[@]}"; do
+    _k="${_entry%%:*}"
+    _v="${_entry#*:}"
+    _kl="${_k:l}"
+    if [[ -z "${_hdr_lower[${_kl}]:-}" ]]; then
+      _hdr_map[${_k}]="${_v}"
+      _hdr_lower[${_kl}]="${_k}"
+    fi
+  done
+
+  HTTP_DEFAULT_HEADERS=""
+  for _k in "${(@ko)_hdr_map}"; do
+    if [[ -n "${HTTP_DEFAULT_HEADERS}" ]]; then
+      HTTP_DEFAULT_HEADERS+=$'\n'
+    fi
+    HTTP_DEFAULT_HEADERS+="${_k}: ${_hdr_map[${_k}]}"
+  done
 
   # Export variables to make them available to subshells
   export RZSH_DIR
@@ -99,6 +156,12 @@ init_config() {
   export EVIDENCE_DIR
   export RAVI_DIR
   export GIT_IGNORE_FOLDERS
+  export HTTP_CONTENT_TYPE
+  export HTTP_ACCEPT
+  export HTTP_AUTH_TOKEN
+  export HTTP_VAULT_TOKEN
+  export HTTP_VAULT_REQUEST
+  export HTTP_DEFAULT_HEADERS
 
   return 0
 }

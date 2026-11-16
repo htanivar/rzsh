@@ -93,6 +93,20 @@ local root=$(get_project_root)
 #### Example Code:
 ```zsh
 is_inside_git_repo && echo "We are in Git!"
+! is_inside_git_repo && echo "We are NOT in Git!"
+--
+is_inside_git_repo && in_git=true || in_git=false
+--
+# later
+if [ "$in_git" = true ]; then
+    echo "inside repo"
+else
+    echo "not inside repo"
+fi
+--
+! is_inside_git_repo
+status=$?
+echo "negative status: $status"   # 0 means NOT in repo
 ```
 
 ---

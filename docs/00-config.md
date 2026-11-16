@@ -45,6 +45,12 @@ The following variable keys are defined in [`config/config.sh`](../config/config
 | `EVIDENCE_DIR` | String (Path) | Yes | Base directory where execution and audit evidence session folders are created. |
 | `RAVI_DIR` | String (Path) | Yes | Custom workspace/user directory variable exported for user scripts. |
 | `GIT_IGNORE_FOLDERS` | String (CSV) | Yes | Comma-separated list of directories to ignore during Git branch comparisons. |
+| `HTTP_CONTENT_TYPE` | String | Yes | Default `Content-Type` header value (defaults to `application/json`). |
+| `HTTP_ACCEPT` | String | Yes | Default `Accept` header value (defaults to `application/json`). |
+| `HTTP_AUTH_TOKEN` | String (Secret) | Yes | Optional Bearer token; when set, populates `Authorization: Bearer <token>` in `HTTP_DEFAULT_HEADERS`. |
+| `HTTP_VAULT_TOKEN` | String (Secret) | Yes | Optional Vault token; when set, populates `X-Vault-Token` in `HTTP_DEFAULT_HEADERS`. |
+| `HTTP_VAULT_REQUEST` | String | Yes | Optional flag (e.g., `true`); when set, populates `X-Vault-Request` in `HTTP_DEFAULT_HEADERS`. |
+| `HTTP_DEFAULT_HEADERS` | String (Newline-separated) | Yes | Newline-separated `"Key: Value"` default HTTP headers initialized by `init_config` and managed via [`06-http.sh`](../functions/06-http.sh). |
 | `REPO_NAMES` | Array (`typeset -g -a`) | Global | Indexed array of registered repository names managed via [`15-variables.sh`](../functions/15-variables.sh). |
 | `REPO_LOCATIONS` | Associative Array (`typeset -g -A`) | Global | Associative map of repository names to their filesystem directory paths. |
 
@@ -68,6 +74,12 @@ The following variable keys are defined in [`config/config.sh`](../config/config
   * `EVIDENCE_DIR`
   * `RAVI_DIR`
   * `GIT_IGNORE_FOLDERS`
+  * `HTTP_CONTENT_TYPE`
+  * `HTTP_ACCEPT`
+  * `HTTP_AUTH_TOKEN`
+  * `HTTP_VAULT_TOKEN`
+  * `HTTP_VAULT_REQUEST`
+  * `HTTP_DEFAULT_HEADERS`
   * `PATH` (prepends local bin directory)
 
 #### Example Code:
