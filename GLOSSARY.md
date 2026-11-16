@@ -35,6 +35,7 @@ Quick-reference catalog of every **environment/global variable** set by the `rzs
   - [14. JSON Parsing & JQ](#14-json-parsing--jq-functions14-jqsh--docs--example--tests)
   - [15. Dynamic Variables & Repo Registry](#15-dynamic-variables--repo-registry-functions15-variablessh--docs--example--tests)
   - [16. Data Masking & Redaction](#16-data-masking--redaction-functions16-masksh--docs--example--tests)
+  - [17. Mocking & Test Stubs](#17-mocking--test-stubs-functions17-mocksh--docs--example--tests)
   - [99. Evidence Collector](#99-evidence-collector-functions99-evidencessh--docs--example--tests)
 
 ---
@@ -386,6 +387,20 @@ The table below lists all variable keys initialized or managed by the framework 
 | [`mask_card`](docs/16-mask.md#mask_phone--mask_card) | `mask_card <card_number> [visible_digits=4] [mask_char="*"]` | Masks a card number, keeping only the last `visible_digits` digits visible. |
 | [`mask_json_fields`](docs/16-mask.md#mask_json_fields) | `mask_json_fields <json_str> <fields_csv> [mask_value="***MASKED***"]` | Recursively masks specified sensitive keys in a JSON payload using `jq`. |
 | [`mask_env_line`](docs/16-mask.md#mask_env_line) | `mask_env_line <line> [sensitive_keys_csv] [mask_value="***MASKED***"]` | Masks `KEY=VALUE` or `Header: Value` lines matching sensitive keywords. |
+
+[↑ Back to Index](#index)
+
+### 17. Mocking & Test Stubs ([`functions/17-mock.sh`](functions/17-mock.sh) | [Docs](docs/17-mock.md) | [Example](examples/17_mock_example.sh) | [Tests](tests/17-mock.test.sh))
+
+| Function | Signature | Short Description |
+| :--- | :--- | :--- |
+| [`mock_command`](docs/17-mock.md#mock_command) | `mock_command <cmd_name> [stdout_output=""] [exit_code=0]` | Mocks a command or Zsh function with static stdout, exit code, and call tracking. |
+| [`mock_http_response`](docs/17-mock.md#mock_http_response) | `mock_http_response [body='{"ok":true}'] [status_code=200]` | Convenience helper that stubs `curl` for `06-http.sh` requests. |
+| [`mock_get_call_count`](docs/17-mock.md#mock_get_call_count--mock_get_last_args--mock_was_called) | `mock_get_call_count <cmd_name>` | Prints how many times a mocked command was invoked. |
+| [`mock_get_last_args`](docs/17-mock.md#mock_get_call_count--mock_get_last_args--mock_was_called) | `mock_get_last_args <cmd_name>` | Prints the argument string from the most recent invocation of a mocked command. |
+| [`mock_was_called`](docs/17-mock.md#mock_get_call_count--mock_get_last_args--mock_was_called) | `mock_was_called <cmd_name> [expected_count]` | Returns `0` if a mocked command was called (at least once, or `expected_count` times). |
+| [`mock_restore`](docs/17-mock.md#mock_restore--mock_restore_all) | `mock_restore <cmd_name>` | Removes a mock and restores any previously saved Zsh function definition. |
+| [`mock_restore_all`](docs/17-mock.md#mock_restore--mock_restore_all) | `mock_restore_all` | Restores all currently mocked commands/functions and clears all mock state. |
 
 [↑ Back to Index](#index)
 
