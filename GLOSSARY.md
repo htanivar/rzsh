@@ -36,6 +36,7 @@ Quick-reference catalog of every **environment/global variable** set by the `rzs
   - [15. Dynamic Variables & Repo Registry](#15-dynamic-variables--repo-registry-functions15-variablessh--docs--example--tests)
   - [16. Data Masking & Redaction](#16-data-masking--redaction-functions16-masksh--docs--example--tests)
   - [17. Mocking & Test Stubs](#17-mocking--test-stubs-functions17-mocksh--docs--example--tests)
+  - [18. Script Executory](#18-script-executory-functions18-script-executorysh--docs--example--tests)
   - [99. Evidence Collector](#99-evidence-collector-functions99-evidencessh--docs--example--tests)
 
 ---
@@ -416,6 +417,19 @@ The table below lists all variable keys initialized or managed by the framework 
 | [`mock_was_called`](docs/17-mock.md#mock_get_call_count--mock_get_last_args--mock_was_called) | `mock_was_called <cmd_name> [expected_count]` | Returns `0` if a mocked command was called (at least once, or `expected_count` times). |
 | [`mock_restore`](docs/17-mock.md#mock_restore--mock_restore_all) | `mock_restore <cmd_name>` | Removes a mock and restores any previously saved Zsh function definition. |
 | [`mock_restore_all`](docs/17-mock.md#mock_restore--mock_restore_all) | `mock_restore_all` | Restores all currently mocked commands/functions and clears all mock state. |
+
+[↑ Back to Index](#index)
+
+### 18. Script Executory ([`functions/18-script-executory.sh`](functions/18-script-executory.sh) | [Docs](docs/18-script-executory.md) | [Example](examples/18_script_executory_example.sh) | [Tests](tests/18-script-executory.test.sh))
+
+| Function | Signature | Short Description |
+| :--- | :--- | :--- |
+| [`validate_script_executable`](docs/18-script-executory.md#validate_script_executable) | `validate_script_executable <script_path>` | Resolves a script path, checks readability, and runs `zsh -n` syntax validation. |
+| [`execute_script`](docs/18-script-executory.md#execute_script) | `execute_script <script_path> [args...]` | Executes a script in a Zsh subprocess with optional arguments and logs timing/status. |
+| [`execute_script_in_current_shell`](docs/18-script-executory.md#execute_script_in_current_shell) | `execute_script_in_current_shell <script_path> [args...]` | Sources a script in the current shell so variables persist across sequential steps. |
+| [`execute_scripts_sequence`](docs/18-script-executory.md#execute_scripts_sequence) | `execute_scripts_sequence [--continue-on-error] [--source] [--dry-run] <scripts...>` | Executes multiple scripts in order (fail-fast by default) and records `SCRIPT_EXEC_SUMMARY`. |
+| [`execute_scripts_from_file`](docs/18-script-executory.md#execute_scripts_from_file) | `execute_scripts_from_file <manifest_file> [flags...]` | Reads ordered script paths from a manifest file and executes them sequentially. |
+| [`execute_script_with_retry`](docs/18-script-executory.md#execute_script_with_retry) | `execute_script_with_retry <script_path> [max_retries=3] [delay_seconds=2] [args...]` | Retries a failing script up to `max_retries` times with a configurable delay. |
 
 [↑ Back to Index](#index)
 
