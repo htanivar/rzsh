@@ -196,6 +196,83 @@ str_join() {
 }
 
 # /**
+#  * @function str_to_array
+#  * @description Splits a string by a separator/delimiter into a Zsh array variable.
+#  * @param {string} str - The input string to split.
+#  * @param {string} delimiter - The separator string to split on.
+#  * @param {string} [array_name=STR_ARRAY] - Name of the target array variable to populate.
+#  * @return {number} 0 on success, 1 if delimiter is empty or array_name is invalid.
+#  * @example
+#  *   str_to_array "apple,banana,cherry" "," "FRUITS"
+#  *   echo "${FRUITS[@]}"
+#  */
+str_to_array() {
+  local _str="$1"
+  local _delim="$2"
+  local _array_name="${3:-STR_ARRAY}"
+
+  if [[ -z "${_delim}" ]]; then
+    return 1
+  fi
+
+  if [[ ! "${_array_name}" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]]; then
+    return 1
+  fi
+
+  local -a _parts
+  if [[ -n "${_str}" ]]; then
+    _parts=("${(@ps:$_delim:)_str}")
+  else
+    _parts=()
+  fi
+
+  set -A "${_array_name}" "${_parts[@]}"
+  return 0
+}
+
+# /**
+#  * @function array_get_element
+#  * @description Retrieves a specific element from a Zsh array by 1-based index, negative index (e.g. -1), or keyword ('first', 'last').
+#  * @param {string} array_name - Name of the array variable.
+#  * @param {string|number} index - 1-based index, negative index (-1 = last), or 'first' / 'last'.
+#  * @return {string} The element at the requested position (exits 1 if out of bounds or invalid).
+#  * @example
+#  *   str_to_array "apple,banana,cherry" "," "FRUITS"
+#  *   last_fruit=$(array_get_element "FRUITS" "last")
+#  */
+array_get_element() {
+  local _array_name="$1"
+  local _index="$2"
+
+  if [[ ! "${_array_name}" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] || [[ -z "${_index}" ]]; then
+    return 1
+  fi
+
+  local _len="${(P)#_array_name}"
+  if (( _len == 0 )); then
+    return 1
+  fi
+
+  case "${_index:l}" in
+    first) _index=1 ;;
+    last)  _index=-1 ;;
+  esac
+
+  if [[ ! "${_index}" =~ ^-?[0-9]+$ ]] || (( _index == 0 )); then
+    return 1
+  fi
+
+  if (( _index > 0 && _index > _len )) || (( _index < 0 && -_index > _len )); then
+    return 1
+  fi
+
+  local -a _arr
+  _arr=("${(@P)_array_name}")
+  printf '%s\n' "${_arr[${_index}]}"
+  return 0
+}
+
+# /**
 #  * @function str_to_lower
 #  * @description Converts a string to lowercase.
 #  * @param {string} str - String.
