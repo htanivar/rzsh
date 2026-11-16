@@ -34,6 +34,7 @@ Quick-reference catalog of every **environment/global variable** set by the `rzs
   - [13. JSON Web Tokens (JWT)](#13-json-web-tokens-jwt-functions13-jwtsh--docs--example--tests)
   - [14. JSON Parsing & JQ](#14-json-parsing--jq-functions14-jqsh--docs--example--tests)
   - [15. Dynamic Variables & Repo Registry](#15-dynamic-variables--repo-registry-functions15-variablessh--docs--example--tests)
+  - [16. Data Masking & Redaction](#16-data-masking--redaction-functions16-masksh--docs--example--tests)
   - [99. Evidence Collector](#99-evidence-collector-functions99-evidencessh--docs--example--tests)
 
 ---
@@ -371,6 +372,20 @@ The table below lists all variable keys initialized or managed by the framework 
 | [`config_set_repo_location`](docs/15-variables.md#config_set_repo_location) | `config_set_repo_location <repo_name> <path>` | Registers a repository name in `REPO_NAMES` and maps its path in `REPO_LOCATIONS`. |
 | [`config_unset_repo_location`](docs/15-variables.md#config_unset_repo_location) | `config_unset_repo_location <repo_name>` | Removes a repository from both `REPO_LOCATIONS` and `REPO_NAMES`. |
 | [`config_list_repos`](docs/15-variables.md#config_list_repos) | `config_list_repos` | Prints all registered repositories in `<repo_name>: <path>` format. |
+
+[↑ Back to Index](#index)
+
+### 16. Data Masking & Redaction ([`functions/16-mask.sh`](functions/16-mask.sh) | [Docs](docs/16-mask.md) | [Example](examples/16_mask_example.sh) | [Tests](tests/16-mask.test.sh))
+
+| Function | Signature | Short Description |
+| :--- | :--- | :--- |
+| [`mask_string`](docs/16-mask.md#mask_string) | `mask_string <str> [visible_start=2] [visible_end=2] [mask_char="*"]` | Masks the middle portion of a string while keeping leading/trailing characters visible. |
+| [`mask_token`](docs/16-mask.md#mask_token) | `mask_token <token> [visible_chars=4] [mask_char="*"]` | Masks an API token, Bearer secret, or Vault token, keeping ends visible. |
+| [`mask_email`](docs/16-mask.md#mask_email) | `mask_email <email> [mask_char="*"]` | Masks the local part of an email address while preserving its first char and domain. |
+| [`mask_phone`](docs/16-mask.md#mask_phone--mask_card) | `mask_phone <phone> [visible_digits=4] [mask_char="*"]` | Masks all digits in a phone number except the last `visible_digits` digits. |
+| [`mask_card`](docs/16-mask.md#mask_phone--mask_card) | `mask_card <card_number> [visible_digits=4] [mask_char="*"]` | Masks a card number, keeping only the last `visible_digits` digits visible. |
+| [`mask_json_fields`](docs/16-mask.md#mask_json_fields) | `mask_json_fields <json_str> <fields_csv> [mask_value="***MASKED***"]` | Recursively masks specified sensitive keys in a JSON payload using `jq`. |
+| [`mask_env_line`](docs/16-mask.md#mask_env_line) | `mask_env_line <line> [sensitive_keys_csv] [mask_value="***MASKED***"]` | Masks `KEY=VALUE` or `Header: Value` lines matching sensitive keywords. |
 
 [↑ Back to Index](#index)
 
