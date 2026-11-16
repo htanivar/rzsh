@@ -17,8 +17,13 @@ log_info $branch
 
 # List and iterate over release branches
 local -a branches
-branches=( ${(f)"$(git_list_branches 'release/*')"} )
-validate_in_list "release/2.2.0" ${branches}
+branches=( ${(f)"$(git_list_branches)"} )
+expected="release/2.2.0"
+if validate_in_list "${expected}" ${branches}; then
+  log_info "Valid branch: ${expected}"
+else
+  log_warn "expected branch: ${expected} is missing"
+fi
 
 local doc_dir=$(get_current_directory)
 log_info $doc_dir
