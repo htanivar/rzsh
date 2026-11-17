@@ -168,6 +168,7 @@ The table below lists all variable keys initialized or managed by the framework 
 | [`git_get_commit_hash`](docs/05-git.md#git_get_commit_hash--git_get_commit_message) | `git_get_commit_hash [short=0]` | Prints the full (or short if `1`) SHA hash of `HEAD`. |
 | [`git_get_commit_message`](docs/05-git.md#git_get_commit_hash--git_get_commit_message) | `git_get_commit_message [commit="HEAD"]` | Prints the commit message of the specified commit ref. |
 | [`git_compare_branches`](docs/05-git.md#git_compare_branches) | `git_compare_branches [options] <base> <target>` | Compares two branches (honoring `GIT_IGNORE_FOLDERS`) and generates a detailed Markdown diff report. |
+| [`git_compare_three_branches`](docs/05-git.md#git_compare_three_branches) | `git_compare_three_branches [options] <release_x> <release_prev> [default]` | Compares two release branches and default branch for missing commits and content diffs across all 3 links. |
 | [`git_detect_default_branch`](docs/05-git.md#git_detect_default_branch) | `git_detect_default_branch` | Detects the repository's default branch (`origin/HEAD`, `develop`, `main`, or `master`). |
 | [`git_resolve_ref`](docs/05-git.md#git_resolve_ref) | `git_resolve_ref <branch>` | Resolves a branch name to its local ref or `origin/<branch>` remote ref. |
 | [`git_list_branches`](docs/05-git.md#git_list_branches) | `git_list_branches [pattern]` | Lists unique local and `origin` branch names, optionally filtered by a glob pattern (e.g., `release/*`). |

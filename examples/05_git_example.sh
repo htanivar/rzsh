@@ -72,3 +72,6 @@ if git_branch_exists "${target_cmp}"; then
   echo "Backport report written to logs/missed_commits_example.md"
 fi
 
+# 9. Compare 3 branches (release/x, release/x-1, default) when release branches exist
+# git_compare_three_branches --output "${PROJECT_ROOT}/logs/three_branch_example.md" release/2.2.0 release/2.1.0 develop
+

@@ -785,3 +785,257 @@ git_report_missed_commits() {
     log_info "Markdown report written to: ${output_file:A}"
   fi
 }
+
+# /**
+#  * @function git_compare_three_branches
+#  * @description Compares two release branches (release/x and release/x-1) against a default branch
+#  *              to find missing commits (backport gaps) and content differences across all 3 links:
+#  *              release/x -> default, release/x-1 -> default, and release/x-1 -> release/x.
+#  * @param {string} [--help|-h] - Show help message.
+#  * @param {string} [--output|-o <file>] - Write the Markdown report to a specific file.
+#  * @param {string} [--silent|-s] - Do not output details to stdout.
+#  * @param {string} <release_x> - Current/newer release branch (e.g., release/2.2.0).
+#  * @param {string} <release_prev> - Previous release branch (e.g., release/2.1.0).
+#  * @param {string} [default_branch] - Default/develop branch (auto-detected via git_detect_default_branch if omitted).
+#  * @return {number} 0 on success, or 1 on failure.
+#  * @example
+#  *   git_compare_three_branches --output "./three_branch_report.md" release/2.2.0 release/2.1.0 develop
+#  */
+git_compare_three_branches() {
+  if ! typeset -f is_inside_git_repo >/dev/null; then
+    if [[ -f "${RZSH_DIR:-${PROJECT_ROOT:-.}}/functions/03-navigation.sh" ]]; then
+      source "${RZSH_DIR:-${PROJECT_ROOT:-.}}/functions/03-navigation.sh"
+    fi
+  fi
+
+  local show_help_3way
+  show_help_3way() {
+    cat << EOF
+Usage: git_compare_three_branches [options] <release_x> <release_prev> [<default_branch>]
+
+Options:
+  -h, --help           Show this help message.
+  -o, --output <file>  Write the Markdown report to a specific file.
+  -s, --silent         Do not output details to stdout (still writes to file if specified).
+
+Arguments:
+  <release_x>          Current/newer release branch (e.g., release/2.2.0).
+  <release_prev>       Previous release branch (e.g., release/2.1.0).
+  [<default_branch>]   Default/develop branch (auto-detected if omitted).
+
+Comparisons performed:
+  1. <release_x>    -> <default_branch>  (commits & content in release/x missing from default)
+  2. <release_prev> -> <default_branch>  (commits & content in release/x-1 missing from default)
+  3. <release_prev> -> <release_x>       (commits & content in release/x-1 missing from release/x)
+EOF
+  }
+
+  local output_file=""
+  local silent_mode=0
+  local -a pos_args
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -h|--help)
+        show_help_3way
+        return 0
+        ;;
+      -o|--output)
+        if [[ -z "${2:-}" ]]; then
+          log_error "Option $1 requires a file path."
+          return 1
+        fi
+        output_file="$2"
+        shift 2
+        ;;
+      -s|--silent)
+        silent_mode=1
+        shift
+        ;;
+      -*)
+        log_error "Unknown option: $1. Use -h or --help for usage."
+        return 1
+        ;;
+      *)
+        pos_args+=("$1")
+        shift
+        ;;
+    esac
+  done
+
+  if [[ ${#pos_args} -lt 2 ]]; then
+    log_error "Expected at least 2 branches: <release_x> <release_prev> [<default_branch>]. Use -h or --help for usage."
+    return 1
+  elif [[ ${#pos_args} -gt 3 ]]; then
+    log_error "Too many arguments. Expected 2 or 3 branch names."
+    return 1
+  fi
+
+  if ! is_inside_git_repo; then
+    log_error "Not inside a Git repository."
+    return 1
+  fi
+
+  local git_root orig_pwd
+  git_root=$(git_get_root)
+  orig_pwd="${PWD}"
+  cd "${git_root}" || {
+    log_error "Failed to navigate to Git repository root: ${git_root}"
+    return 1
+  }
+
+  local restore_dir_3way
+  restore_dir_3way() {
+    local ret_code="$1"
+    cd "${orig_pwd}" 2>/dev/null
+    return "${ret_code}"
+  }
+
+  local release_x="${pos_args[1]}"
+  local release_prev="${pos_args[2]}"
+  local default_branch="${pos_args[3]:-}"
+
+  if [[ -z "${default_branch}" ]]; then
+    default_branch=$(git_detect_default_branch)
+    if [[ -z "${default_branch}" ]]; then
+      log_error "Could not detect default branch. Please specify <default_branch> explicitly."
+      restore_dir_3way 1
+      return 1
+    fi
+  fi
+
+  local b
+  for b in "${release_x}" "${release_prev}" "${default_branch}"; do
+    if ! git_branch_exists "${b}"; then
+      log_error "Branch '${b}' does not exist."
+      restore_dir_3way 1
+      return 1
+    fi
+  done
+
+  log_info "Comparing 3 branches: '${release_x}', '${release_prev}', and '${default_branch}'..."
+
+  local bold="\e[1m" red="\e[31m" green="\e[32m" yellow="\e[33m" cyan="\e[36m" reset="\e[0m"
+  local term_body="" md_body="" summary_rows=""
+
+  local -a link_sources link_targets link_titles
+  link_sources=( "${release_x}" "${release_prev}" "${release_prev}" )
+  link_targets=( "${default_branch}" "${default_branch}" "${release_x}" )
+  link_titles=(
+    "${release_x} -> ${default_branch}"
+    "${release_prev} -> ${default_branch}"
+    "${release_prev} -> ${release_x}"
+  )
+
+  local i src tgt title
+  local -a missed_shas
+  local sha info commit_patch tmp_pair_report pair_files_changed pair_sections
+
+  for (( i = 1; i <= 3; i++ )); do
+    src="${link_sources[i]}"
+    tgt="${link_targets[i]}"
+    title="${link_titles[i]}"
+
+    missed_shas=( ${(f)"$(git_get_missed_commits "${tgt}" "${src}")"} )
+    missed_shas=( ${missed_shas:#} )
+
+    # Reuse git_compare_branches for branch-level content comparison
+    tmp_pair_report=$(mktemp)
+    pair_files_changed="0"
+    pair_sections=""
+    if git_compare_branches --silent --output "${tmp_pair_report}" "${tgt}" "${src}" >/dev/null 2>&1 && [[ -s "${tmp_pair_report}" ]]; then
+      pair_files_changed=$(grep -m1 'Total Files Changed:' "${tmp_pair_report}" | sed -E 's/.*Total Files Changed:\*\* ([0-9]+).*/\1/')
+      [[ -z "${pair_files_changed}" ]] && pair_files_changed="0"
+      pair_sections=$(sed -n '/^## Summary of Changes/,$p' "${tmp_pair_report}" | sed -e 's/^### /##### /' -e 's/^## /#### /')
+    else
+      local tgt_ref src_ref fallback_stat
+      tgt_ref=$(git_resolve_ref "${tgt}")
+      src_ref=$(git_resolve_ref "${src}")
+      fallback_stat=$(git diff --stat "${tgt_ref}" "${src_ref}" 2>/dev/null)
+      if [[ -n "${fallback_stat}" ]]; then
+        pair_files_changed=$(git diff --name-only "${tgt_ref}" "${src_ref}" 2>/dev/null | wc -l | tr -d ' ')
+        pair_sections="\`\`\`\n${fallback_stat}\n\`\`\`\n"
+      fi
+    fi
+    rm -f "${tmp_pair_report}"
+
+    summary_rows+="| \`${title}\` | ${#missed_shas} | ${pair_files_changed} |\n"
+
+    # Terminal section
+    term_body+="${bold}--------------------------------------------------------------------------------${reset}\n"
+    term_body+="${bold}  Link ${i}: ${cyan}${src}${reset}${bold} -> ${cyan}${tgt}${reset}\n"
+    term_body+="${bold}--------------------------------------------------------------------------------${reset}\n"
+    term_body+="  Missing commits: ${#missed_shas} | Branch file diffs: ${pair_files_changed}\n\n"
+
+    # Markdown section
+    md_body+="## ${i}. ${title}\n\n"
+    md_body+="- **Source Branch:** \`${src}\`\n"
+    md_body+="- **Target Branch:** \`${tgt}\`\n"
+    md_body+="- **Missing Commits:** ${#missed_shas}\n"
+    md_body+="- **Branch Files Changed:** ${pair_files_changed}\n\n"
+    md_body+="### Missing Commits\n\n"
+
+    if [[ ${#missed_shas} -eq 0 ]]; then
+      term_body+="  ${green}No missing commits from '${src}' in '${tgt}'.${reset}\n\n"
+      md_body+="All commits from \`${src}\` are present in \`${tgt}\`.\n\n"
+    else
+      for sha in "${missed_shas[@]}"; do
+        [[ -z "${sha}" ]] && continue
+        info=$(git_format_commit "${sha}")
+        commit_patch=$(git show --no-color --format="" "${sha}" 2>/dev/null)
+        term_body+="  ${yellow}[MISSING]${reset} ${info}\n"
+        md_body+="- \`${info}\`\n"
+        if [[ -n "${commit_patch}" ]]; then
+          md_body+="\n\`\`\`diff\n${commit_patch}\n\`\`\`\n\n"
+        fi
+      done
+      term_body+="\n"
+    fi
+
+    md_body+="### Branch Content Comparison (\`${tgt}\` vs \`${src}\`)\n\n"
+    if [[ -n "${pair_sections}" ]]; then
+      md_body+="${pair_sections}\n\n"
+    else
+      md_body+="No content differences found between \`${tgt}\` and \`${src}\`.\n\n"
+    fi
+  done
+
+  local term_header="" md_header=""
+  term_header+="${bold}================================================================================${reset}\n"
+  term_header+="${bold}  3-Branch Release Comparison Report${reset}\n"
+  term_header+="${bold}================================================================================${reset}\n"
+  term_header+="* Release (x):    ${cyan}${release_x}${reset}\n"
+  term_header+="* Release (x-1):  ${cyan}${release_prev}${reset}\n"
+  term_header+="* Default Branch: ${cyan}${default_branch}${reset}\n\n"
+
+  md_header+="# 3-Branch Release Comparison Report\n\n"
+  md_header+="* **Generated at:** $(date)\n"
+  md_header+="* **Release (x):** \`${release_x}\`\n"
+  md_header+="* **Release (x-1):** \`${release_prev}\`\n"
+  md_header+="* **Default Branch:** \`${default_branch}\`\n\n"
+  md_header+="## Missing Links Summary\n\n"
+  md_header+="| Comparison Link | Missing Commits | Branch Files Changed |\n"
+  md_header+="|---|---|---|\n"
+  md_header+="${summary_rows}\n"
+
+  if [[ "${silent_mode}" -ne 1 ]]; then
+    printf "%b" "${term_header}${term_body}"
+  fi
+
+  local full_md="${md_header}${md_body}"
+  if [[ -n "${output_file}" ]]; then
+    local out_dir="${output_file:h}"
+    [[ ! -d "${out_dir}" ]] && mkdir -p "${out_dir}"
+    printf "%b" "${full_md}" > "${output_file}"
+    log_info "Markdown report successfully written to: ${output_file:A}"
+  else
+    local ts default_ev_dir
+    ts=$(date +%Y%m%d_%H%M%S)
+    default_ev_dir="${PROJECT_ROOT}/evidence/three_branch_comparison_${ts}"
+    mkdir -p "${default_ev_dir}"
+    printf "%b" "${full_md}" > "${default_ev_dir}/three_branch_report.md"
+    log_info "Markdown report saved by default to evidence: ${default_ev_dir}/three_branch_report.md"
+  fi
+
+  restore_dir_3way 0
+}
