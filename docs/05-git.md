@@ -296,4 +296,28 @@ git_compare_branches
 ```
 
 ---
+### `git_compare_three_branches`
+
+* **Signature:** `git_compare_three_branches [options] <release_x> <release_prev> [<default_branch>]`
+* **Description:** Compares two release branches (`<release_x>` and `<release_prev>`) against a default branch (`<default_branch>`, auto-detected via `git_detect_default_branch` if omitted) to find missing commits (`git_get_missed_commits`) and content differences (`git_compare_branches` + per-commit diffs) across all three links:
+  1. `<release_x> -> <default_branch>`
+  2. `<release_prev> -> <default_branch>`
+  3. `<release_prev> -> <release_x>`
+  Outputs a colorized terminal summary (unless `--silent`) and writes a unified Markdown report (to `--output <file>` or `${PROJECT_ROOT}/evidence/three_branch_comparison_<timestamp>/three_branch_report.md` by default).
+
+#### Options:
+* `-h, --help`: Show help message.
+* `-o, --output <file>`: Write the Markdown report to a specific file.
+* `-s, --silent`: Do not output details to stdout.
+
+#### Example Code:
+```zsh
+# Compare release/2.2.0 and release/2.1.0 against develop
+git_compare_three_branches --output "./three_branch_report.md" release/2.2.0 release/2.1.0 develop
+
+# Auto-detect default branch and run silently
+git_compare_three_branches --silent --output "./three_branch_report.md" release/2.2.0 release/2.1.0
+```
+
+---
 
