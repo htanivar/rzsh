@@ -519,6 +519,7 @@ secrets.yaml
 secrets.yml
 *.secret
 *.secrets
+.secrets.d/
 http-client.private.env.json
 service-account*.json
 credentials.json

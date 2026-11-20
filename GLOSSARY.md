@@ -37,6 +37,7 @@ Quick-reference catalog of every **environment/global variable** set by the `rzs
   - [16. Data Masking & Redaction](#16-data-masking--redaction-functions16-masksh--docs--example--tests)
   - [17. Mocking & Test Stubs](#17-mocking--test-stubs-functions17-mocksh--docs--example--tests)
   - [18. Script Executory](#18-script-executory-functions18-script-executorysh--docs--example--tests)
+  - [19. Secrets & Token Cache](#19-secrets--token-cache-functions19-cachesh--docs--example--tests)
   - [99. Evidence Collector](#99-evidence-collector-functions99-evidencessh--docs--example--tests)
 
 ---
@@ -58,6 +59,7 @@ The table below lists all variable keys initialized or managed by the framework 
 | `DATE_FORMAT` | String | Yes | Calendar date format string used by date helper functions. |
 | `JWT_SECRET` | String (Secret) | Yes | Default HMAC-SHA256 secret key used by JWT signing and verification functions. |
 | `EVIDENCE_DIR` | String (Path) | Yes | Base directory where audit and execution evidence folders are generated. |
+| `SECRETS_DIR` | String (Path) | Yes | Base directory (`.secrets.d` by default) where cached secrets and tokens are stored by [`19-cache.sh`](functions/19-cache.sh). |
 | `RAVI_DIR` | String (Path) | Yes | Optional custom workspace directory variable for user scripts. |
 | `GIT_IGNORE_FOLDERS` | String (CSV) | Yes | Comma-separated list of folder names excluded during Git branch comparisons. |
 | `HTTP_CONTENT_TYPE` | String | Yes | Default `Content-Type` HTTP header value (defaults to `application/json`). |
@@ -431,6 +433,23 @@ The table below lists all variable keys initialized or managed by the framework 
 | [`execute_scripts_sequence`](docs/18-script-executory.md#execute_scripts_sequence) | `execute_scripts_sequence [--continue-on-error] [--source] [--dry-run] <scripts...>` | Executes multiple scripts in order (fail-fast by default) and records `SCRIPT_EXEC_SUMMARY`. |
 | [`execute_scripts_from_file`](docs/18-script-executory.md#execute_scripts_from_file) | `execute_scripts_from_file <manifest_file> [flags...]` | Reads ordered script paths from a manifest file and executes them sequentially. |
 | [`execute_script_with_retry`](docs/18-script-executory.md#execute_script_with_retry) | `execute_script_with_retry <script_path> [max_retries=3] [delay_seconds=2] [args...]` | Retries a failing script up to `max_retries` times with a configurable delay. |
+
+[↑ Back to Index](#index)
+
+### 19. Secrets & Token Cache ([`functions/19-cache.sh`](functions/19-cache.sh) | [Docs](docs/19-cache.md) | [Example](examples/19_cache_example.sh) | [Tests](tests/19-cache.test.sh))
+
+| Function | Signature | Short Description |
+| :--- | :--- | :--- |
+| [`cache_init`](docs/19-cache.md#cache_init) | `cache_init [dir]` | Initializes the secrets cache directory (`SECRETS_DIR`) with `0700` permissions. |
+| [`cache_set`](docs/19-cache.md#cache_set) | `cache_set <key> <value> [ttl_seconds]` | Stores a secret/token in `.secrets.d` with optional TTL or auto-detected JWT `exp`. |
+| [`cache_get`](docs/19-cache.md#cache_get) | `cache_get <key>` | Retrieves a valid cached secret; removes and fails if missing or expired. |
+| [`cache_has`](docs/19-cache.md#cache_has) | `cache_has <key>` | Checks if a valid, non-expired cached secret exists for `<key>`. |
+| [`cache_ttl`](docs/19-cache.md#cache_ttl) | `cache_ttl <key>` | Prints remaining TTL in seconds (`0` if persistent), or returns `1` if missing/expired. |
+| [`cache_remove`](docs/19-cache.md#cache_remove) | `cache_remove <key>` | Removes a cached secret and prunes empty parent directories. |
+| [`cache_clear`](docs/19-cache.md#cache_clear) | `cache_clear [prefix]` | Clears all cached secrets or all entries under a specific app/env prefix. |
+| [`cache_prune`](docs/19-cache.md#cache_prune) | `cache_prune` | Removes all expired entries and empty subdirectories, printing the pruned count. |
+| [`cache_list`](docs/19-cache.md#cache_list) | `cache_list [prefix]` | Lists cached secret keys and their expiry status without printing secret values. |
+| [`cache_get_or_set`](docs/19-cache.md#cache_get_or_set) | `cache_get_or_set <key> <ttl_seconds> <command...>` | Returns cached secret or runs `<command...>`, caches its output, and returns it. |
 
 [↑ Back to Index](#index)
 
