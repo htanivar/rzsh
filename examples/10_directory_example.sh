@@ -30,7 +30,12 @@ backup_dir="${PROJECT_ROOT}/logs/temp_demo_dir_backup"
 dir_sync "${my_dir}" "${backup_dir}"
 echo "Synchronized directory contents to: ${backup_dir}"
 
-# 5. Clean up directories
+# 5. Compare directories (identical right after sync, then after adding a file)
+dir_compare "${my_dir}" "${backup_dir}"
+echo "updated" > "${backup_dir}/extra.txt"
+dir_compare --diff "${my_dir}" "${backup_dir}" || true
+
+# 6. Clean up directories
 dir_delete "${my_dir}" "--force"
 dir_delete "${backup_dir}" "--force"
 echo "Cleaned up test directories."

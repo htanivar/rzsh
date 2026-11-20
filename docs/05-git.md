@@ -320,4 +320,25 @@ git_compare_three_branches --silent --output "./three_branch_report.md" release/
 ```
 
 ---
+### `git_compare_commits`
+
+* **Signature:** `git_compare_commits [options] <ref1> [<ref2>]`
+* **Description:** Compares two Git commits, tags, or branch refs (defaulting `<ref2>` to `HEAD` when omitted) and generates a Markdown report with commit metadata, commits ahead/behind, `--name-status` changed files, `--stat` summary, and optional unified patch diff.
+
+#### Options:
+* `-h, --help`: Show help message.
+* `-o, --output <file>`: Write the Markdown comparison report to `<file>`.
+* `-s, --silent`: Suppress stdout output (still writes to `-o` if specified).
+* `--diff`: Include full unified patch diff in the report.
+
+#### Example Code:
+```zsh
+# Compare HEAD~3 against HEAD with full patch diff
+git_compare_commits --diff -o "./commit_report.md" HEAD~3 HEAD
+
+# Compare a tag against current HEAD
+git_compare_commits v1.0.0
+```
+
+---
 

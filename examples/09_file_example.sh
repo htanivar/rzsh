@@ -49,4 +49,12 @@ for line in "${file_lines[@]}"; do
   (( idx++ ))
 done
 
-rm -f "${my_file}" "${backup_file}"
+# 8. Compare two files
+other_file="${PROJECT_ROOT}/logs/notes_v2.txt"
+file_write "${other_file}" "line 1: initial text\nline 2: updated text\nline 3: appended text"
+if ! file_equals "${my_file}" "${other_file}"; then
+  echo "Files differ; generating comparison report:"
+  file_compare "${my_file}" "${other_file}" || true
+fi
+
+rm -f "${my_file}" "${other_file}" "${backup_file}"
