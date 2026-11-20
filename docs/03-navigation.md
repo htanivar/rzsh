@@ -143,3 +143,23 @@ change_directory "/tmp"
 ```
 
 ---
+
+---
+
+## Per-Function Copy-Paste Reference
+
+Browse dedicated per-function pages with all flags and copy-paste variations in [`docs/03-navigation/`](03-navigation/README.md), or run [`examples/03_navigation_example.sh`](../examples/03_navigation_example.sh).
+
+| Function | Per-Function Docs & Flags | Runnable Example |
+| :--- | :--- | :--- |
+| `current_directory` | [Docs & Examples](03-navigation/current_directory.md) | [`03_navigation_example.sh`](../examples/03_navigation_example.sh) |
+| `dir_up` | [Docs & Examples](03-navigation/dir_up.md) | [`03_navigation_example.sh`](../examples/03_navigation_example.sh) |
+| `absolute_path` | [Docs & Examples](03-navigation/absolute_path.md) | [`03_navigation_example.sh`](../examples/03_navigation_example.sh) |
+| `get_current_directory` | [Docs & Examples](03-navigation/get_current_directory.md) | [`03_navigation_example.sh`](../examples/03_navigation_example.sh) |
+| `get_absolute_path` | [Docs & Examples](03-navigation/get_absolute_path.md) | [`03_navigation_example.sh`](../examples/03_navigation_example.sh) |
+| `to_project_root` | [Docs & Examples](03-navigation/to_project_root.md) | [`03_navigation_example.sh`](../examples/03_navigation_example.sh) |
+| `get_project_root` | [Docs & Examples](03-navigation/get_project_root.md) | [`03_navigation_example.sh`](../examples/03_navigation_example.sh) |
+| `is_inside_git_repo` | [Docs & Examples](03-navigation/is_inside_git_repo.md) | [`03_navigation_example.sh`](../examples/03_navigation_example.sh) |
+| `normalize_path` | [Docs & Examples](03-navigation/normalize_path.md) | [`03_navigation_example.sh`](../examples/03_navigation_example.sh) |
+| `ensure_directory_exists` | [Docs & Examples](03-navigation/ensure_directory_exists.md) | [`03_navigation_example.sh`](../examples/03_navigation_example.sh) |
+| `change_directory` | [Docs & Examples](03-navigation/change_directory.md) | [`03_navigation_example.sh`](../examples/03_navigation_example.sh) |

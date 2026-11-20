@@ -169,3 +169,22 @@ login_to_api() {
 # Only calls login_to_api on cache miss or expiration
 token=$(cache_get_or_set "payments-api/prod/jwt" 3600 login_to_api)
 ```
+
+---
+
+## Per-Function Copy-Paste Reference
+
+Browse dedicated per-function pages with all flags and copy-paste variations in [`docs/19-cache/`](19-cache/README.md), or run [`examples/19_cache_example.sh`](../examples/19_cache_example.sh).
+
+| Function | Per-Function Docs & Flags | Runnable Example |
+| :--- | :--- | :--- |
+| `cache_init` | [Docs & Examples](19-cache/cache_init.md) | [`19_cache_example.sh`](../examples/19_cache_example.sh) |
+| `cache_set` | [Docs & Examples](19-cache/cache_set.md) | [`19_cache_example.sh`](../examples/19_cache_example.sh) |
+| `cache_get` | [Docs & Examples](19-cache/cache_get.md) | [`19_cache_example.sh`](../examples/19_cache_example.sh) |
+| `cache_has` | [Docs & Examples](19-cache/cache_has.md) | [`19_cache_example.sh`](../examples/19_cache_example.sh) |
+| `cache_ttl` | [Docs & Examples](19-cache/cache_ttl.md) | [`19_cache_example.sh`](../examples/19_cache_example.sh) |
+| `cache_remove` | [Docs & Examples](19-cache/cache_remove.md) | [`19_cache_example.sh`](../examples/19_cache_example.sh) |
+| `cache_clear` | [Docs & Examples](19-cache/cache_clear.md) | [`19_cache_example.sh`](../examples/19_cache_example.sh) |
+| `cache_prune` | [Docs & Examples](19-cache/cache_prune.md) | [`19_cache_example.sh`](../examples/19_cache_example.sh) |
+| `cache_list` | [Docs & Examples](19-cache/cache_list.md) | [`19_cache_example.sh`](../examples/19_cache_example.sh) |
+| `cache_get_or_set` | [Docs & Examples](19-cache/cache_get_or_set.md) | [`19_cache_example.sh`](../examples/19_cache_example.sh) |

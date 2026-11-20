@@ -95,3 +95,13 @@ echo "Project Root is:        $PROJECT_ROOT"
 ```
 
 ---
+
+---
+
+## Per-Function Copy-Paste Reference
+
+Browse dedicated per-function pages with all flags and copy-paste variations in [`docs/00-config/`](00-config/README.md), or run [`examples/00_config_example.sh`](../examples/00_config_example.sh).
+
+| Function | Per-Function Docs & Flags | Runnable Example |
+| :--- | :--- | :--- |
+| `init_config` | [Docs & Examples](00-config/init_config.md) | [`00_config_example.sh`](../examples/00_config_example.sh) |

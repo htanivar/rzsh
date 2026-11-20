@@ -90,3 +90,19 @@ local safe_json=$(mask_json_fields '{"user":"alice","token":"secret123"}' "token
 local safe_line=$(mask_env_line "DB_PASSWORD=supersecret")
 # Output: DB_PASSWORD=***MASKED***
 ```
+
+---
+
+## Per-Function Copy-Paste Reference
+
+Browse dedicated per-function pages with all flags and copy-paste variations in [`docs/16-mask/`](16-mask/README.md), or run [`examples/16_mask_example.sh`](../examples/16_mask_example.sh).
+
+| Function | Per-Function Docs & Flags | Runnable Example |
+| :--- | :--- | :--- |
+| `mask_string` | [Docs & Examples](16-mask/mask_string.md) | [`16_mask_example.sh`](../examples/16_mask_example.sh) |
+| `mask_token` | [Docs & Examples](16-mask/mask_token.md) | [`16_mask_example.sh`](../examples/16_mask_example.sh) |
+| `mask_email` | [Docs & Examples](16-mask/mask_email.md) | [`16_mask_example.sh`](../examples/16_mask_example.sh) |
+| `mask_phone` | [Docs & Examples](16-mask/mask_phone.md) | [`16_mask_example.sh`](../examples/16_mask_example.sh) |
+| `mask_card` | [Docs & Examples](16-mask/mask_card.md) | [`16_mask_example.sh`](../examples/16_mask_example.sh) |
+| `mask_json_fields` | [Docs & Examples](16-mask/mask_json_fields.md) | [`16_mask_example.sh`](../examples/16_mask_example.sh) |
+| `mask_env_line` | [Docs & Examples](16-mask/mask_env_line.md) | [`16_mask_example.sh`](../examples/16_mask_example.sh) |

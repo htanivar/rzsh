@@ -166,3 +166,34 @@ file_compare -s -u 5 -o "./file_diff_report.md" "app_v1.conf" "app_v2.conf"
 ```
 
 ---
+
+---
+
+## Per-Function Copy-Paste Reference
+
+Browse dedicated per-function pages with all flags and copy-paste variations in [`docs/09-file/`](09-file/README.md), or run [`examples/09_file_example.sh`](../examples/09_file_example.sh).
+
+| Function | Per-Function Docs & Flags | Runnable Example |
+| :--- | :--- | :--- |
+| `file_exists` | [Docs & Examples](09-file/file_exists.md) | [`09_file_example.sh`](../examples/09_file_example.sh) |
+| `file_read` | [Docs & Examples](09-file/file_read.md) | [`09_file_example.sh`](../examples/09_file_example.sh) |
+| `file_read_to_array` | [Docs & Examples](09-file/file_read_to_array.md) | [`09_file_example.sh`](../examples/09_file_example.sh) |
+| `file_write` | [Docs & Examples](09-file/file_write.md) | [`09_file_example.sh`](../examples/09_file_example.sh) |
+| `file_append` | [Docs & Examples](09-file/file_append.md) | [`09_file_example.sh`](../examples/09_file_example.sh) |
+| `file_copy` | [Docs & Examples](09-file/file_copy.md) | [`09_file_example.sh`](../examples/09_file_example.sh) |
+| `file_move` | [Docs & Examples](09-file/file_move.md) | [`09_file_example.sh`](../examples/09_file_example.sh) |
+| `file_delete` | [Docs & Examples](09-file/file_delete.md) | [`09_file_example.sh`](../examples/09_file_example.sh) |
+| `file_get_size` | [Docs & Examples](09-file/file_get_size.md) | [`09_file_example.sh`](../examples/09_file_example.sh) |
+| `file_get_permissions` | [Docs & Examples](09-file/file_get_permissions.md) | [`09_file_example.sh`](../examples/09_file_example.sh) |
+| `file_set_permissions` | [Docs & Examples](09-file/file_set_permissions.md) | [`09_file_example.sh`](../examples/09_file_example.sh) |
+| `file_get_owner` | [Docs & Examples](09-file/file_get_owner.md) | [`09_file_example.sh`](../examples/09_file_example.sh) |
+| `file_get_group` | [Docs & Examples](09-file/file_get_group.md) | [`09_file_example.sh`](../examples/09_file_example.sh) |
+| `file_backup` | [Docs & Examples](09-file/file_backup.md) | [`09_file_example.sh`](../examples/09_file_example.sh) |
+| `file_restore` | [Docs & Examples](09-file/file_restore.md) | [`09_file_example.sh`](../examples/09_file_example.sh) |
+| `file_backup_and_restore` | [Docs & Examples](09-file/file_backup_and_restore.md) | [`09_file_example.sh`](../examples/09_file_example.sh) |
+| `file_hash` | [Docs & Examples](09-file/file_hash.md) | [`09_file_example.sh`](../examples/09_file_example.sh) |
+| `file_tail` | [Docs & Examples](09-file/file_tail.md) | [`09_file_example.sh`](../examples/09_file_example.sh) |
+| `file_head` | [Docs & Examples](09-file/file_head.md) | [`09_file_example.sh`](../examples/09_file_example.sh) |
+| `file_grep` | [Docs & Examples](09-file/file_grep.md) | [`09_file_example.sh`](../examples/09_file_example.sh) |
+| `file_equals` | [Docs & Examples](09-file/file_equals.md) | [`09_file_example.sh`](../examples/09_file_example.sh) |
+| `file_compare` | [Docs & Examples](09-file/file_compare.md) | [`09_file_example.sh`](../examples/09_file_example.sh) |

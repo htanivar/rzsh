@@ -93,3 +93,17 @@ tunnel_pid=$(ssh_tunnel_start 8080 "db-host" 80 "gateway-user" "10.0.0.5")
 # Close tunnel later
 kill "${tunnel_pid}"
 ```
+
+---
+
+## Per-Function Copy-Paste Reference
+
+Browse dedicated per-function pages with all flags and copy-paste variations in [`docs/12-ssh/`](12-ssh/README.md), or run [`examples/12_ssh_example.sh`](../examples/12_ssh_example.sh).
+
+| Function | Per-Function Docs & Flags | Runnable Example |
+| :--- | :--- | :--- |
+| `ssh_is_reachable` | [Docs & Examples](12-ssh/ssh_is_reachable.md) | [`12_ssh_example.sh`](../examples/12_ssh_example.sh) |
+| `ssh_exec` | [Docs & Examples](12-ssh/ssh_exec.md) | [`12_ssh_example.sh`](../examples/12_ssh_example.sh) |
+| `ssh_scp_up` | [Docs & Examples](12-ssh/ssh_scp_up.md) | [`12_ssh_example.sh`](../examples/12_ssh_example.sh) |
+| `ssh_scp_down` | [Docs & Examples](12-ssh/ssh_scp_down.md) | [`12_ssh_example.sh`](../examples/12_ssh_example.sh) |
+| `ssh_tunnel_start` | [Docs & Examples](12-ssh/ssh_tunnel_start.md) | [`12_ssh_example.sh`](../examples/12_ssh_example.sh) |

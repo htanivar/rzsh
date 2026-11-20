@@ -129,3 +129,25 @@ jwt_has_claim "${token}" ".role"
 ```
 
 ---
+
+---
+
+## Per-Function Copy-Paste Reference
+
+Browse dedicated per-function pages with all flags and copy-paste variations in [`docs/13-jwt/`](13-jwt/README.md), or run [`examples/13_jwt_example.sh`](../examples/13_jwt_example.sh).
+
+| Function | Per-Function Docs & Flags | Runnable Example |
+| :--- | :--- | :--- |
+| `jwt_generate` | [Docs & Examples](13-jwt/jwt_generate.md) | [`13_jwt_example.sh`](../examples/13_jwt_example.sh) |
+| `jwt_decode` | [Docs & Examples](13-jwt/jwt_decode.md) | [`13_jwt_example.sh`](../examples/13_jwt_example.sh) |
+| `jwt_get_header` | [Docs & Examples](13-jwt/jwt_get_header.md) | [`13_jwt_example.sh`](../examples/13_jwt_example.sh) |
+| `jwt_get_payload` | [Docs & Examples](13-jwt/jwt_get_payload.md) | [`13_jwt_example.sh`](../examples/13_jwt_example.sh) |
+| `jwt_get_claim` | [Docs & Examples](13-jwt/jwt_get_claim.md) | [`13_jwt_example.sh`](../examples/13_jwt_example.sh) |
+| `jwt_verify` | [Docs & Examples](13-jwt/jwt_verify.md) | [`13_jwt_example.sh`](../examples/13_jwt_example.sh) |
+| `jwt_expired` | [Docs & Examples](13-jwt/jwt_expired.md) | [`13_jwt_example.sh`](../examples/13_jwt_example.sh) |
+| `jwt_valid` | [Docs & Examples](13-jwt/jwt_valid.md) | [`13_jwt_example.sh`](../examples/13_jwt_example.sh) |
+| `jwt_refresh` | [Docs & Examples](13-jwt/jwt_refresh.md) | [`13_jwt_example.sh`](../examples/13_jwt_example.sh) |
+| `jwt_parse_claims` | [Docs & Examples](13-jwt/jwt_parse_claims.md) | [`13_jwt_example.sh`](../examples/13_jwt_example.sh) |
+| `jwt_get_audience` | [Docs & Examples](13-jwt/jwt_get_audience.md) | [`13_jwt_example.sh`](../examples/13_jwt_example.sh) |
+| `jwt_get_issuer` | [Docs & Examples](13-jwt/jwt_get_issuer.md) | [`13_jwt_example.sh`](../examples/13_jwt_example.sh) |
+| `jwt_has_claim` | [Docs & Examples](13-jwt/jwt_has_claim.md) | [`13_jwt_example.sh`](../examples/13_jwt_example.sh) |

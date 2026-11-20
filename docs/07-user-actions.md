@@ -87,3 +87,18 @@ local email=$(read_with_validation "Enter contact email" "validate_email")
 ```
 
 ---
+
+---
+
+## Per-Function Copy-Paste Reference
+
+Browse dedicated per-function pages with all flags and copy-paste variations in [`docs/07-user-actions/`](07-user-actions/README.md), or run [`examples/07_user_actions_example.sh`](../examples/07_user_actions_example.sh).
+
+| Function | Per-Function Docs & Flags | Runnable Example |
+| :--- | :--- | :--- |
+| `read_input` | [Docs & Examples](07-user-actions/read_input.md) | [`07_user_actions_example.sh`](../examples/07_user_actions_example.sh) |
+| `read_password` | [Docs & Examples](07-user-actions/read_password.md) | [`07_user_actions_example.sh`](../examples/07_user_actions_example.sh) |
+| `confirm` | [Docs & Examples](07-user-actions/confirm.md) | [`07_user_actions_example.sh`](../examples/07_user_actions_example.sh) |
+| `select_option` | [Docs & Examples](07-user-actions/select_option.md) | [`07_user_actions_example.sh`](../examples/07_user_actions_example.sh) |
+| `wait_for_enter` | [Docs & Examples](07-user-actions/wait_for_enter.md) | [`07_user_actions_example.sh`](../examples/07_user_actions_example.sh) |
+| `read_with_validation` | [Docs & Examples](07-user-actions/read_with_validation.md) | [`07_user_actions_example.sh`](../examples/07_user_actions_example.sh) |

@@ -171,3 +171,37 @@ local uid=$(str_uuid)
 ```
 
 ---
+
+---
+
+## Per-Function Copy-Paste Reference
+
+Browse dedicated per-function pages with all flags and copy-paste variations in [`docs/11-string/`](11-string/README.md), or run [`examples/11_string_example.sh`](../examples/11_string_example.sh).
+
+| Function | Per-Function Docs & Flags | Runnable Example |
+| :--- | :--- | :--- |
+| `str_contains` | [Docs & Examples](11-string/str_contains.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |
+| `str_starts_with` | [Docs & Examples](11-string/str_starts_with.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |
+| `str_ends_with` | [Docs & Examples](11-string/str_ends_with.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |
+| `str_replace` | [Docs & Examples](11-string/str_replace.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |
+| `str_replace_first` | [Docs & Examples](11-string/str_replace_first.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |
+| `str_trim` | [Docs & Examples](11-string/str_trim.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |
+| `str_ltrim` | [Docs & Examples](11-string/str_ltrim.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |
+| `str_rtrim` | [Docs & Examples](11-string/str_rtrim.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |
+| `str_split` | [Docs & Examples](11-string/str_split.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |
+| `str_join` | [Docs & Examples](11-string/str_join.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |
+| `str_to_array` | [Docs & Examples](11-string/str_to_array.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |
+| `array_get_element` | [Docs & Examples](11-string/array_get_element.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |
+| `str_to_lower` | [Docs & Examples](11-string/str_to_lower.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |
+| `str_to_upper` | [Docs & Examples](11-string/str_to_upper.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |
+| `str_capitalize` | [Docs & Examples](11-string/str_capitalize.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |
+| `str_reverse` | [Docs & Examples](11-string/str_reverse.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |
+| `str_length` | [Docs & Examples](11-string/str_length.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |
+| `str_substring` | [Docs & Examples](11-string/str_substring.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |
+| `str_pad_left` | [Docs & Examples](11-string/str_pad_left.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |
+| `str_pad_right` | [Docs & Examples](11-string/str_pad_right.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |
+| `str_escape` | [Docs & Examples](11-string/str_escape.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |
+| `str_unescape` | [Docs & Examples](11-string/str_unescape.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |
+| `str_slugify` | [Docs & Examples](11-string/str_slugify.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |
+| `str_random` | [Docs & Examples](11-string/str_random.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |
+| `str_uuid` | [Docs & Examples](11-string/str_uuid.md) | [`11_string_example.sh`](../examples/11_string_example.sh) |

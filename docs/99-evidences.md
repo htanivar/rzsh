@@ -160,3 +160,26 @@ evidence_validate "${data}"
 ```
 
 ---
+
+---
+
+## Per-Function Copy-Paste Reference
+
+Browse dedicated per-function pages with all flags and copy-paste variations in [`docs/99-evidences/`](99-evidences/README.md), or run [`examples/99_evidences_example.sh`](../examples/99_evidences_example.sh).
+
+| Function | Per-Function Docs & Flags | Runnable Example |
+| :--- | :--- | :--- |
+| `init_evidence` | [Docs & Examples](99-evidences/init_evidence.md) | [`99_evidences_example.sh`](../examples/99_evidences_example.sh) |
+| `collect_environment_evidence` | [Docs & Examples](99-evidences/collect_environment_evidence.md) | [`99_evidences_example.sh`](../examples/99_evidences_example.sh) |
+| `collect_script_evidence` | [Docs & Examples](99-evidences/collect_script_evidence.md) | [`99_evidences_example.sh`](../examples/99_evidences_example.sh) |
+| `collect_network_evidence` | [Docs & Examples](99-evidences/collect_network_evidence.md) | [`99_evidences_example.sh`](../examples/99_evidences_example.sh) |
+| `collect_file_evidence` | [Docs & Examples](99-evidences/collect_file_evidence.md) | [`99_evidences_example.sh`](../examples/99_evidences_example.sh) |
+| `collect_docker_evidence` | [Docs & Examples](99-evidences/collect_docker_evidence.md) | [`99_evidences_example.sh`](../examples/99_evidences_example.sh) |
+| `collect_git_evidence` | [Docs & Examples](99-evidences/collect_git_evidence.md) | [`99_evidences_example.sh`](../examples/99_evidences_example.sh) |
+| `collect_custom_evidence` | [Docs & Examples](99-evidences/collect_custom_evidence.md) | [`99_evidences_example.sh`](../examples/99_evidences_example.sh) |
+| `evidence_to_json` | [Docs & Examples](99-evidences/evidence_to_json.md) | [`99_evidences_example.sh`](../examples/99_evidences_example.sh) |
+| `evidence_to_markdown` | [Docs & Examples](99-evidences/evidence_to_markdown.md) | [`99_evidences_example.sh`](../examples/99_evidences_example.sh) |
+| `generate_evidence_report` | [Docs & Examples](99-evidences/generate_evidence_report.md) | [`99_evidences_example.sh`](../examples/99_evidences_example.sh) |
+| `evidence_archive` | [Docs & Examples](99-evidences/evidence_archive.md) | [`99_evidences_example.sh`](../examples/99_evidences_example.sh) |
+| `evidence_compare` | [Docs & Examples](99-evidences/evidence_compare.md) | [`99_evidences_example.sh`](../examples/99_evidences_example.sh) |
+| `evidence_validate` | [Docs & Examples](99-evidences/evidence_validate.md) | [`99_evidences_example.sh`](../examples/99_evidences_example.sh) |

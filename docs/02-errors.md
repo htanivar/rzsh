@@ -63,3 +63,15 @@ cleanup_temp_files
 ```
 
 ---
+
+---
+
+## Per-Function Copy-Paste Reference
+
+Browse dedicated per-function pages with all flags and copy-paste variations in [`docs/02-errors/`](02-errors/README.md), or run [`examples/02_errors_example.sh`](../examples/02_errors_example.sh).
+
+| Function | Per-Function Docs & Flags | Runnable Example |
+| :--- | :--- | :--- |
+| `error_exit` | [Docs & Examples](02-errors/error_exit.md) | [`02_errors_example.sh`](../examples/02_errors_example.sh) |
+| `register_temp_file` | [Docs & Examples](02-errors/register_temp_file.md) | [`02_errors_example.sh`](../examples/02_errors_example.sh) |
+| `cleanup_temp_files` | [Docs & Examples](02-errors/cleanup_temp_files.md) | [`02_errors_example.sh`](../examples/02_errors_example.sh) |

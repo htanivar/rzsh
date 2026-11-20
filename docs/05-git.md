@@ -342,3 +342,32 @@ git_compare_commits v1.0.0
 
 ---
 
+---
+
+## Per-Function Copy-Paste Reference
+
+Browse dedicated per-function pages with all flags and copy-paste variations in [`docs/05-git/`](05-git/README.md), or run [`examples/05_git_example.sh`](../examples/05_git_example.sh).
+
+| Function | Per-Function Docs & Flags | Runnable Example |
+| :--- | :--- | :--- |
+| `git_get_current_branch` | [Docs & Examples](05-git/git_get_current_branch.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_is_clean` | [Docs & Examples](05-git/git_is_clean.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_get_root` | [Docs & Examples](05-git/git_get_root.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_status_message` | [Docs & Examples](05-git/git_status_message.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_commit` | [Docs & Examples](05-git/git_commit.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_push` | [Docs & Examples](05-git/git_push.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_pull` | [Docs & Examples](05-git/git_pull.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_safe_pull` | [Docs & Examples](05-git/git_safe_pull.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_branch_exists` | [Docs & Examples](05-git/git_branch_exists.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_get_commit_hash` | [Docs & Examples](05-git/git_get_commit_hash.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_get_commit_message` | [Docs & Examples](05-git/git_get_commit_message.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_compare_branches` | [Docs & Examples](05-git/git_compare_branches.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_detect_default_branch` | [Docs & Examples](05-git/git_detect_default_branch.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_resolve_ref` | [Docs & Examples](05-git/git_resolve_ref.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_list_branches` | [Docs & Examples](05-git/git_list_branches.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_get_missed_commits` | [Docs & Examples](05-git/git_get_missed_commits.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_format_commit` | [Docs & Examples](05-git/git_format_commit.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_pick_branch` | [Docs & Examples](05-git/git_pick_branch.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_report_missed_commits` | [Docs & Examples](05-git/git_report_missed_commits.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_compare_three_branches` | [Docs & Examples](05-git/git_compare_three_branches.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_compare_commits` | [Docs & Examples](05-git/git_compare_commits.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |

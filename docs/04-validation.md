@@ -236,3 +236,23 @@ fi
 ```
 
 ---
+
+---
+
+## Per-Function Copy-Paste Reference
+
+Browse dedicated per-function pages with all flags and copy-paste variations in [`docs/04-validation/`](04-validation/README.md), or run [`examples/04_validation_example.sh`](../examples/04_validation_example.sh).
+
+| Function | Per-Function Docs & Flags | Runnable Example |
+| :--- | :--- | :--- |
+| `validate_required` | [Docs & Examples](04-validation/validate_required.md) | [`04_validation_example.sh`](../examples/04_validation_example.sh) |
+| `validate_in_list` | [Docs & Examples](04-validation/validate_in_list.md) | [`04_validation_example.sh`](../examples/04_validation_example.sh) |
+| `validate_file_exists` | [Docs & Examples](04-validation/validate_file_exists.md) | [`04_validation_example.sh`](../examples/04_validation_example.sh) |
+| `validate_directory_exists` | [Docs & Examples](04-validation/validate_directory_exists.md) | [`04_validation_example.sh`](../examples/04_validation_example.sh) |
+| `validate_is_number` | [Docs & Examples](04-validation/validate_is_number.md) | [`04_validation_example.sh`](../examples/04_validation_example.sh) |
+| `validate_email` | [Docs & Examples](04-validation/validate_email.md) | [`04_validation_example.sh`](../examples/04_validation_example.sh) |
+| `validate_url` | [Docs & Examples](04-validation/validate_url.md) | [`04_validation_example.sh`](../examples/04_validation_example.sh) |
+| `validate_command_exists` | [Docs & Examples](04-validation/validate_command_exists.md) | [`04_validation_example.sh`](../examples/04_validation_example.sh) |
+| `validate_date` | [Docs & Examples](04-validation/validate_date.md) | [`04_validation_example.sh`](../examples/04_validation_example.sh) |
+| `validate_jwt` | [Docs & Examples](04-validation/validate_jwt.md) | [`04_validation_example.sh`](../examples/04_validation_example.sh) |
+| `validate_json` | [Docs & Examples](04-validation/validate_json.md) | [`04_validation_example.sh`](../examples/04_validation_example.sh) |

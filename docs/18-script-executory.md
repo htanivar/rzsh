@@ -100,3 +100,18 @@ execute_scripts_from_file "./pipeline.txt"
 ```zsh
 execute_script_with_retry "./login.sh" 3 1 "--env" "staging"
 ```
+
+---
+
+## Per-Function Copy-Paste Reference
+
+Browse dedicated per-function pages with all flags and copy-paste variations in [`docs/18-script-executory/`](18-script-executory/README.md), or run [`examples/18_script_executory_example.sh`](../examples/18_script_executory_example.sh).
+
+| Function | Per-Function Docs & Flags | Runnable Example |
+| :--- | :--- | :--- |
+| `validate_script_executable` | [Docs & Examples](18-script-executory/validate_script_executable.md) | [`18_script_executory_example.sh`](../examples/18_script_executory_example.sh) |
+| `execute_script` | [Docs & Examples](18-script-executory/execute_script.md) | [`18_script_executory_example.sh`](../examples/18_script_executory_example.sh) |
+| `execute_script_in_current_shell` | [Docs & Examples](18-script-executory/execute_script_in_current_shell.md) | [`18_script_executory_example.sh`](../examples/18_script_executory_example.sh) |
+| `execute_scripts_sequence` | [Docs & Examples](18-script-executory/execute_scripts_sequence.md) | [`18_script_executory_example.sh`](../examples/18_script_executory_example.sh) |
+| `execute_scripts_from_file` | [Docs & Examples](18-script-executory/execute_scripts_from_file.md) | [`18_script_executory_example.sh`](../examples/18_script_executory_example.sh) |
+| `execute_script_with_retry` | [Docs & Examples](18-script-executory/execute_script_with_retry.md) | [`18_script_executory_example.sh`](../examples/18_script_executory_example.sh) |
