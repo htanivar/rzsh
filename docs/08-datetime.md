@@ -140,3 +140,23 @@ local duration=$(format_duration 5130)
 ```
 
 ---
+
+---
+
+## Per-Function Copy-Paste Reference
+
+Browse dedicated per-function pages with all flags and copy-paste variations in [`docs/08-datetime/`](08-datetime/README.md), or run [`examples/08_datetime_example.sh`](../examples/08_datetime_example.sh).
+
+| Function | Per-Function Docs & Flags | Runnable Example |
+| :--- | :--- | :--- |
+| `timestamp` | [Docs & Examples](08-datetime/timestamp.md) | [`08_datetime_example.sh`](../examples/08_datetime_example.sh) |
+| `date_now` | [Docs & Examples](08-datetime/date_now.md) | [`08_datetime_example.sh`](../examples/08_datetime_example.sh) |
+| `parse_date` | [Docs & Examples](08-datetime/parse_date.md) | [`08_datetime_example.sh`](../examples/08_datetime_example.sh) |
+| `date_add` | [Docs & Examples](08-datetime/date_add.md) | [`08_datetime_example.sh`](../examples/08_datetime_example.sh) |
+| `date_subtract` | [Docs & Examples](08-datetime/date_subtract.md) | [`08_datetime_example.sh`](../examples/08_datetime_example.sh) |
+| `date_diff` | [Docs & Examples](08-datetime/date_diff.md) | [`08_datetime_example.sh`](../examples/08_datetime_example.sh) |
+| `date_format` | [Docs & Examples](08-datetime/date_format.md) | [`08_datetime_example.sh`](../examples/08_datetime_example.sh) |
+| `timezone_convert` | [Docs & Examples](08-datetime/timezone_convert.md) | [`08_datetime_example.sh`](../examples/08_datetime_example.sh) |
+| `is_valid_date` | [Docs & Examples](08-datetime/is_valid_date.md) | [`08_datetime_example.sh`](../examples/08_datetime_example.sh) |
+| `date_range` | [Docs & Examples](08-datetime/date_range.md) | [`08_datetime_example.sh`](../examples/08_datetime_example.sh) |
+| `format_duration` | [Docs & Examples](08-datetime/format_duration.md) | [`08_datetime_example.sh`](../examples/08_datetime_example.sh) |

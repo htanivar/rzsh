@@ -203,3 +203,28 @@ http_unset_default_header "X-Vault-Request"
 ```zsh
 http_clear_default_headers
 ```
+
+---
+
+## Per-Function Copy-Paste Reference
+
+Browse dedicated per-function pages with all flags and copy-paste variations in [`docs/06-http/`](06-http/README.md), or run [`examples/06_http_example.sh`](../examples/06_http_example.sh).
+
+| Function | Per-Function Docs & Flags | Runnable Example |
+| :--- | :--- | :--- |
+| `http_set_default_header` | [Docs & Examples](06-http/http_set_default_header.md) | [`06_http_example.sh`](../examples/06_http_example.sh) |
+| `http_get_default_header` | [Docs & Examples](06-http/http_get_default_header.md) | [`06_http_example.sh`](../examples/06_http_example.sh) |
+| `http_unset_default_header` | [Docs & Examples](06-http/http_unset_default_header.md) | [`06_http_example.sh`](../examples/06_http_example.sh) |
+| `http_clear_default_headers` | [Docs & Examples](06-http/http_clear_default_headers.md) | [`06_http_example.sh`](../examples/06_http_example.sh) |
+| `http_build_headers` | [Docs & Examples](06-http/http_build_headers.md) | [`06_http_example.sh`](../examples/06_http_example.sh) |
+| `http_get` | [Docs & Examples](06-http/http_get.md) | [`06_http_example.sh`](../examples/06_http_example.sh) |
+| `http_post` | [Docs & Examples](06-http/http_post.md) | [`06_http_example.sh`](../examples/06_http_example.sh) |
+| `http_put` | [Docs & Examples](06-http/http_put.md) | [`06_http_example.sh`](../examples/06_http_example.sh) |
+| `http_patch` | [Docs & Examples](06-http/http_patch.md) | [`06_http_example.sh`](../examples/06_http_example.sh) |
+| `http_delete` | [Docs & Examples](06-http/http_delete.md) | [`06_http_example.sh`](../examples/06_http_example.sh) |
+| `check_status_code` | [Docs & Examples](06-http/check_status_code.md) | [`06_http_example.sh`](../examples/06_http_example.sh) |
+| `http_get_body` | [Docs & Examples](06-http/http_get_body.md) | [`06_http_example.sh`](../examples/06_http_example.sh) |
+| `is_json_response` | [Docs & Examples](06-http/is_json_response.md) | [`06_http_example.sh`](../examples/06_http_example.sh) |
+| `extract_json_field` | [Docs & Examples](06-http/extract_json_field.md) | [`06_http_example.sh`](../examples/06_http_example.sh) |
+| `download_file` | [Docs & Examples](06-http/download_file.md) | [`06_http_example.sh`](../examples/06_http_example.sh) |
+| `http_get_with_retry` | [Docs & Examples](06-http/http_get_with_retry.md) | [`06_http_example.sh`](../examples/06_http_example.sh) |

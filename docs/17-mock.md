@@ -103,3 +103,34 @@ mock_http_response '{"status":"healthy"}' 200
 
 * **Signature:** `mock_restore <cmd_name>` / `mock_restore_all`
 * **Description:** Removes mocks, restores any previously saved Zsh function definitions, and clears mock state.
+
+---
+
+## Per-Function Copy-Paste Reference
+
+Browse dedicated per-function pages with all flags and copy-paste variations in [`docs/17-mock/`](17-mock/README.md), or run [`examples/17_mock_example.sh`](../examples/17_mock_example.sh).
+
+| Function | Per-Function Docs & Flags | Runnable Example |
+| :--- | :--- | :--- |
+| `mock_string` | [Docs & Examples](17-mock/mock_string.md) | [`17_mock_example.sh`](../examples/17_mock_example.sh) |
+| `mock_alphanumeric` | [Docs & Examples](17-mock/mock_alphanumeric.md) | [`17_mock_example.sh`](../examples/17_mock_example.sh) |
+| `mock_password` | [Docs & Examples](17-mock/mock_password.md) | [`17_mock_example.sh`](../examples/17_mock_example.sh) |
+| `mock_int` | [Docs & Examples](17-mock/mock_int.md) | [`17_mock_example.sh`](../examples/17_mock_example.sh) |
+| `mock_bool` | [Docs & Examples](17-mock/mock_bool.md) | [`17_mock_example.sh`](../examples/17_mock_example.sh) |
+| `mock_uuid` | [Docs & Examples](17-mock/mock_uuid.md) | [`17_mock_example.sh`](../examples/17_mock_example.sh) |
+| `mock_email` | [Docs & Examples](17-mock/mock_email.md) | [`17_mock_example.sh`](../examples/17_mock_example.sh) |
+| `mock_phone` | [Docs & Examples](17-mock/mock_phone.md) | [`17_mock_example.sh`](../examples/17_mock_example.sh) |
+| `mock_date` | [Docs & Examples](17-mock/mock_date.md) | [`17_mock_example.sh`](../examples/17_mock_example.sh) |
+| `mock_jwt` | [Docs & Examples](17-mock/mock_jwt.md) | [`17_mock_example.sh`](../examples/17_mock_example.sh) |
+| `mock_vault_token` | [Docs & Examples](17-mock/mock_vault_token.md) | [`17_mock_example.sh`](../examples/17_mock_example.sh) |
+| `mock_array` | [Docs & Examples](17-mock/mock_array.md) | [`17_mock_example.sh`](../examples/17_mock_example.sh) |
+| `mock_nested_array` | [Docs & Examples](17-mock/mock_nested_array.md) | [`17_mock_example.sh`](../examples/17_mock_example.sh) |
+| `mock_json` | [Docs & Examples](17-mock/mock_json.md) | [`17_mock_example.sh`](../examples/17_mock_example.sh) |
+| `mock_json_user` | [Docs & Examples](17-mock/mock_json_user.md) | [`17_mock_example.sh`](../examples/17_mock_example.sh) |
+| `mock_command` | [Docs & Examples](17-mock/mock_command.md) | [`17_mock_example.sh`](../examples/17_mock_example.sh) |
+| `mock_http_response` | [Docs & Examples](17-mock/mock_http_response.md) | [`17_mock_example.sh`](../examples/17_mock_example.sh) |
+| `mock_get_call_count` | [Docs & Examples](17-mock/mock_get_call_count.md) | [`17_mock_example.sh`](../examples/17_mock_example.sh) |
+| `mock_get_last_args` | [Docs & Examples](17-mock/mock_get_last_args.md) | [`17_mock_example.sh`](../examples/17_mock_example.sh) |
+| `mock_was_called` | [Docs & Examples](17-mock/mock_was_called.md) | [`17_mock_example.sh`](../examples/17_mock_example.sh) |
+| `mock_restore` | [Docs & Examples](17-mock/mock_restore.md) | [`17_mock_example.sh`](../examples/17_mock_example.sh) |
+| `mock_restore_all` | [Docs & Examples](17-mock/mock_restore_all.md) | [`17_mock_example.sh`](../examples/17_mock_example.sh) |

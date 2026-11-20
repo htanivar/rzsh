@@ -111,3 +111,25 @@ dir_compare -s --ignore ".git,node_modules,dist" -o "./dir_report.md" "./src_a" 
 ```
 
 ---
+
+---
+
+## Per-Function Copy-Paste Reference
+
+Browse dedicated per-function pages with all flags and copy-paste variations in [`docs/10-directory/`](10-directory/README.md), or run [`examples/10_directory_example.sh`](../examples/10_directory_example.sh).
+
+| Function | Per-Function Docs & Flags | Runnable Example |
+| :--- | :--- | :--- |
+| `dir_exists` | [Docs & Examples](10-directory/dir_exists.md) | [`10_directory_example.sh`](../examples/10_directory_example.sh) |
+| `dir_create` | [Docs & Examples](10-directory/dir_create.md) | [`10_directory_example.sh`](../examples/10_directory_example.sh) |
+| `dir_delete` | [Docs & Examples](10-directory/dir_delete.md) | [`10_directory_example.sh`](../examples/10_directory_example.sh) |
+| `dir_copy` | [Docs & Examples](10-directory/dir_copy.md) | [`10_directory_example.sh`](../examples/10_directory_example.sh) |
+| `dir_move` | [Docs & Examples](10-directory/dir_move.md) | [`10_directory_example.sh`](../examples/10_directory_example.sh) |
+| `dir_list` | [Docs & Examples](10-directory/dir_list.md) | [`10_directory_example.sh`](../examples/10_directory_example.sh) |
+| `dir_size` | [Docs & Examples](10-directory/dir_size.md) | [`10_directory_example.sh`](../examples/10_directory_example.sh) |
+| `dir_is_empty` | [Docs & Examples](10-directory/dir_is_empty.md) | [`10_directory_example.sh`](../examples/10_directory_example.sh) |
+| `dir_clean` | [Docs & Examples](10-directory/dir_clean.md) | [`10_directory_example.sh`](../examples/10_directory_example.sh) |
+| `dir_tree` | [Docs & Examples](10-directory/dir_tree.md) | [`10_directory_example.sh`](../examples/10_directory_example.sh) |
+| `dir_sync` | [Docs & Examples](10-directory/dir_sync.md) | [`10_directory_example.sh`](../examples/10_directory_example.sh) |
+| `dir_watch` | [Docs & Examples](10-directory/dir_watch.md) | [`10_directory_example.sh`](../examples/10_directory_example.sh) |
+| `dir_compare` | [Docs & Examples](10-directory/dir_compare.md) | [`10_directory_example.sh`](../examples/10_directory_example.sh) |

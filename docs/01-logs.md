@@ -102,3 +102,21 @@ log_section "DEPLOYMENT STAGE"
 ```
 
 ---
+
+---
+
+## Per-Function Copy-Paste Reference
+
+Browse dedicated per-function pages with all flags and copy-paste variations in [`docs/01-logs/`](01-logs/README.md), or run [`examples/01_logs_example.sh`](../examples/01_logs_example.sh).
+
+| Function | Per-Function Docs & Flags | Runnable Example |
+| :--- | :--- | :--- |
+| `init_logging` | [Docs & Examples](01-logs/init_logging.md) | [`01_logs_example.sh`](../examples/01_logs_example.sh) |
+| `log` | [Docs & Examples](01-logs/log.md) | [`01_logs_example.sh`](../examples/01_logs_example.sh) |
+| `log_info` | [Docs & Examples](01-logs/log_info.md) | [`01_logs_example.sh`](../examples/01_logs_example.sh) |
+| `log_error` | [Docs & Examples](01-logs/log_error.md) | [`01_logs_example.sh`](../examples/01_logs_example.sh) |
+| `log_warn` | [Docs & Examples](01-logs/log_warn.md) | [`01_logs_example.sh`](../examples/01_logs_example.sh) |
+| `log_debug` | [Docs & Examples](01-logs/log_debug.md) | [`01_logs_example.sh`](../examples/01_logs_example.sh) |
+| `log_steps` | [Docs & Examples](01-logs/log_steps.md) | [`01_logs_example.sh`](../examples/01_logs_example.sh) |
+| `log_command` | [Docs & Examples](01-logs/log_command.md) | [`01_logs_example.sh`](../examples/01_logs_example.sh) |
+| `log_section` | [Docs & Examples](01-logs/log_section.md) | [`01_logs_example.sh`](../examples/01_logs_example.sh) |

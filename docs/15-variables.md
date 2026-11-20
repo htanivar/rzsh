@@ -113,3 +113,19 @@ config_list_repos
 ```
 
 ---
+
+---
+
+## Per-Function Copy-Paste Reference
+
+Browse dedicated per-function pages with all flags and copy-paste variations in [`docs/15-variables/`](15-variables/README.md), or run [`examples/15_variables_example.sh`](../examples/15_variables_example.sh).
+
+| Function | Per-Function Docs & Flags | Runnable Example |
+| :--- | :--- | :--- |
+| `config_get_var` | [Docs & Examples](15-variables/config_get_var.md) | [`15_variables_example.sh`](../examples/15_variables_example.sh) |
+| `config_set_var` | [Docs & Examples](15-variables/config_set_var.md) | [`15_variables_example.sh`](../examples/15_variables_example.sh) |
+| `config_unset_var` | [Docs & Examples](15-variables/config_unset_var.md) | [`15_variables_example.sh`](../examples/15_variables_example.sh) |
+| `config_get_repo_location` | [Docs & Examples](15-variables/config_get_repo_location.md) | [`15_variables_example.sh`](../examples/15_variables_example.sh) |
+| `config_set_repo_location` | [Docs & Examples](15-variables/config_set_repo_location.md) | [`15_variables_example.sh`](../examples/15_variables_example.sh) |
+| `config_unset_repo_location` | [Docs & Examples](15-variables/config_unset_repo_location.md) | [`15_variables_example.sh`](../examples/15_variables_example.sh) |
+| `config_list_repos` | [Docs & Examples](15-variables/config_list_repos.md) | [`15_variables_example.sh`](../examples/15_variables_example.sh) |
