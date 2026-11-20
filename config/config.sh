@@ -38,6 +38,7 @@ TIMESTAMP_FORMAT="${TIMESTAMP_FORMAT:-}"
 DATE_FORMAT="${DATE_FORMAT:-}"
 JWT_SECRET="${JWT_SECRET:-}"
 EVIDENCE_DIR="${EVIDENCE_DIR:-}"
+SECRETS_DIR="${SECRETS_DIR:-}"
 RAVI_DIR="${RAVI_DIR:-}"
 GIT_IGNORE_FOLDERS="${GIT_IGNORE_FOLDERS:-}"
 HTTP_CONTENT_TYPE="${HTTP_CONTENT_TYPE:-}"
@@ -91,6 +92,7 @@ init_config() {
   DATE_FORMAT="${DATE_FORMAT:-%Y-%m-%d}"
   JWT_SECRET="${JWT_SECRET:-placeholder-secret-keys-should-be-overridden}"
   EVIDENCE_DIR="${EVIDENCE_DIR:-${PROJECT_ROOT}/evidence}"
+  SECRETS_DIR="${SECRETS_DIR:-${PROJECT_ROOT}/.secrets.d}"
   GIT_IGNORE_FOLDERS="${GIT_IGNORE_FOLDERS:-vendor,.idea,.git}"
   HTTP_CONTENT_TYPE="${HTTP_CONTENT_TYPE:-application/json}"
   HTTP_ACCEPT="${HTTP_ACCEPT:-application/json}"
@@ -154,6 +156,7 @@ init_config() {
   export DATE_FORMAT
   export JWT_SECRET
   export EVIDENCE_DIR
+  export SECRETS_DIR
   export RAVI_DIR
   export GIT_IGNORE_FOLDERS
   export HTTP_CONTENT_TYPE

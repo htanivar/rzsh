@@ -43,6 +43,7 @@ The following variable keys are defined in [`config/config.sh`](../config/config
 | `DATE_FORMAT` | String | Yes | `strftime` format string used for calendar date outputs. |
 | `JWT_SECRET` | String (Secret) | Yes | Default secret key used for HS256 JWT token signing and verification. |
 | `EVIDENCE_DIR` | String (Path) | Yes | Base directory where execution and audit evidence session folders are created. |
+| `SECRETS_DIR` | String (Path) | Yes | Base directory (`.secrets.d` by default) where cached secrets and tokens are stored by [`19-cache.sh`](../functions/19-cache.sh). |
 | `RAVI_DIR` | String (Path) | Yes | Custom workspace/user directory variable exported for user scripts. |
 | `GIT_IGNORE_FOLDERS` | String (CSV) | Yes | Comma-separated list of directories to ignore during Git branch comparisons. |
 | `HTTP_CONTENT_TYPE` | String | Yes | Default `Content-Type` header value (defaults to `application/json`). |
@@ -72,6 +73,7 @@ The following variable keys are defined in [`config/config.sh`](../config/config
   * `DATE_FORMAT`
   * `JWT_SECRET`
   * `EVIDENCE_DIR`
+  * `SECRETS_DIR`
   * `RAVI_DIR`
   * `GIT_IGNORE_FOLDERS`
   * `HTTP_CONTENT_TYPE`
