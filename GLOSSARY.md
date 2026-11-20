@@ -1,8 +1,8 @@
 # RZSH Framework Glossary
 
-**Navigation:** [README](README.md) › **GLOSSARY** › Select a module below for **Docs**, **Examples**, and **Tests**
+**Navigation:** [README](README.md) › [CHEATSHEET](CHEATSHEET.md) › **GLOSSARY** › Select a module below for **Docs**, **Examples**, and **Tests**
 
-Quick-reference catalog of every **environment/global variable** set by the `rzsh` framework and every **function** available across all modules.
+Quick-reference catalog of every **environment/global variable** set by the `rzsh` framework and every **function** available across all modules. New to Zsh? Start with the [**`CHEATSHEET.md`**](CHEATSHEET.md) for beginner copy-paste recipes (1D/2D arrays, conversions, loops, and common tasks).
 
 > **Tip:** Set `export RZSH_DIR="/path/to/rzsh"` in your `~/.zshrc`, then add two lines at the top of any script to unlock every variable and function listed below:
 > ```zsh

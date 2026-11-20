@@ -5,12 +5,13 @@ A modular, reusable, and beginner-friendly shell scripting framework built on Zs
 > [!IMPORTANT]
 > Set `export RZSH_DIR="/path/to/rzsh"` in your environment (`~/.zshrc`). Then, to load all framework functions in any script anywhere on your system, you only need two lines at the top: `source "${RZSH_DIR}/config/config.sh"` and `init_config`. That automatically loads every module in `functions/*.sh`! (If `RZSH_DIR` is not set, the framework advises you and falls back automatically.)
 >
-> See [**`GLOSSARY.md`**](GLOSSARY.md) for a complete quick-reference list of all framework **variables** and **functions**.
+> See [**`GLOSSARY.md`**](GLOSSARY.md) for a complete quick-reference list of all framework **variables** and **functions**, or [**`CHEATSHEET.md`**](CHEATSHEET.md) for a beginner-friendly Zsh & `rzsh` copy-paste cheatsheet (arrays, 2D data, conversions, loops, and common tasks).
 >
-> **Navigation Trail:** `README.md` › [`GLOSSARY.md`](GLOSSARY.md) › [`docs/`](docs) › [`examples/`](examples) › [`tests/`](tests)
+> **Navigation Trail:** `README.md` › [`CHEATSHEET.md`](CHEATSHEET.md) › [`GLOSSARY.md`](GLOSSARY.md) › [`docs/`](docs) › [`examples/`](examples) › [`tests/`](tests)
 
 ## Table of Contents
 - [Quick Start: Create Your Own Script in 3 Steps](#quick-start-create-your-own-script-in-3-steps)
+- [Zsh & `rzsh` Beginner Cheatsheet](CHEATSHEET.md)
 - [Framework Glossary (All Variables & Functions)](GLOSSARY.md)
 - [Guide: Sending HTTP Calls & JSON Payloads (All 5 Ways)](#guide-sending-http-calls--json-payloads-all-5-ways)
 - [Copy-Paste Recipes for Non-Technical Users](#copy-paste-recipes-for-non-technical-users)
