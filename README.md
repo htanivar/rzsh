@@ -311,12 +311,12 @@ Ready-to-run, commented example scripts for every module are located in [`exampl
 - [`examples/02_errors_example.sh`](examples/02_errors_example.sh) — Automatic temporary file cleanup and error exits
 - [`examples/03_navigation_example.sh`](examples/03_navigation_example.sh) — Directory navigation and project root lookup
 - [`examples/04_validation_example.sh`](examples/04_validation_example.sh) — Validating emails, URLs, numbers, dates, and JSON
-- [`examples/05_git_example.sh`](examples/05_git_example.sh) — Checking Git status, branch names, and branch diffs
+- [`examples/05_git_example.sh`](examples/05_git_example.sh) — Checking Git status, branch names, branch diffs, and commit comparisons
 - [`examples/06_http_example.sh`](examples/06_http_example.sh) — HTTP GET/POST/PUT/PATCH/DELETE and all 5 ways to pass `.json` file payloads
 - [`examples/07_user_actions_example.sh`](examples/07_user_actions_example.sh) — Interactive prompts, hidden passwords, and menus
 - [`examples/08_datetime_example.sh`](examples/08_datetime_example.sh) — Date math, timestamps, and duration formatting
-- [`examples/09_file_example.sh`](examples/09_file_example.sh) — Reading, writing, backing up, and hashing files
-- [`examples/10_directory_example.sh`](examples/10_directory_example.sh) — Creating, listing, syncing, and cleaning folders
+- [`examples/09_file_example.sh`](examples/09_file_example.sh) — Reading, writing, backing up, hashing, and comparing files
+- [`examples/10_directory_example.sh`](examples/10_directory_example.sh) — Creating, listing, syncing, comparing, and cleaning folders
 - [`examples/11_string_example.sh`](examples/11_string_example.sh) — Trimming, splitting, joining, slugifying, and UUIDs
 - [`examples/12_ssh_example.sh`](examples/12_ssh_example.sh) — Remote SSH commands, SCP transfers, and tunnels
 - [`examples/13_jwt_example.sh`](examples/13_jwt_example.sh) — Generating, decoding, and verifying JWT tokens

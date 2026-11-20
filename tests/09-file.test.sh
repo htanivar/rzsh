@@ -177,6 +177,30 @@ test_file_read_to_array() {
   rm -f "${test_file}"
 }
 
+test_file_equals_and_compare() {
+  local f1="/tmp/rzsh_cmp_a_$$.txt"
+  local f2="/tmp/rzsh_cmp_b_$$.txt"
+  local f3="/tmp/rzsh_cmp_c_$$.txt"
+  local rpt="/tmp/rzsh_cmp_report_$$.md"
+
+  printf 'alpha\nbeta\n' > "${f1}"
+  printf 'alpha\nbeta\n' > "${f2}"
+  printf 'alpha\ngamma\n' > "${f3}"
+
+  assert_true "file_equals '${f1}' '${f2}'" "Identical files should return 0 for file_equals"
+  assert_false "file_equals '${f1}' '${f3}'" "Different files should return non-zero for file_equals"
+  assert_false "file_equals '${f1}' '/tmp/does_not_exist_rzsh_$$'" "Missing file should return non-zero"
+
+  assert_true "file_compare -s -o '${rpt}' '${f1}' '${f2}'" "Identical files should return 0 for file_compare"
+  assert_true "grep -q 'IDENTICAL' '${rpt}'" "Report should mark identical files as IDENTICAL"
+
+  assert_false "file_compare -s -o '${rpt}' '${f1}' '${f3}'" "Different files should return 1 for file_compare"
+  assert_true "grep -q 'DIFFERENT' '${rpt}'" "Report should mark differing files as DIFFERENT"
+  assert_true "grep -q -- '-beta' '${rpt}' && grep -q -- '+gamma' '${rpt}'" "Report should include unified diff"
+
+  rm -f "${f1}" "${f2}" "${f3}" "${rpt}"
+}
+
 run_test test_file_exists
 run_test test_file_write_and_read
 run_test test_file_append
@@ -188,5 +212,6 @@ run_test test_file_permissions_owner_group
 run_test test_file_hash
 run_test test_file_head_tail_grep
 run_test test_file_read_to_array
+run_test test_file_equals_and_compare
 
 exit $(( TESTS_FAILED > 0 ? 1 : 0 ))

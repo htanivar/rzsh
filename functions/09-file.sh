@@ -421,3 +421,161 @@ file_grep() {
   fi
   grep "${pattern}" "${file}"
 }
+
+# /**
+#  * @function file_equals
+#  * @description Checks whether two files have identical byte-for-byte contents.
+#  * @param {string} file1 - First file path.
+#  * @param {string} file2 - Second file path.
+#  * @return {number} 0 if identical, 1 if different, 2 if either file does not exist.
+#  * @example
+#  *   if file_equals "a.txt" "b.txt"; then
+#  *     echo "Files are identical"
+#  *   fi
+#  */
+file_equals() {
+  local file1="$1"
+  local file2="$2"
+  if [[ -z "${file1}" || -z "${file2}" || ! -f "${file1}" || ! -f "${file2}" ]]; then
+    return 2
+  fi
+  cmp -s "${file1}" "${file2}"
+}
+
+# /**
+#  * @function file_compare
+#  * @description Compares two files (size, SHA-256 hash, line count, unified diff) and prints/writes a Markdown report.
+#  * @param {string} [options] - -h/--help, -o/--output <file>, -s/--silent, -u/--unified <lines>.
+#  * @param {string} file1 - First (base) file path.
+#  * @param {string} file2 - Second (target) file path.
+#  * @return {number} 0 if identical, 1 if different, 2 on error/missing file.
+#  * @example
+#  *   file_compare -o report.md config_v1.env config_v2.env
+#  */
+file_compare() {
+  local show_help_fc
+  show_help_fc() {
+    cat << 'EOF'
+Usage: file_compare [options] <file1> <file2>
+
+Options:
+  -h, --help             Show this help message.
+  -o, --output <file>    Write the Markdown comparison report to <file>.
+  -s, --silent           Suppress stdout output (still writes to -o if specified).
+  -u, --unified <lines>  Number of unified diff context lines (default: 3).
+
+Exit Codes:
+  0  Files are identical.
+  1  Files differ.
+  2  Invalid arguments or missing file.
+EOF
+  }
+
+  local output_file=""
+  local silent_mode=0
+  local context_lines=3
+  local -a pos_args
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -h|--help)
+        show_help_fc
+        return 0
+        ;;
+      -o|--output)
+        if [[ -z "${2:-}" ]]; then
+          printf '[ERROR] Option %s requires a file path.\n' "$1" >&2
+          return 2
+        fi
+        output_file="$2"
+        shift 2
+        ;;
+      -s|--silent)
+        silent_mode=1
+        shift
+        ;;
+      -u|--unified)
+        if [[ -z "${2:-}" || ! "${2}" =~ ^[0-9]+$ ]]; then
+          printf '[ERROR] Option %s requires a non-negative integer.\n' "$1" >&2
+          return 2
+        fi
+        context_lines="$2"
+        shift 2
+        ;;
+      -*)
+        printf '[ERROR] Unknown option: %s. Use -h or --help.\n' "$1" >&2
+        return 2
+        ;;
+      *)
+        pos_args+=("$1")
+        shift
+        ;;
+    esac
+  done
+
+  if (( ${#pos_args} != 2 )); then
+    printf '[ERROR] file_compare requires exactly 2 file paths. Use -h or --help.\n' >&2
+    return 2
+  fi
+
+  local file1="${pos_args[1]}"
+  local file2="${pos_args[2]}"
+
+  if [[ ! -f "${file1}" ]]; then
+    printf '[ERROR] File not found: %s\n' "${file1}" >&2
+    return 2
+  fi
+  if [[ ! -f "${file2}" ]]; then
+    printf '[ERROR] File not found: %s\n' "${file2}" >&2
+    return 2
+  fi
+
+  local size1 size2 hash1 hash2 lines1 lines2
+  size1=$(file_get_size "${file1}" 2>/dev/null || wc -c < "${file1}" | tr -d ' ')
+  size2=$(file_get_size "${file2}" 2>/dev/null || wc -c < "${file2}" | tr -d ' ')
+  hash1=$(file_hash "${file1}" sha256 2>/dev/null || sha256sum "${file1}" | awk '{print $1}')
+  hash2=$(file_hash "${file2}" sha256 2>/dev/null || sha256sum "${file2}" | awk '{print $1}')
+  lines1=$(wc -l < "${file1}" | tr -d ' ')
+  lines2=$(wc -l < "${file2}" | tr -d ' ')
+
+  local status_label="DIFFERENT"
+  local ret_code=1
+  local diff_output=""
+  if cmp -s "${file1}" "${file2}"; then
+    status_label="IDENTICAL"
+    ret_code=0
+  else
+    diff_output=$(diff -u -U "${context_lines}" "${file1}" "${file2}" 2>&1 || true)
+  fi
+
+  local md_report
+  md_report=$(cat <<EOF
+# File Comparison Report
+
+- **File 1:** \`${file1}\`
+- **File 2:** \`${file2}\`
+- **Status:** **${status_label}**
+
+| Metric | File 1 | File 2 |
+| :--- | :--- | :--- |
+| Size (bytes) | ${size1} | ${size2} |
+| Lines | ${lines1} | ${lines2} |
+| SHA-256 | \`${hash1}\` | \`${hash2}\` |
+EOF
+)
+
+  if (( ret_code == 1 )); then
+    md_report+=$'\n\n## Unified Diff\n\n```diff\n'"${diff_output}"$'\n```'
+  fi
+
+  if [[ -n "${output_file}" ]]; then
+    mkdir -p "${output_file:h}" 2>/dev/null || true
+    printf '%s\n' "${md_report}" > "${output_file}"
+  fi
+
+  if (( silent_mode == 0 )); then
+    printf '%s\n' "${md_report}"
+  fi
+
+  return ${ret_code}
+}

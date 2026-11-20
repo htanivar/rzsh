@@ -124,6 +124,15 @@ test_git_push_pull_and_safe_pull() {
   rm -rf "${bare_dir}" "${clone_dir}"
 }
 
+test_git_compare_commits() {
+  local rpt="${test_git_dir}/commit_cmp_report.md"
+  assert_true "git_compare_commits -s --diff -o '${rpt}' 'HEAD~1' 'HEAD'" "git_compare_commits should succeed for HEAD~1..HEAD"
+  assert_true "[[ -f '${rpt}' ]]" "Commit comparison report file should be created"
+  assert_true "grep -q 'Git Commit Comparison Report' '${rpt}'" "Report should contain title"
+  assert_true "grep -q 'Unified Patch Diff' '${rpt}'" "Report with --diff should contain patch diff section"
+  assert_false "git_compare_commits -s 'nonexistent_ref_xyz' 'HEAD' >/dev/null 2>&1" "Invalid ref should fail"
+}
+
 run_test test_git_get_current_branch
 run_test test_git_is_clean
 run_test test_git_get_root
@@ -133,6 +142,7 @@ run_test test_git_branch_exists
 run_test test_git_get_commit_hash
 run_test test_git_get_commit_message
 run_test test_git_push_pull_and_safe_pull
+run_test test_git_compare_commits
 
 # Cleanup
 cd "${original_pwd}"

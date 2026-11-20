@@ -130,3 +130,39 @@ local top5=$(file_head "data.log" 5)
 ```
 
 ---
+### `file_equals`
+
+* **Signature:** `file_equals <file1> <file2>`
+* **Description:** Checks whether two files have identical byte-for-byte contents. Returns `0` if identical, `1` if different, and `2` if either file is missing.
+
+#### Example Code:
+```zsh
+if file_equals "config.v1.json" "config.v2.json"; then
+  echo "Files are identical"
+else
+  echo "Files differ"
+fi
+```
+
+---
+### `file_compare`
+
+* **Signature:** `file_compare [options] <file1> <file2>`
+* **Description:** Compares two files (size in bytes, line count, SHA-256 checksum, and unified diff) and prints/writes a structured Markdown report. Returns `0` if identical, `1` if different, `2` on invalid arguments or missing file.
+
+#### Options:
+* `-h, --help`: Show help message.
+* `-o, --output <file>`: Write the Markdown comparison report to `<file>`.
+* `-s, --silent`: Suppress stdout output (still writes to `-o` if specified).
+* `-u, --unified <lines>`: Number of unified diff context lines (default: `3`).
+
+#### Example Code:
+```zsh
+# Print comparison report to stdout
+file_compare "app_v1.conf" "app_v2.conf"
+
+# Save report silently to a Markdown file with 5 lines of diff context
+file_compare -s -u 5 -o "./file_diff_report.md" "app_v1.conf" "app_v2.conf"
+```
+
+---

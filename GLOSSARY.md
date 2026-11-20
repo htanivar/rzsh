@@ -171,6 +171,7 @@ The table below lists all variable keys initialized or managed by the framework 
 | [`git_get_commit_message`](docs/05-git.md#git_get_commit_hash--git_get_commit_message) | `git_get_commit_message [commit="HEAD"]` | Prints the commit message of the specified commit ref. |
 | [`git_compare_branches`](docs/05-git.md#git_compare_branches) | `git_compare_branches [options] <base> <target>` | Compares two branches (honoring `GIT_IGNORE_FOLDERS`) and generates a detailed Markdown diff report. |
 | [`git_compare_three_branches`](docs/05-git.md#git_compare_three_branches) | `git_compare_three_branches [options] <release_x> <release_prev> [default]` | Compares two release branches and default branch for missing commits and content diffs across all 3 links. |
+| [`git_compare_commits`](docs/05-git.md#git_compare_commits) | `git_compare_commits [options] <ref1> [<ref2>]` | Compares two Git commits, tags, or refs (default `<ref2>` to `HEAD`) and generates a Markdown diff report. |
 | [`git_detect_default_branch`](docs/05-git.md#git_detect_default_branch) | `git_detect_default_branch` | Detects the repository's default branch (`origin/HEAD`, `develop`, `main`, or `master`). |
 | [`git_resolve_ref`](docs/05-git.md#git_resolve_ref) | `git_resolve_ref <branch>` | Resolves a branch name to its local ref or `origin/<branch>` remote ref. |
 | [`git_list_branches`](docs/05-git.md#git_list_branches) | `git_list_branches [pattern]` | Lists unique local and `origin` branch names, optionally filtered by a glob pattern (e.g., `release/*`). |
@@ -259,6 +260,8 @@ The table below lists all variable keys initialized or managed by the framework 
 | [`file_head`](docs/09-file.md#file_head--file_tail--file_grep) | `file_head <file_path> [lines=10]` | Prints the first N lines of a file. |
 | [`file_tail`](docs/09-file.md#file_head--file_tail--file_grep) | `file_tail <file_path> [lines=10]` | Prints the last N lines of a file. |
 | [`file_grep`](docs/09-file.md#file_head--file_tail--file_grep) | `file_grep <file_path> <pattern>` | Searches a file for lines matching a regex pattern. |
+| [`file_equals`](docs/09-file.md#file_equals) | `file_equals <file1> <file2>` | Checks whether two files have identical byte-for-byte contents. |
+| [`file_compare`](docs/09-file.md#file_compare) | `file_compare [options] <file1> <file2>` | Compares two files (size, line count, SHA-256, unified diff) and outputs a Markdown report. |
 
 [↑ Back to Index](#index)
 
@@ -278,6 +281,7 @@ The table below lists all variable keys initialized or managed by the framework 
 | [`dir_tree`](docs/10-directory.md#dir_list--dir_size--dir_tree) | `dir_tree <dir_path> [max_depth=3]` | Prints an indented visual tree structure of a directory. |
 | [`dir_sync`](docs/10-directory.md#dir_sync) | `dir_sync <src_dir> <dest_dir>` | Synchronizes contents from source to destination directory using `rsync` or `cp -a`. |
 | [`dir_watch`](docs/10-directory.md#dir_watch) | `dir_watch <dir_path> <callback_cmd> [interval=2] [max_loops=0]` | Polls a directory for file changes and triggers a callback command when modifications occur. |
+| [`dir_compare`](docs/10-directory.md#dir_compare) | `dir_compare [options] <dir1> <dir2>` | Recursively compares two directories and generates a Markdown report of added, removed, modified, and identical files. |
 
 [↑ Back to Index](#index)
 

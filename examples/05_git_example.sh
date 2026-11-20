@@ -75,3 +75,10 @@ fi
 # 9. Compare 3 branches (release/x, release/x-1, default) when release branches exist
 # git_compare_three_branches --output "${PROJECT_ROOT}/logs/three_branch_example.md" release/2.2.0 release/2.1.0 develop
 
+# 10. Compare two commits (e.g. HEAD~1 vs HEAD) if repository has at least 2 commits
+if git rev-parse --verify "HEAD~1" >/dev/null 2>&1; then
+  echo "Comparing HEAD~1 against HEAD..."
+  git_compare_commits --silent --output "${PROJECT_ROOT}/logs/commit_compare_example.md" "HEAD~1" "HEAD"
+  echo "Commit comparison report written to logs/commit_compare_example.md"
+fi
+

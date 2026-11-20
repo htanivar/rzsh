@@ -1039,3 +1039,161 @@ EOF
 
   restore_dir_3way 0
 }
+
+# /**
+#  * @function git_compare_commits
+#  * @description Compares two Git commits, tags, or refs (defaulting the second ref to HEAD) and generates a Markdown report with commit metadata, changed files, diff stats, and optional patch diff.
+#  * @param {string} [options] - -h/--help, -o/--output <file>, -s/--silent, --diff.
+#  * @param {string} ref1 - Base commit hash, tag, or branch ref.
+#  * @param {string} [ref2=HEAD] - Target commit hash, tag, or branch ref.
+#  * @return {number} 0 on success, 1 on error or invalid ref.
+#  * @example
+#  *   git_compare_commits --diff -o commit_diff.md HEAD~2 HEAD
+#  */
+git_compare_commits() {
+  if ! typeset -f is_inside_git_repo >/dev/null; then
+    if [[ -f "${RZSH_DIR:-${PROJECT_ROOT:-.}}/functions/03-navigation.sh" ]]; then
+      source "${RZSH_DIR:-${PROJECT_ROOT:-.}}/functions/03-navigation.sh"
+    fi
+  fi
+
+  local show_help_gcc
+  show_help_gcc() {
+    cat << 'EOF'
+Usage: git_compare_commits [options] <ref1> [<ref2>]
+
+Options:
+  -h, --help            Show this help message.
+  -o, --output <file>   Write the Markdown comparison report to <file>.
+  -s, --silent          Suppress stdout output (still writes to -o if specified).
+      --diff            Include full unified patch diff in the report.
+
+Arguments:
+  <ref1>                Base commit SHA, tag, or branch ref.
+  [<ref2>]              Target commit SHA, tag, or branch ref (defaults to HEAD).
+EOF
+  }
+
+  local output_file=""
+  local silent_mode=0
+  local include_diff=0
+  local -a pos_args
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -h|--help)
+        show_help_gcc
+        return 0
+        ;;
+      -o|--output)
+        if [[ -z "${2:-}" ]]; then
+          log_error "Option $1 requires a file path."
+          return 1
+        fi
+        output_file="$2"
+        shift 2
+        ;;
+      -s|--silent)
+        silent_mode=1
+        shift
+        ;;
+      --diff)
+        include_diff=1
+        shift
+        ;;
+      -*)
+        log_error "Unknown option: $1. Use -h or --help for usage."
+        return 1
+        ;;
+      *)
+        pos_args+=("$1")
+        shift
+        ;;
+    esac
+  done
+
+  if (( ${#pos_args} < 1 || ${#pos_args} > 2 )); then
+    log_error "git_compare_commits requires 1 or 2 refs: <ref1> [<ref2>]. Use -h or --help."
+    return 1
+  fi
+
+  if ! is_inside_git_repo; then
+    log_error "Not inside a Git repository."
+    return 1
+  fi
+
+  local ref1="${pos_args[1]}"
+  local ref2="${pos_args[2]:-HEAD}"
+
+  local sha1 sha2
+  sha1=$(git rev-parse --verify "${ref1}^{commit}" 2>/dev/null) || {
+    log_error "Invalid Git ref: ${ref1}"
+    return 1
+  }
+  sha2=$(git rev-parse --verify "${ref2}^{commit}" 2>/dev/null) || {
+    log_error "Invalid Git ref: ${ref2}"
+    return 1
+  }
+
+  local meta1 meta2
+  meta1=$(git show -s --format='%h | %an | %ad | %s' --date=short "${sha1}" 2>/dev/null)
+  meta2=$(git show -s --format='%h | %an | %ad | %s' --date=short "${sha2}" 2>/dev/null)
+
+  local commits_ahead commits_behind name_status diff_stat
+  commits_ahead=$(git log --oneline "${sha1}..${sha2}" 2>/dev/null)
+  commits_behind=$(git log --oneline "${sha2}..${sha1}" 2>/dev/null)
+  name_status=$(git diff --name-status "${sha1}" "${sha2}" 2>/dev/null)
+  diff_stat=$(git diff --stat "${sha1}" "${sha2}" 2>/dev/null)
+
+  local status_label="DIFFERENT"
+  if [[ "${sha1}" == "${sha2}" || -z "${name_status}" ]]; then
+    status_label="IDENTICAL"
+  fi
+
+  local md_report
+  md_report=$(cat <<EOF
+# Git Commit Comparison Report
+
+- **Base Ref (\`${ref1}\`):** \`${meta1}\`
+- **Target Ref (\`${ref2}\`):** \`${meta2}\`
+- **Tree Status:** **${status_label}**
+
+## Commits in \`${ref2}\` not in \`${ref1}\`
+\`\`\`text
+${commits_ahead:-None}
+\`\`\`
+
+## Commits in \`${ref1}\` not in \`${ref2}\`
+\`\`\`text
+${commits_behind:-None}
+\`\`\`
+
+## Changed Files (\`--name-status\`)
+\`\`\`text
+${name_status:-No file differences}
+\`\`\`
+
+## Diff Stat
+\`\`\`text
+${diff_stat:-No diff stat}
+\`\`\`
+EOF
+)
+
+  if (( include_diff == 1 )); then
+    local patch_diff
+    patch_diff=$(git diff "${sha1}" "${sha2}" 2>/dev/null)
+    md_report+=$'\n\n## Unified Patch Diff\n\n```diff\n'"${patch_diff:-No differences}"$'\n```'
+  fi
+
+  if [[ -n "${output_file}" ]]; then
+    mkdir -p "${output_file:h}" 2>/dev/null || true
+    printf '%s\n' "${md_report}" > "${output_file}"
+  fi
+
+  if (( silent_mode == 0 )); then
+    printf '%s\n' "${md_report}"
+  fi
+
+  return 0
+}

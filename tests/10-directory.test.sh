@@ -114,6 +114,36 @@ test_dir_size_tree_and_delete() {
   assert_false "dir_exists '${test_root_dir}'" "dir_delete should remove directory"
 }
 
+test_dir_compare() {
+  local d1="/tmp/rzsh_dcmp_1_$$"
+  local d2="/tmp/rzsh_dcmp_2_$$"
+  local rpt="/tmp/rzsh_dcmp_rpt_$$.md"
+  mkdir -p "${d1}/sub" "${d2}/sub" "${d1}/.git" "${d2}/.git"
+
+  echo "same" > "${d1}/common.txt"
+  echo "same" > "${d2}/common.txt"
+  echo "v1" > "${d1}/sub/mod.txt"
+  echo "v1" > "${d2}/sub/mod.txt"
+  echo "ignored1" > "${d1}/.git/HEAD"
+  echo "ignored2" > "${d2}/.git/HEAD"
+
+  # Initially identical (ignoring .git)
+  assert_true "dir_compare -s -o '${rpt}' '${d1}' '${d2}'" "Identical directories should return 0"
+  assert_true "grep -q 'IDENTICAL' '${rpt}'" "Report should show IDENTICAL"
+
+  # Introduce differences: only1, only2, modified
+  echo "only-left" > "${d1}/left.txt"
+  echo "only-right" > "${d2}/right.txt"
+  echo "v2" > "${d2}/sub/mod.txt"
+
+  assert_false "dir_compare -s --diff -o '${rpt}' '${d1}' '${d2}'" "Differing directories should return 1"
+  assert_true "grep -q 'DIFFERENT' '${rpt}'" "Report should show DIFFERENT"
+  assert_true "grep -q 'left.txt' '${rpt}' && grep -q 'right.txt' '${rpt}' && grep -q 'sub/mod.txt' '${rpt}'" "Report should list added, removed, and modified files"
+  assert_true "grep -q -- '+v2' '${rpt}'" "Report with --diff should include unified diff"
+
+  rm -rf "${d1}" "${d2}" "${rpt}"
+}
+
 run_test test_dir_exists_and_create
 run_test test_dir_is_empty_and_clean
 run_test test_dir_copy_and_move
@@ -121,6 +151,7 @@ run_test test_dir_list
 run_test test_dir_sync
 run_test test_dir_watch
 run_test test_dir_size_tree_and_delete
+run_test test_dir_compare
 
 # Cleanup
 rm -rf "${test_root_dir}"

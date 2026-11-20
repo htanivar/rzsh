@@ -89,3 +89,25 @@ dir_watch "./src" "recompile_app" 2
 ```
 
 ---
+### `dir_compare`
+
+* **Signature:** `dir_compare [options] <dir1> <dir2>`
+* **Description:** Recursively compares two directories and generates a Markdown report detailing files only in `<dir1>`, files only in `<dir2>`, modified files, and identical file counts. Returns `0` if identical, `1` if differences exist, `2` on invalid arguments or missing directory.
+
+#### Options:
+* `-h, --help`: Show help message.
+* `-o, --output <file>`: Write the Markdown comparison report to `<file>`.
+* `-s, --silent`: Suppress stdout output (still writes to `-o` if specified).
+* `--diff`: Include unified diffs for modified files.
+* `--ignore <csv>`: Comma-separated folder/file names to ignore (defaults to `GIT_IGNORE_FOLDERS` or `.git,.idea,vendor`).
+
+#### Example Code:
+```zsh
+# Compare two directories and include diffs for modified files
+dir_compare --diff "./release_v1" "./release_v2"
+
+# Save comparison report silently while ignoring build/dist folders
+dir_compare -s --ignore ".git,node_modules,dist" -o "./dir_report.md" "./src_a" "./src_b"
+```
+
+---
