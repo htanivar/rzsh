@@ -36,6 +36,15 @@
     - [`git_get_missed_commits`](#git_get_missed_commits)
     - [`git_report_missed_commits`](#git_report_missed_commits)
     - [`git_compare_branches`](#git_compare_branches)
+    - [`git_compare_three_branches`](#git_compare_three_branches)
+    - [`git_compare_commits`](#git_compare_commits)
+    - [`git_compare_tags`](#git_compare_tags)
+    - [`git_compare_releases`](#git_compare_releases)
+    - [`git_compare_content`](#git_compare_content)
+    - [`git_compare_working_tree`](#git_compare_working_tree)
+    - [`git_compare`](#git_compare)
+  - **Tags**
+    - [`git_tag_exists` / `git_list_tags`](#git_tag_exists--git_list_tags)
 
 ---
 
@@ -341,6 +350,54 @@ git_compare_commits v1.0.0
 ```
 
 ---
+### `git_tag_exists` / `git_list_tags`
+
+* **Signatures:** `git_tag_exists <tag>` | `git_list_tags [<pattern>]`
+* **Description:** Checks if a tag exists or lists tags sorted by creator date (newest first), optionally filtered by a glob pattern.
+
+---
+### `git_compare_tags`
+
+* **Signature:** `git_compare_tags [options] [<tag_a>] [<tag_b>]`
+* **Description:** Compares two Git tags (or auto-detects the latest two tags if omitted) and generates a colorized terminal summary and Markdown report.
+* **Options:** `-h/--help`, `-o/--output <file>`, `-s/--silent`, `--no-diff`.
+
+---
+### `git_compare_releases`
+
+* **Signature:** `git_compare_releases [options] [<release_a>] [<release_b>]`
+* **Description:** Compares two releases (branches like `release/1.0.0` or tags like `v1.0.0`) to pinpoint scope creep, commit gaps, contributors, and file diffs.
+* **Options:** `-h/--help`, `-o/--output <file>`, `-s/--silent`, `--no-diff`.
+
+---
+### `git_compare_content`
+
+* **Signature:** `git_compare_content [options] <source_ref> [<target_ref>]`
+* **Description:** Compares file or directory content between two Git refs, optionally scoped by `-p/--path <path>` (repeatable).
+* **Options:** `-h/--help`, `-o/--output <file>`, `-s/--silent`, `-p/--path <path>`.
+
+---
+### `git_compare_working_tree`
+
+* **Signature:** `git_compare_working_tree [options] [<base_ref>]`
+* **Description:** Compares the working tree (or `--staged` index) against `HEAD` or `<base_ref>` and generates a Markdown report.
+* **Options:** `-h/--help`, `-o/--output <file>`, `-s/--silent`, `--staged`, `-p/--path <path>`.
+
+---
+### `git_compare`
+
+* **Signature:** `git_compare --type <type> [options] [<source>] [<target>] [<extra>]`
+* **Description:** Unified dispatcher supporting `--type` values: `branch`, `commit`, `tag`, `release`, `content`, `worktree`, `three-way`. Also exposed via CLI script [`scripts/04-git/compare_git.sh`](../scripts/04-git/compare_git.sh).
+
+#### Example Code:
+```zsh
+git_compare --type tag -o "./tag_report.md" v1.0.0 v1.1.0
+git_compare --type release -o "./release_report.md" release/1.0.0 release/1.1.0
+git_compare --type content -p functions/05-git.sh main HEAD
+./scripts/04-git/compare_git.sh --type worktree -o "./wt_report.md"
+```
+
+---
 
 ---
 
@@ -371,3 +428,10 @@ Browse dedicated per-function pages with all flags and copy-paste variations in 
 | `git_report_missed_commits` | [Docs & Examples](05-git/git_report_missed_commits.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
 | `git_compare_three_branches` | [Docs & Examples](05-git/git_compare_three_branches.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
 | `git_compare_commits` | [Docs & Examples](05-git/git_compare_commits.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_tag_exists` | [Docs & Examples](05-git/git_tag_exists.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_list_tags` | [Docs & Examples](05-git/git_list_tags.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_compare_tags` | [Docs & Examples](05-git/git_compare_tags.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_compare_releases` | [Docs & Examples](05-git/git_compare_releases.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_compare_content` | [Docs & Examples](05-git/git_compare_content.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_compare_working_tree` | [Docs & Examples](05-git/git_compare_working_tree.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |
+| `git_compare` | [Docs & Examples](05-git/git_compare.md) | [`05_git_example.sh`](../examples/05_git_example.sh) |

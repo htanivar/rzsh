@@ -179,6 +179,13 @@ The table below lists all variable keys initialized or managed by the framework 
 | [`git_format_commit`](docs/05-git/git_format_commit.md) | `git_format_commit [commit="HEAD"]` | Formats a commit as `<short_hash> \| <date> \| <author> \| <subject>`. |
 | [`git_pick_branch`](docs/05-git/git_pick_branch.md) | `git_pick_branch <prompt> [pattern]` | Prompts the user to select a branch matching `[pattern]` (falling back to all branches). |
 | [`git_report_missed_commits`](docs/05-git/git_report_missed_commits.md) | `git_report_missed_commits <target> <release> [output_file] [silent]` | Highlights release commits missing from `<target>` and optionally writes a Markdown report. |
+| [`git_tag_exists`](docs/05-git/git_tag_exists.md) | `git_tag_exists <tag>` | Returns `0` if the specified Git tag exists in the repository. |
+| [`git_list_tags`](docs/05-git/git_list_tags.md) | `git_list_tags [pattern]` | Lists Git tags sorted by creator date (newest first), optionally filtered by a glob pattern. |
+| [`git_compare_tags`](docs/05-git/git_compare_tags.md) | `git_compare_tags [options] [<tag_a>] [<tag_b>]` | Compares two Git tags (or auto-detects the latest two) and generates a colorized Markdown report. |
+| [`git_compare_releases`](docs/05-git/git_compare_releases.md) | `git_compare_releases [options] [<release_a>] [<release_b>]` | Compares two release branches or tags to pinpoint scope creep, commit gaps, and file diffs. |
+| [`git_compare_content`](docs/05-git/git_compare_content.md) | `git_compare_content [options] <source_ref> [<target_ref>]` | Compares file or directory content between two Git refs, optionally scoped by `-p/--path`. |
+| [`git_compare_working_tree`](docs/05-git/git_compare_working_tree.md) | `git_compare_working_tree [options] [<base_ref>]` | Compares the working tree or `--staged` index against `HEAD` (or `<base_ref>`) in a Markdown report. |
+| [`git_compare`](docs/05-git/git_compare.md) | `git_compare --type <type> [options] [<source>] [<target>]` | Unified Git comparison dispatcher for `branch`, `commit`, `tag`, `release`, `content`, `worktree`, and `three-way`. |
 
 [↑ Back to Index](#index)
 
