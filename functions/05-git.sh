@@ -1197,3 +1197,816 @@ EOF
 
   return 0
 }
+
+# ==============================================================================
+# Comprehensive Git Comparison Suite (Branch, Commit, Tag, Release, Content, Worktree)
+# ==============================================================================
+
+# /**
+#  * @function git_tag_exists
+#  * @description Checks if a Git tag exists in the repository.
+#  * @param {string} tag - The tag name to verify.
+#  * @return {number} 0 if exists, 1 otherwise.
+#  */
+git_tag_exists() {
+  local tag="$1"
+  [[ -z "${tag}" ]] && return 1
+  git rev-parse --verify --quiet "refs/tags/${tag}" >/dev/null 2>&1
+}
+
+# /**
+#  * @function git_list_tags
+#  * @description Lists Git tags sorted by creator date (newest first), optionally filtered by a glob pattern.
+#  * @param {string} [pattern] - Optional glob pattern (e.g., "v1.*").
+#  * @return {string} Newline-separated list of tag names.
+#  */
+git_list_tags() {
+  local pattern="$1"
+  if [[ -n "${pattern}" ]]; then
+    git tag -l "${pattern}" --sort=-creatordate 2>/dev/null
+  else
+    git tag -l --sort=-creatordate 2>/dev/null
+  fi
+}
+
+# Internal helper: check if a path matches any entry in GIT_IGNORE_FOLDERS
+_git_is_ignored_path() {
+  local file_path="$1"
+  [[ -z "${file_path}" || -z "${GIT_IGNORE_FOLDERS:-}" ]] && return 1
+
+  local -a ignore_folders
+  ignore_folders=( ${(s:,:)GIT_IGNORE_FOLDERS} )
+  local folder
+  for folder in "${ignore_folders[@]}"; do
+    [[ -z "${folder}" ]] && continue
+    if [[ "${file_path}" == "${folder}" ]] || [[ "${file_path}" == "${folder}"/* ]] || [[ "${file_path}" == */"${folder}"/* ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+# Internal helper: print colorized diff lines to terminal_output variable
+_git_colorize_diff_lines() {
+  local diff_text="$1"
+  local green="\e[32m" red="\e[31m" cyan="\e[36m" blue="\e[34m" reset="\e[0m"
+  local -a lines
+  lines=( ${(f)diff_text} )
+  local line out=""
+  for line in "${lines[@]}"; do
+    if [[ "${line}" =~ "^\\+\\+\\+" ]] || [[ "${line}" =~ "^---" ]]; then
+      out+="${cyan}${line}${reset}\n"
+    elif [[ "${line}" =~ "^\\+" ]]; then
+      out+="${green}${line}${reset}\n"
+    elif [[ "${line}" =~ "^-" ]]; then
+      out+="${red}${line}${reset}\n"
+    elif [[ "${line}" =~ "^@@" ]]; then
+      out+="${blue}${line}${reset}\n"
+    else
+      out+="${line}\n"
+    fi
+  done
+  printf '%s' "${out}"
+}
+
+# Internal helper: unified comparison report generator for refs, tags, commits, releases, content, and worktree
+_git_generate_compare_report() {
+  if ! typeset -f is_inside_git_repo >/dev/null; then
+    if [[ -f "${RZSH_DIR:-${PROJECT_ROOT:-.}}/functions/03-navigation.sh" ]]; then
+      source "${RZSH_DIR:-${PROJECT_ROOT:-.}}/functions/03-navigation.sh"
+    fi
+  fi
+
+  local cmp_type="Ref"
+  local source_label="" target_label=""
+  local source_ref="" target_ref=""
+  local output_file=""
+  local silent_mode=0
+  local include_diff=1
+  local include_commits=1
+  local worktree_mode="" # "", "worktree", or "staged"
+  local -a filter_paths
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --type) cmp_type="$2"; shift 2 ;;
+      --source-label) source_label="$2"; shift 2 ;;
+      --target-label) target_label="$2"; shift 2 ;;
+      --source-ref) source_ref="$2"; shift 2 ;;
+      --target-ref) target_ref="$2"; shift 2 ;;
+      --output) output_file="$2"; shift 2 ;;
+      --silent) silent_mode="$2"; shift 2 ;;
+      --include-diff) include_diff="$2"; shift 2 ;;
+      --include-commits) include_commits="$2"; shift 2 ;;
+      --worktree-mode) worktree_mode="$2"; shift 2 ;;
+      --path) filter_paths+=("$2"); shift 2 ;;
+      *) shift ;;
+    esac
+  done
+
+  if ! is_inside_git_repo; then
+    log_error "Not inside a Git repository."
+    return 1
+  fi
+
+  local git_root orig_pwd
+  git_root=$(git_get_root)
+  orig_pwd="${PWD}"
+  cd "${git_root}" || {
+    log_error "Failed to navigate to Git repository root: ${git_root}"
+    return 1
+  }
+
+  local -a pathspec_args
+  if (( ${#filter_paths} > 0 )); then
+    pathspec_args=( "--" "${filter_paths[@]}" )
+  fi
+
+  # Collect diff --name-status and --stat
+  local -a diff_lines
+  local diff_stat=""
+  if [[ "${worktree_mode}" == "staged" ]]; then
+    diff_lines=( ${(f)"$(git diff --cached --name-status "${source_ref}" "${pathspec_args[@]}" 2>/dev/null)"} )
+    diff_stat=$(git diff --cached --stat "${source_ref}" "${pathspec_args[@]}" 2>/dev/null)
+  elif [[ "${worktree_mode}" == "worktree" ]]; then
+    diff_lines=( ${(f)"$(git diff --name-status "${source_ref}" "${pathspec_args[@]}" 2>/dev/null)"} )
+    diff_stat=$(git diff --stat "${source_ref}" "${pathspec_args[@]}" 2>/dev/null)
+  else
+    diff_lines=( ${(f)"$(git diff --name-status "${source_ref}" "${target_ref}" "${pathspec_args[@]}" 2>/dev/null)"} )
+    diff_stat=$(git diff --stat "${source_ref}" "${target_ref}" "${pathspec_args[@]}" 2>/dev/null)
+  fi
+
+  local -a added_files modified_files deleted_files renamed_files other_files
+  local line diff_status file1 file2
+  for line in "${diff_lines[@]}"; do
+    [[ -z "${line}" ]] && continue
+    IFS=$'\t' read -r diff_status file1 file2 <<< "${line}"
+
+    if _git_is_ignored_path "${file1}" || { [[ -n "${file2}" ]] && _git_is_ignored_path "${file2}"; }; then
+      continue
+    fi
+
+    if [[ "${diff_status}" == A ]]; then
+      added_files+=("${file1}")
+    elif [[ "${diff_status}" == M ]]; then
+      modified_files+=("${file1}")
+    elif [[ "${diff_status}" == D ]]; then
+      deleted_files+=("${file1}")
+    elif [[ "${diff_status}" =~ ^R ]]; then
+      renamed_files+=("${file1} -> ${file2}")
+    else
+      other_files+=("${file1}")
+    fi
+  done
+
+  local total_changes=$(( ${#added_files} + ${#modified_files} + ${#deleted_files} + ${#renamed_files} + ${#other_files} ))
+
+  # Commit metadata & scope creep summary
+  local source_meta="" target_meta="" commits_ahead="" commits_behind="" authors_list=""
+  if [[ -z "${worktree_mode}" ]]; then
+    source_meta=$(git show -s --format='%h | %an | %ad | %s' --date=short "${source_ref}" 2>/dev/null)
+    target_meta=$(git show -s --format='%h | %an | %ad | %s' --date=short "${target_ref}" 2>/dev/null)
+    if (( include_commits == 1 )); then
+      commits_ahead=$(git log --format="%h | %ad | %an | %s" --date=short "${source_ref}..${target_ref}" "${pathspec_args[@]}" 2>/dev/null)
+      commits_behind=$(git log --format="%h | %ad | %an | %s" --date=short "${target_ref}..${source_ref}" "${pathspec_args[@]}" 2>/dev/null)
+      authors_list=$(git log --format="%an" "${source_ref}..${target_ref}" "${pathspec_args[@]}" 2>/dev/null | sort -u)
+    fi
+  else
+    source_meta=$(git show -s --format='%h | %an | %ad | %s' --date=short "${source_ref}" 2>/dev/null)
+    target_meta="${target_label}"
+  fi
+
+  local status_badge="🟢 IDENTICAL"
+  local status_term="\e[32mIDENTICAL\e[0m"
+  if (( total_changes > 0 )) || [[ -n "${commits_ahead}" ]] || [[ -n "${commits_behind}" ]]; then
+    status_badge="🟡 CHANGED"
+    status_term="\e[33mCHANGED\e[0m"
+  fi
+
+  # Terminal ANSI colors
+  local reset="\e[0m" bold="\e[1m" red="\e[31m" green="\e[32m" yellow="\e[33m" blue="\e[34m" magenta="\e[35m" cyan="\e[36m"
+  local term_out="" md_out=""
+
+  # Build Markdown Header
+  md_out+="# Git ${cmp_type} Comparison Report\n\n"
+  md_out+="* **Generated at:** $(date)\n"
+  md_out+="* **Comparison Type:** \`${cmp_type}\`\n"
+  md_out+="* **Source (Base):** \`${source_label}\` (\`${source_meta:-N/A}\`)\n"
+  md_out+="* **Target:** \`${target_label}\` (\`${target_meta:-N/A}\`)\n"
+  if (( ${#filter_paths} > 0 )); then
+    md_out+="* **Path Filter:** \`${filter_paths[*]}\`\n"
+  fi
+  md_out+="* **Status:** ${status_badge}\n"
+  md_out+="* **Total Files Changed:** ${total_changes}\n\n"
+
+  # Build Terminal Header
+  term_out+="${bold}================================================================================${reset}\n"
+  term_out+="${bold}  Git ${cmp_type} Comparison Report${reset}\n"
+  term_out+="${bold}================================================================================${reset}\n"
+  term_out+="* Source (Base): ${cyan}${source_label}${reset}\n"
+  term_out+="* Target:        ${cyan}${target_label}${reset}\n"
+  if (( ${#filter_paths} > 0 )); then
+    term_out+="* Path Filter:   ${magenta}${filter_paths[*]}${reset}\n"
+  fi
+  term_out+="* Status:        ${status_term}\n"
+  term_out+="* Total Changes: ${bold}${total_changes}${reset}\n\n"
+
+  # Commit / Scope Creep Section
+  if [[ -z "${worktree_mode}" && ${include_commits} -eq 1 ]]; then
+    local ahead_count=0 behind_count=0
+    [[ -n "${commits_ahead}" ]] && ahead_count=$(printf '%s\n' "${commits_ahead}" | wc -l | tr -d ' ')
+    [[ -n "${commits_behind}" ]] && behind_count=$(printf '%s\n' "${commits_behind}" | wc -l | tr -d ' ')
+
+    md_out+="## Commit & Scope Summary\n\n"
+    md_out+="| Metric | Count |\n|---|---|\n"
+    md_out+="| 🟢 Commits in Target (\`${target_label}\`) not in Source (\`${source_label}\`) | ${ahead_count} |\n"
+    md_out+="| 🔴 Commits in Source (\`${source_label}\`) not in Target (\`${target_label}\`) | ${behind_count} |\n\n"
+
+    if [[ -n "${authors_list}" ]]; then
+      md_out+="**Contributors in Target:** $(printf '%s' "${authors_list}" | tr '\n' ', ' | sed 's/, $//')\n\n"
+    fi
+
+    md_out+="### Commits in \`${target_label}\` not in \`${source_label}\`\n"
+    if [[ -n "${commits_ahead}" ]]; then
+      md_out+="\`\`\`text\n${commits_ahead}\n\`\`\`\n\n"
+    else
+      md_out+="*None*\n\n"
+    fi
+
+    md_out+="### Commits in \`${source_label}\` not in \`${target_label}\`\n"
+    if [[ -n "${commits_behind}" ]]; then
+      md_out+="\`\`\`text\n${commits_behind}\n\`\`\`\n\n"
+    else
+      md_out+="*None*\n\n"
+    fi
+
+    term_out+="${bold}Commit & Scope Summary:${reset}\n"
+    term_out+="  ${green}Ahead  (in ${target_label} only):${reset} ${ahead_count}\n"
+    term_out+="  ${red}Behind (in ${source_label} only):${reset} ${behind_count}\n\n"
+  fi
+
+  # Summary of File Changes
+  md_out+="## Summary of Changes\n\n"
+  md_out+="| Change Type | Count |\n|---|---|\n"
+  md_out+="| 🟢 [A] Added | ${#added_files} |\n"
+  md_out+="| 🟡 [M] Modified | ${#modified_files} |\n"
+  md_out+="| 🔴 [D] Deleted | ${#deleted_files} |\n"
+  md_out+="| 🔵 [R] Renamed | ${#renamed_files} |\n"
+  md_out+="| 🟣 [O] Other | ${#other_files} |\n\n"
+
+  term_out+="${bold}Summary of Changes:${reset}\n"
+  term_out+="  [A] Added:     ${green}${#added_files}${reset}\n"
+  term_out+="  [M] Modified:  ${yellow}${#modified_files}${reset}\n"
+  term_out+="  [D] Deleted:   ${red}${#deleted_files}${reset}\n"
+  term_out+="  [R] Renamed:   ${cyan}${#renamed_files}${reset}\n"
+  if (( ${#other_files} > 0 )); then
+    term_out+="  [O] Other:     ${magenta}${#other_files}${reset}\n"
+  fi
+  term_out+="\n"
+
+  # Diff Stat
+  if [[ -n "${diff_stat}" ]]; then
+    md_out+="## Diff Stat\n\n\`\`\`text\n${diff_stat}\n\`\`\`\n\n"
+  fi
+
+  # Files Changed List
+  md_out+="## Files Changed\n\n"
+  term_out+="${bold}Files Changed:${reset}\n"
+
+  local _append_md_group() {
+    local title="$1" badge="$2"
+    shift 2
+    local -a items
+    items=( "$@" )
+    if (( ${#items} > 0 )); then
+      md_out+="### ${badge} ${title}\n"
+      local item
+      for item in "${items[@]}"; do
+        md_out+="- \`${item}\`\n"
+      done
+      md_out+="\n"
+    fi
+  }
+
+  local _append_term_group() {
+    local color="$1" code="$2"
+    shift 2
+    local -a items
+    items=( "$@" )
+    local item
+    for item in "${items[@]}"; do
+      term_out+="  ${color}[${code}]${reset} ${item}\n"
+    done
+  }
+
+  _append_md_group "Added Files" "🟢" "${added_files[@]}"
+  _append_md_group "Modified Files" "🟡" "${modified_files[@]}"
+  _append_md_group "Deleted Files" "🔴" "${deleted_files[@]}"
+  _append_md_group "Renamed Files" "🔵" "${renamed_files[@]}"
+  _append_md_group "Other Files" "🟣" "${other_files[@]}"
+
+  _append_term_group "${green}" "A" "${added_files[@]}"
+  _append_term_group "${yellow}" "M" "${modified_files[@]}"
+  _append_term_group "${red}" "D" "${deleted_files[@]}"
+  _append_term_group "${cyan}" "R" "${renamed_files[@]}"
+  _append_term_group "${magenta}" "O" "${other_files[@]}"
+  term_out+="\n"
+
+  # Detailed Content Changes (Color-coded via ```diff in Markdown and ANSI in terminal)
+  if (( include_diff == 1 && total_changes > 0 )); then
+    md_out+="## Detailed Content Changes\n\n"
+    term_out+="${bold}================================================================================${reset}\n"
+    term_out+="${bold}  Detailed Content Changes${reset}\n"
+    term_out+="${bold}================================================================================${reset}\n\n"
+
+    local -a all_files
+    all_files=( "${added_files[@]}" "${modified_files[@]}" "${other_files[@]}" )
+    local rf
+    for rf in "${renamed_files[@]}"; do
+      all_files+=("${rf##* -> }")
+    done
+    all_files+=( "${deleted_files[@]}" )
+    all_files=( ${(u)all_files} )
+
+    local f_path f_status f_badge f_color diff_content
+    for f_path in "${all_files[@]}"; do
+      [[ -z "${f_path}" ]] && continue
+      f_status="Modified"; f_badge="🟡"; f_color="${yellow}"
+      if [[ ${added_files[(Ie)${f_path}]} -ne 0 ]]; then
+        f_status="Added"; f_badge="🟢"; f_color="${green}"
+      elif [[ ${deleted_files[(Ie)${f_path}]} -ne 0 ]]; then
+        f_status="Deleted"; f_badge="🔴"; f_color="${red}"
+      elif [[ "${renamed_files[*]}" == *"${f_path}"* ]]; then
+        f_status="Renamed"; f_badge="🔵"; f_color="${cyan}"
+      elif [[ ${other_files[(Ie)${f_path}]} -ne 0 ]]; then
+        f_status="Other"; f_badge="🟣"; f_color="${magenta}"
+      fi
+
+      if [[ "${worktree_mode}" == "staged" ]]; then
+        diff_content=$(git diff --cached "${source_ref}" -- "${f_path}" 2>/dev/null)
+      elif [[ "${worktree_mode}" == "worktree" ]]; then
+        diff_content=$(git diff "${source_ref}" -- "${f_path}" 2>/dev/null)
+      else
+        diff_content=$(git diff "${source_ref}" "${target_ref}" -- "${f_path}" 2>/dev/null)
+      fi
+
+      if [[ -z "${diff_content}" ]]; then
+        if [[ "${f_status}" == "Deleted" ]]; then
+          diff_content="[File deleted]"
+        else
+          diff_content="[Binary or metadata-only changes]"
+        fi
+      fi
+
+      md_out+="### ${f_badge} File: \`${f_path}\` (${f_status})\n"
+      if [[ "${diff_content}" == "["* ]]; then
+        md_out+="*${diff_content}*\n\n"
+      else
+        md_out+="\`\`\`diff\n${diff_content}\n\`\`\`\n\n"
+      fi
+
+      term_out+="${bold}--------------------------------------------------------------------------------${reset}\n"
+      term_out+="${bold}File: ${f_path} (${f_color}${f_status}${reset}${bold})${reset}\n"
+      term_out+="${bold}--------------------------------------------------------------------------------${reset}\n"
+      if [[ "${diff_content}" == "["* ]]; then
+        term_out+="  ${magenta}${diff_content}${reset}\n\n"
+      else
+        term_out+="$(_git_colorize_diff_lines "${diff_content}")\n"
+      fi
+    done
+  fi
+
+  if (( silent_mode == 0 )); then
+    printf "%b" "${term_out}"
+  fi
+
+  local type_slug="${${cmp_type:l}// /_}"
+  if [[ -n "${output_file}" ]]; then
+    local out_dir="${output_file:h}"
+    [[ ! -d "${out_dir}" ]] && mkdir -p "${out_dir}"
+    printf "%b" "${md_out}" > "${output_file}"
+    log_info "Markdown report successfully written to: ${output_file:A}"
+  else
+    local ts default_ev_dir
+    ts=$(date +%Y%m%d_%H%M%S)
+    default_ev_dir="${PROJECT_ROOT}/evidence/${type_slug}_comparison_${ts}"
+    mkdir -p "${default_ev_dir}"
+    printf "%b" "${md_out}" > "${default_ev_dir}/comparison_report.md"
+    log_info "Markdown report saved by default to evidence: ${default_ev_dir}/comparison_report.md"
+  fi
+
+  cd "${orig_pwd}" 2>/dev/null
+  return 0
+}
+
+# /**
+#  * @function git_compare_tags
+#  * @description Compares two Git tags (or auto-detects the latest two tags) and generates a colorized terminal summary and Markdown report.
+#  * @param {string} [options] - -h/--help, -o/--output <file>, -s/--silent, --no-diff.
+#  * @param {string} [tag_a] - Source/base tag (defaults to second-latest tag if 0 args).
+#  * @param {string} [tag_b] - Target tag (defaults to HEAD if 1 arg, or latest tag if 0 args).
+#  * @return {number} 0 on success, 1 on failure.
+#  * @example
+#  *   git_compare_tags -o tag_report.md v1.0.0 v1.1.0
+#  */
+git_compare_tags() {
+  local show_help_tags
+  show_help_tags() {
+    cat << 'EOF'
+Usage: git_compare_tags [options] [<tag_a>] [<tag_b>]
+
+Options:
+  -h, --help            Show this help message.
+  -o, --output <file>   Write the Markdown report to <file>.
+  -s, --silent          Suppress stdout output.
+      --no-diff         Omit per-file unified diffs from the report.
+
+Arguments:
+  <tag_a>               Base tag (if omitted, uses second-latest tag).
+  <tag_b>               Target tag (if 1 arg given, defaults to HEAD; if 0 args, uses latest tag).
+EOF
+  }
+
+  local output_file="" silent_mode=0 include_diff=1
+  local -a pos_args
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -h|--help) show_help_tags; return 0 ;;
+      -o|--output)
+        [[ -z "${2:-}" ]] && { log_error "Option $1 requires a file path."; return 1; }
+        output_file="$2"; shift 2 ;;
+      -s|--silent) silent_mode=1; shift ;;
+      --no-diff) include_diff=0; shift ;;
+      -*) log_error "Unknown option: $1. Use -h or --help."; return 1 ;;
+      *) pos_args+=("$1"); shift ;;
+    esac
+  done
+
+  local tag_a="" tag_b=""
+  if (( ${#pos_args} == 0 )); then
+    local -a recent_tags
+    recent_tags=( ${(f)"$(git_list_tags)"} )
+    recent_tags=( ${recent_tags:#} )
+    if (( ${#recent_tags} < 2 )); then
+      log_error "Fewer than 2 tags found in repository. Specify tags explicitly."
+      return 1
+    fi
+    tag_a="${recent_tags[2]}"
+    tag_b="${recent_tags[1]}"
+  elif (( ${#pos_args} == 1 )); then
+    tag_a="${pos_args[1]}"
+    tag_b="HEAD"
+  elif (( ${#pos_args} == 2 )); then
+    tag_a="${pos_args[1]}"
+    tag_b="${pos_args[2]}"
+  else
+    log_error "Too many arguments. Expected 0, 1, or 2 tag names."
+    return 1
+  fi
+
+  if ! git_tag_exists "${tag_a}"; then
+    log_error "Tag '${tag_a}' does not exist."
+    return 1
+  fi
+  if [[ "${tag_b}" != "HEAD" ]] && ! git_tag_exists "${tag_b}"; then
+    log_error "Tag '${tag_b}' does not exist."
+    return 1
+  fi
+
+  local -a args
+  args=( --type "Tag" --source-label "${tag_a}" --target-label "${tag_b}" --source-ref "${tag_a}" --target-ref "${tag_b}" --silent "${silent_mode}" --include-diff "${include_diff}" )
+  [[ -n "${output_file}" ]] && args+=( --output "${output_file}" )
+  _git_generate_compare_report "${args[@]}"
+}
+
+# /**
+#  * @function git_compare_releases
+#  * @description Compares two releases (branches like release/1.0.0 or tags like v1.0.0) to pinpoint scope creep, commit gaps, and file diffs.
+#  * @param {string} [options] - -h/--help, -o/--output <file>, -s/--silent, --no-diff.
+#  * @param {string} [release_a] - Base/previous release branch or tag.
+#  * @param {string} [release_b] - Target/new release branch or tag (defaults to current branch if 1 arg).
+#  * @return {number} 0 on success, 1 on failure.
+#  * @example
+#  *   git_compare_releases -o release_diff.md release/1.0.0 release/1.1.0
+#  */
+git_compare_releases() {
+  local show_help_rel
+  show_help_rel() {
+    cat << 'EOF'
+Usage: git_compare_releases [options] [<release_a>] [<release_b>]
+
+Options:
+  -h, --help            Show this help message.
+  -o, --output <file>   Write the Markdown report to <file>.
+  -s, --silent          Suppress stdout output.
+      --no-diff         Omit per-file unified diffs from the report.
+
+Arguments:
+  <release_a>           Base/previous release (branch e.g. release/1.0.0 or tag e.g. v1.0.0).
+  <release_b>           Target/current release (defaults to current branch if 1 arg given).
+EOF
+  }
+
+  local output_file="" silent_mode=0 include_diff=1
+  local -a pos_args
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -h|--help) show_help_rel; return 0 ;;
+      -o|--output)
+        [[ -z "${2:-}" ]] && { log_error "Option $1 requires a file path."; return 1; }
+        output_file="$2"; shift 2 ;;
+      -s|--silent) silent_mode=1; shift ;;
+      --no-diff) include_diff=0; shift ;;
+      -*) log_error "Unknown option: $1. Use -h or --help."; return 1 ;;
+      *) pos_args+=("$1"); shift ;;
+    esac
+  done
+
+  local rel_a="" rel_b=""
+  if (( ${#pos_args} == 0 )); then
+    local -a rel_branches
+    rel_branches=( ${(f)"$(git_list_branches "release/*")"} )
+    rel_branches=( ${rel_branches:#} )
+    if (( ${#rel_branches} >= 2 )); then
+      rel_a="${rel_branches[-2]}"
+      rel_b="${rel_branches[-1]}"
+    else
+      local -a rel_tags
+      rel_tags=( ${(f)"$(git_list_tags)"} )
+      rel_tags=( ${rel_tags:#} )
+      if (( ${#rel_tags} >= 2 )); then
+        rel_a="${rel_tags[2]}"
+        rel_b="${rel_tags[1]}"
+      else
+        log_error "Could not auto-detect two releases (branches 'release/*' or tags). Specify explicitly."
+        return 1
+      fi
+    fi
+  elif (( ${#pos_args} == 1 )); then
+    rel_a="${pos_args[1]}"
+    rel_b=$(git_get_current_branch)
+    [[ -z "${rel_b}" ]] && rel_b="HEAD"
+  elif (( ${#pos_args} == 2 )); then
+    rel_a="${pos_args[1]}"
+    rel_b="${pos_args[2]}"
+  else
+    log_error "Too many arguments. Expected 0, 1, or 2 release refs."
+    return 1
+  fi
+
+  local ref_a ref_b
+  ref_a=$(git_resolve_ref "${rel_a}")
+  ref_b=$(git_resolve_ref "${rel_b}")
+
+  if ! git rev-parse --verify "${ref_a}^{commit}" >/dev/null 2>&1; then
+    log_error "Release ref '${rel_a}' does not exist."
+    return 1
+  fi
+  if ! git rev-parse --verify "${ref_b}^{commit}" >/dev/null 2>&1; then
+    log_error "Release ref '${rel_b}' does not exist."
+    return 1
+  fi
+
+  local -a args
+  args=( --type "Release" --source-label "${rel_a}" --target-label "${rel_b}" --source-ref "${ref_a}" --target-ref "${ref_b}" --silent "${silent_mode}" --include-diff "${include_diff}" )
+  [[ -n "${output_file}" ]] && args+=( --output "${output_file}" )
+  _git_generate_compare_report "${args[@]}"
+}
+
+# /**
+#  * @function git_compare_content
+#  * @description Compares file or directory content between two Git refs (branch, commit, tag) optionally scoped by --path.
+#  * @param {string} [options] - -h/--help, -o/--output <file>, -s/--silent, -p/--path <path>.
+#  * @param {string} source_ref - Base Git ref (branch, commit, or tag).
+#  * @param {string} [target_ref=HEAD] - Target Git ref.
+#  * @return {number} 0 on success, 1 on failure.
+#  * @example
+#  *   git_compare_content -p functions/05-git.sh -o content_diff.md main HEAD
+#  */
+git_compare_content() {
+  local show_help_cnt
+  show_help_cnt() {
+    cat << 'EOF'
+Usage: git_compare_content [options] <source_ref> [<target_ref>]
+
+Options:
+  -h, --help            Show this help message.
+  -o, --output <file>   Write the Markdown report to <file>.
+  -s, --silent          Suppress stdout output.
+  -p, --path <path>     Limit content comparison to a specific file or directory (repeatable).
+
+Arguments:
+  <source_ref>          Base branch, commit, or tag.
+  [<target_ref>]        Target branch, commit, or tag (defaults to HEAD).
+EOF
+  }
+
+  local output_file="" silent_mode=0
+  local -a pos_args filter_paths
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -h|--help) show_help_cnt; return 0 ;;
+      -o|--output)
+        [[ -z "${2:-}" ]] && { log_error "Option $1 requires a file path."; return 1; }
+        output_file="$2"; shift 2 ;;
+      -s|--silent) silent_mode=1; shift ;;
+      -p|--path)
+        [[ -z "${2:-}" ]] && { log_error "Option $1 requires a path."; return 1; }
+        filter_paths+=("$2"); shift 2 ;;
+      -*) log_error "Unknown option: $1. Use -h or --help."; return 1 ;;
+      *) pos_args+=("$1"); shift ;;
+    esac
+  done
+
+  if (( ${#pos_args} < 1 || ${#pos_args} > 2 )); then
+    log_error "git_compare_content requires 1 or 2 refs: <source_ref> [<target_ref>]."
+    return 1
+  fi
+
+  local src="${pos_args[1]}" tgt="${pos_args[2]:-HEAD}"
+  local src_ref tgt_ref
+  src_ref=$(git_resolve_ref "${src}")
+  tgt_ref=$(git_resolve_ref "${tgt}")
+
+  if ! git rev-parse --verify "${src_ref}^{commit}" >/dev/null 2>&1; then
+    log_error "Invalid source ref: ${src}"
+    return 1
+  fi
+  if ! git rev-parse --verify "${tgt_ref}^{commit}" >/dev/null 2>&1; then
+    log_error "Invalid target ref: ${tgt}"
+    return 1
+  fi
+
+  local -a args
+  args=( --type "Content" --source-label "${src}" --target-label "${tgt}" --source-ref "${src_ref}" --target-ref "${tgt_ref}" --silent "${silent_mode}" --include-diff 1 )
+  [[ -n "${output_file}" ]] && args+=( --output "${output_file}" )
+  local p
+  for p in "${filter_paths[@]}"; do
+    args+=( --path "${p}" )
+  done
+  _git_generate_compare_report "${args[@]}"
+}
+
+# /**
+#  * @function git_compare_working_tree
+#  * @description Compares the working tree or staged index against HEAD (or a specified ref) and generates a Markdown report.
+#  * @param {string} [options] - -h/--help, -o/--output <file>, -s/--silent, --staged, -p/--path <path>.
+#  * @param {string} [base_ref=HEAD] - Base ref to compare against.
+#  * @return {number} 0 on success, 1 on failure.
+#  * @example
+#  *   git_compare_working_tree --staged -o staged_changes.md
+#  */
+git_compare_working_tree() {
+  local show_help_wt
+  show_help_wt() {
+    cat << 'EOF'
+Usage: git_compare_working_tree [options] [<base_ref>]
+
+Options:
+  -h, --help            Show this help message.
+  -o, --output <file>   Write the Markdown report to <file>.
+  -s, --silent          Suppress stdout output.
+      --staged          Compare only staged changes (--cached) against <base_ref>.
+  -p, --path <path>     Limit comparison to a specific file or directory (repeatable).
+
+Arguments:
+  [<base_ref>]          Base ref to compare against (defaults to HEAD).
+EOF
+  }
+
+  local output_file="" silent_mode=0 staged_only=0
+  local -a pos_args filter_paths
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -h|--help) show_help_wt; return 0 ;;
+      -o|--output)
+        [[ -z "${2:-}" ]] && { log_error "Option $1 requires a file path."; return 1; }
+        output_file="$2"; shift 2 ;;
+      -s|--silent) silent_mode=1; shift ;;
+      --staged) staged_only=1; shift ;;
+      -p|--path)
+        [[ -z "${2:-}" ]] && { log_error "Option $1 requires a path."; return 1; }
+        filter_paths+=("$2"); shift 2 ;;
+      -*) log_error "Unknown option: $1. Use -h or --help."; return 1 ;;
+      *) pos_args+=("$1"); shift ;;
+    esac
+  done
+
+  if (( ${#pos_args} > 1 )); then
+    log_error "Too many arguments. Expected at most 1 base ref."
+    return 1
+  fi
+
+  local base_ref="${pos_args[1]:-HEAD}"
+  local resolved_base
+  resolved_base=$(git_resolve_ref "${base_ref}")
+  if ! git rev-parse --verify "${resolved_base}^{commit}" >/dev/null 2>&1; then
+    log_error "Invalid base ref: ${base_ref}"
+    return 1
+  fi
+
+  local wt_mode="worktree" tgt_label="Working Tree"
+  if (( staged_only == 1 )); then
+    wt_mode="staged"
+    tgt_label="Staged Index"
+  fi
+
+  local -a args
+  args=( --type "Worktree" --source-label "${base_ref}" --target-label "${tgt_label}" --source-ref "${resolved_base}" --target-ref "${tgt_label}" --worktree-mode "${wt_mode}" --silent "${silent_mode}" --include-diff 1 --include-commits 0 )
+  [[ -n "${output_file}" ]] && args+=( --output "${output_file}" )
+  local p
+  for p in "${filter_paths[@]}"; do
+    args+=( --path "${p}" )
+  done
+  _git_generate_compare_report "${args[@]}"
+}
+
+# /**
+#  * @function git_compare
+#  * @description Unified Git comparison dispatcher supporting branch, commit, tag, release, content, worktree, and three-way comparisons.
+#  * @param {string} --type|-t <type> - Comparison type: branch, commit, tag, release, content, worktree, three-way.
+#  * @param {string} [options] - Type-specific options (-o/--output, -s/--silent, -p/--path, --diff, --no-diff, --staged).
+#  * @return {number} 0 on success, 1 on error.
+#  * @example
+#  *   git_compare --type tag -o tag_diff.md v1.0.0 v1.1.0
+#  *   git_compare -t release release/1.0.0 release/1.1.0
+#  */
+git_compare() {
+  local show_help_cmp
+  show_help_cmp() {
+    cat << 'EOF'
+Usage: git_compare --type <type> [options] [<source>] [<target>] [<extra>]
+
+Types (-t, --type):
+  branch      Compare two branches (delegates to git_compare_branches)
+  commit      Compare two commits or refs (delegates to git_compare_commits)
+  tag         Compare two tags (delegates to git_compare_tags)
+  release     Compare two release branches or tags (delegates to git_compare_releases)
+  content     Compare file/directory content between two refs (delegates to git_compare_content)
+  worktree    Compare working tree or staged index against a base ref (delegates to git_compare_working_tree)
+  three-way   Compare two release branches against default branch (delegates to git_compare_three_branches)
+
+Options:
+  -t, --type <type>     Comparison type (default: branch).
+      --list-types      List supported comparison types and exit.
+  -h, --help            Show this help message.
+  All other options (-o/--output, -s/--silent, -p/--path, --diff, --no-diff, --staged) are forwarded.
+EOF
+  }
+
+  local cmp_type="branch"
+  local -a forward_args
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -h|--help)
+        show_help_cmp
+        return 0
+        ;;
+      --list-types)
+        printf '%s\n' "branch" "commit" "tag" "release" "content" "worktree" "three-way"
+        return 0
+        ;;
+      -t|--type)
+        if [[ -z "${2:-}" ]]; then
+          log_error "Option $1 requires a comparison type."
+          return 1
+        fi
+        cmp_type="${2:l}"
+        shift 2
+        ;;
+      *)
+        forward_args+=("$1")
+        shift
+        ;;
+    esac
+  done
+
+  case "${cmp_type}" in
+    branch|branches)
+      git_compare_branches "${forward_args[@]}"
+      ;;
+    commit|commits)
+      git_compare_commits "${forward_args[@]}"
+      ;;
+    tag|tags)
+      git_compare_tags "${forward_args[@]}"
+      ;;
+    release|releases)
+      git_compare_releases "${forward_args[@]}"
+      ;;
+    content)
+      git_compare_content "${forward_args[@]}"
+      ;;
+    worktree|working-tree|working_tree)
+      git_compare_working_tree "${forward_args[@]}"
+      ;;
+    three-way|three_way|3way)
+      git_compare_three_branches "${forward_args[@]}"
+      ;;
+    *)
+      log_error "Unsupported comparison type: '${cmp_type}'. Use --list-types to see supported types."
+      return 1
+      ;;
+  esac
+}

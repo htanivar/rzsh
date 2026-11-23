@@ -80,5 +80,17 @@ if git rev-parse --verify "HEAD~1" >/dev/null 2>&1; then
   echo "Comparing HEAD~1 against HEAD..."
   git_compare_commits --silent --output "${PROJECT_ROOT}/logs/commit_compare_example.md" "HEAD~1" "HEAD"
   echo "Commit comparison report written to logs/commit_compare_example.md"
+
+  echo "Comparing content of functions/05-git.sh between HEAD~1 and HEAD..."
+  git_compare --type content --silent -p "functions/05-git.sh" -o "${PROJECT_ROOT}/logs/content_compare_example.md" "HEAD~1" "HEAD"
+  echo "Content comparison report written to logs/content_compare_example.md"
 fi
+
+# 11. Compare tags, releases, and working tree
+echo "Supported git_compare types:"
+git_compare --list-types
+# git_compare --type tag --output "${PROJECT_ROOT}/logs/tag_compare.md" v1.0.0 v1.1.0
+# git_compare --type release --output "${PROJECT_ROOT}/logs/release_compare.md" release/1.0.0 release/1.1.0
+# git_compare --type worktree --output "${PROJECT_ROOT}/logs/worktree_compare.md"
+
 

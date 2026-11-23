@@ -133,6 +133,75 @@ test_git_compare_commits() {
   assert_false "git_compare_commits -s 'nonexistent_ref_xyz' 'HEAD' >/dev/null 2>&1" "Invalid ref should fail"
 }
 
+test_git_tag_helpers_and_compare_tags() {
+  git tag v1.0.0 HEAD~1
+  git tag v1.1.0 HEAD
+  assert_true "git_tag_exists 'v1.0.0'" "Tag v1.0.0 should exist"
+  assert_false "git_tag_exists 'v9.9.9'" "Tag v9.9.9 should not exist"
+
+  local tags_list
+  tags_list=$(git_list_tags "v1.*")
+  assert_true "[[ \"${tags_list}\" == *'v1.1.0'* ]]" "git_list_tags should list v1.1.0"
+
+  local rpt="${test_git_dir}/tag_cmp_report.md"
+  assert_true "git_compare_tags -s -o '${rpt}' 'v1.0.0' 'v1.1.0'" "git_compare_tags should succeed for v1.0.0..v1.1.0"
+  assert_true "[[ -f '${rpt}' ]]" "Tag comparison report should be created"
+  assert_true "grep -q 'Git Tag Comparison Report' '${rpt}'" "Tag report should contain title"
+  assert_true "grep -q '\`\`\`diff' '${rpt}'" "Tag report should contain color-coded diff block"
+
+  # Auto-detect latest 2 tags
+  local auto_rpt="${test_git_dir}/tag_auto_report.md"
+  assert_true "git_compare_tags -s -o '${auto_rpt}'" "git_compare_tags with 0 args should auto-detect latest 2 tags"
+  assert_true "[[ -f '${auto_rpt}' ]]" "Auto tag report should be created"
+  assert_false "git_compare_tags -s 'missing_tag' 'v1.1.0' >/dev/null 2>&1" "Missing tag should fail"
+}
+
+test_git_compare_releases() {
+  git branch release/1.0.0 HEAD~1
+  git branch release/1.1.0 HEAD
+  local rpt="${test_git_dir}/release_cmp_report.md"
+  assert_true "git_compare_releases -s -o '${rpt}' 'release/1.0.0' 'release/1.1.0'" "git_compare_releases should succeed"
+  assert_true "[[ -f '${rpt}' ]]" "Release comparison report should be created"
+  assert_true "grep -q 'Git Release Comparison Report' '${rpt}'" "Release report should contain title"
+  assert_true "grep -q 'Commit & Scope Summary' '${rpt}'" "Release report should contain Commit & Scope Summary"
+}
+
+test_git_compare_content_and_worktree() {
+  echo "extra content line" >> file.txt
+  local wt_rpt="${test_git_dir}/worktree_cmp_report.md"
+  assert_true "git_compare_working_tree -s -o '${wt_rpt}'" "git_compare_working_tree should succeed"
+  assert_true "[[ -f '${wt_rpt}' ]]" "Worktree report should be created"
+  assert_true "grep -q 'file.txt' '${wt_rpt}'" "Worktree report should mention modified file.txt"
+
+  git add file.txt
+  local staged_rpt="${test_git_dir}/staged_cmp_report.md"
+  assert_true "git_compare_working_tree --staged -s -o '${staged_rpt}'" "git_compare_working_tree --staged should succeed"
+  assert_true "grep -q 'Staged Index' '${staged_rpt}'" "Staged report should mention Staged Index"
+  git reset HEAD file.txt >/dev/null 2>&1
+  git checkout -- file.txt
+
+  local content_rpt="${test_git_dir}/content_cmp_report.md"
+  assert_true "git_compare_content -s -p file.txt -o '${content_rpt}' 'HEAD~1' 'HEAD'" "git_compare_content with --path should succeed"
+  assert_true "grep -q 'Git Content Comparison Report' '${content_rpt}'" "Content report should contain title"
+  assert_true "grep -q 'file.txt' '${content_rpt}'" "Content report should contain file.txt"
+}
+
+test_git_compare_dispatcher_and_script() {
+  local types_out
+  types_out=$(git_compare --list-types)
+  assert_true "[[ \"${types_out}\" == *'tag'* && \"${types_out}\" == *'release'* && \"${types_out}\" == *'content'* ]]" "git_compare --list-types should list all types"
+
+  local rpt="${test_git_dir}/dispatcher_tag.md"
+  assert_true "git_compare --type tag -s -o '${rpt}' 'v1.0.0' 'v1.1.0'" "git_compare --type tag should succeed"
+  assert_true "[[ -f '${rpt}' ]]" "Dispatcher tag report should be created"
+
+  local cli_rpt="${test_git_dir}/cli_release.md"
+  assert_true "zsh '${RZSH_DIR}/scripts/04-git/compare_git.sh' --type release -s -o '${cli_rpt}' 'release/1.0.0' 'release/1.1.0'" "compare_git.sh CLI should succeed"
+  assert_true "[[ -f '${cli_rpt}' ]]" "CLI release report should be created"
+
+  assert_false "git_compare --type invalid_type >/dev/null 2>&1" "Invalid comparison type should fail"
+}
+
 run_test test_git_get_current_branch
 run_test test_git_is_clean
 run_test test_git_get_root
@@ -143,6 +212,10 @@ run_test test_git_get_commit_hash
 run_test test_git_get_commit_message
 run_test test_git_push_pull_and_safe_pull
 run_test test_git_compare_commits
+run_test test_git_tag_helpers_and_compare_tags
+run_test test_git_compare_releases
+run_test test_git_compare_content_and_worktree
+run_test test_git_compare_dispatcher_and_script
 
 # Cleanup
 cd "${original_pwd}"
